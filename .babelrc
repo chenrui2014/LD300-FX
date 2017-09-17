@@ -1,0 +1,15 @@
+{
+  "presets": ["es2015", "stage-0", "react"],
+  "plugins": [
+    "transform-react-jsx",
+    "add-module-exports",
+    ["transform-class-properties", { "spec": true }],
+    ["babel-plugin-transform-builtin-extend", {
+      "globals": ["Error"]
+    }],
+    ["transform-runtime", {
+      "polyfill": false,
+      "regenerator": true
+    }]
+  ]
+}
