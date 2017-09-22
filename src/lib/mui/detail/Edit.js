@@ -96,7 +96,8 @@ export class Edit extends Component {
                         basePath,
                         record: data,
                         translate,
-                        redirect: typeof children.props.redirect === 'undefined' ? this.defaultRedirectRoute() : children.props.redirect,
+                        redirect:'list',
+                        //redirect:this.defaultRedirectRoute() : children.props.redirect,
                     })}
                     {!data && <CardText>&nbsp;</CardText>}
                 </Card>
