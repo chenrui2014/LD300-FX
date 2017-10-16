@@ -31,7 +31,7 @@ export const
                 // not json, no big deal
             }
             if (status < 200 || status >= 300) {
-                return Promise.reject(new HttpError((json && json.message) || statusText, status));
+                return Promise.reject(new HttpError((json && json.msg) || statusText, status));
             }
             return { status, headers, body, json };
         });
