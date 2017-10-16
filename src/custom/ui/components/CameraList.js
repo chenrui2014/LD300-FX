@@ -16,8 +16,8 @@ class CameraList extends Component{
         const {data} = this.props;
         return(
             <List>
-                {data.map((camera)=>{
-                    return <ListItem><CameraItem name={camera.name} type={camera.type} status={camera.state}/></ListItem>
+                {data.map((camera,i)=>{
+                    return <ListItem  key={i}><CameraItem name={camera.name} type={camera.type} status={camera.state}/></ListItem>
                 })}
 
             </List>
