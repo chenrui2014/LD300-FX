@@ -6,7 +6,8 @@ import withWidth from 'material-ui/utils/withWidth';
 import Main from './main';
 import LeftLayout from "../containers/leftLayout";
 //import restClient from '../../../restClient';
-import {GET_LIST,simpleRestClient} from '../../../lib';
+import {GET_LIST} from '../../../lib';
+import restClient from '../../../restClient'
 
 const styles = {
     flex: { display: 'flex',flexDirection:'row',justifyContent:'flex-start',alignItems:'stretch' },
@@ -21,7 +22,7 @@ class Dashboard extends Component {
     state = {};
 
     componentDidMount() {
-        simpleRestClient(GET_LIST,'cameras',{sort: { field: 'name', order: 'DESC' }})
+        restClient(GET_LIST,'cameras_noPage',{sort: { field: 'name', order: 'DESC' },pagination: { page: 1, perPage: 1000 }})
             .then(response =>response.data)
             .then(cameras=> this.setState({
                 cameraList:cameras
@@ -35,7 +36,7 @@ class Dashboard extends Component {
                     <Main style={styles.main} />
                 </div>
                 <div style={styles.rightCol}>
-                    <LeftLayout title="摄像头列表" data={[{name:'test1',type:'0',status:'df'},{name:'test2',type:'`',status:'dfdd'}]}/>
+                    <LeftLayout title="摄像头列表" data={cameraList}/>
                 </div>
 
             </div>

@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { parse, stringify } from 'query-string';
 import { push as pushAction } from 'react-router-redux';
-import { Card, CardText } from 'material-ui/Card';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
 import compose from 'recompose/compose';
 import { createSelector } from 'reselect';
 import inflection from 'inflection';
@@ -16,13 +18,16 @@ import DefaultPagination from '../lib/mui/list/Pagination';
 import DefaultActions from '../lib/mui/list/Actions';
 import { crudGetList as crudGetListAction } from '../lib/actions/dataActions';
 import { changeListParams as changeListParamsAction } from '../lib/actions/listActions';
+import { crudCreate as crudCreateAction } from '../lib/actions/dataActions';
 import translate from '../lib/i18n/translate';
 import removeKey from '../lib/util/removeKey';
+import {CreateButton} from '../lib/mui/button'
 import defaultTheme from '../defaultTheme';
 
 import {LeftLayout} from './leftLayout';
 import RightLayout from './rightLayout';
 import Background from '../../static/img/background.bmp';
+import TextInput from "../lib/mui/input/TextInput";
 
 const styles = {
     noResults: { padding: 20 },
@@ -41,12 +46,13 @@ const styles = {
 export class PerimeterList extends Component {
     constructor(props) {
         super(props);
-        this.state = { key: 0 };
+        this.state = { key: 0,open:false,mapPosition:0,mapErrText:"",realPosition:0,realErrText:"",id:0,name:"",num:0,x:0,y:0};
     }
 
     canvasElement = null;
     ctx = null;
-    prePoint = null
+    maxNum = 0;
+    //prePoint = null
     componentDidMount() {
         this.updateData();
         if (Object.keys(this.props.query).length > 0) {
@@ -63,66 +69,44 @@ export class PerimeterList extends Component {
         }
         this.ctx.scale(0.9, 0.9);
 
-        function mousePos(e) {//获取鼠标所在位置的坐标，相对于整个页面
-            var e = e || window.event;
-            return {
-                x: e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft,
-                y: e.clientY + document.body.scrollTop + document.documentElement.scrollTop
-            };
-        }
+        // function mousePos(e) {//获取鼠标所在位置的坐标，相对于整个页面
+        //     var e = e || window.event;
+        //     return {
+        //         x: e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft,
+        //         y: e.clientY + document.body.scrollTop + document.documentElement.scrollTop
+        //     };
+        // }
         $('canvas').mousedown((e) =>{
             if(e.which == 3){
                 console.log('right');
             }
             var rect = canvas.getBoundingClientRect();
 
-            let x = mousePos(e).x - rect.left;
-            let y = mousePos(e).y - rect.top;
+            let x = e.clientX - rect.left;
+            let y = e.clientY - rect.top;
             x = Math.floor(x * (canvas.width / rect.width) / 0.9);
             y = Math.floor(y * (canvas.height / rect.height) / 0.9);
 
-            if(this.prePoint == null){
-                this.prePoint = {x:x,y:y};
-            }else{
-                canCtx.beginPath();
-                canCtx.moveTo(this.prePoint.x, this.prePoint.y);
-                canCtx.lineWidth = 1.0;
-                canCtx.lineCap = "butt";
-                canCtx.lineJoin = "miter";
-                canCtx.lineTo(x, y);
-                canCtx.strokeStyle = '#ff0000';
-                canCtx.stroke();
-                // canCtx.arc(x, y, 5, 0, Math.PI * 2, true);
-                // canCtx.fillStyle = "#ff0000";
-                // canCtx.fill();
-                this.prePoint = {x:x,y:y}
-            }
+            // if(this.prePoint == null){
+            //     this.prePoint = {x:x,y:y};
+            // }else{
+            //     canCtx.beginPath();
+            //     canCtx.moveTo(this.prePoint.x, this.prePoint.y);
+            //     canCtx.lineWidth = 1.0;
+            //     canCtx.lineCap = "butt";
+            //     canCtx.lineJoin = "miter";
+            //     canCtx.lineTo(x, y);
+            //     canCtx.strokeStyle = '#ff0000';
+            //     canCtx.stroke();
+            //     // canCtx.arc(x, y, 5, 0, Math.PI * 2, true);
+            //     // canCtx.fillStyle = "#ff0000";
+            //     // canCtx.fill();
+            //     this.prePoint = {x:x,y:y}
+            // }
+
+            this.setState({open: true,x:x,y:y});
         });
-        // $('canvas').mousedown(function(e){
-        //     var rect = canvas.getBoundingClientRect();
-        //
-        //     let x = mousePos(e).x - rect.left;
-        //     let y = mousePos(e).y - rect.top;
-        //     x = Math.floor(x * (canvas.width / rect.width) / 0.9);
-        //     y = Math.floor(y * (canvas.height / rect.height) / 0.9);
-        //
-        //     if(this.prePoint == null){
-        //         this.prePoint.x = x;
-        //         this.prePoint.y = y;
-        //     }else{
-        //         canCtx.beginPath();
-        //         canCtx.moveTo(this.prePoint.x, this.prePoint.y);
-        //         canCtx.lineWidth = 1.0;
-        //         canCtx.lineCap = "butt";
-        //         canCtx.lineJoin = "miter";
-        //         canCtx.lineTo(x, y);
-        //         canCtx.strokeStyle = '#ff0000';
-        //         canCtx.stroke();
-        //         canCtx.arc(x, y, 5, 0, Math.PI * 2, true);
-        //         canCtx.fillStyle = "#ff0000";
-        //         canCtx.fill();
-        //     }
-        // });
+
     }
 
     componentWillReceiveProps(nextProps) {
@@ -136,13 +120,22 @@ export class PerimeterList extends Component {
         if (nextProps.data !== this.props.data) {
             this.setState({ key: this.state.key + 1 });
             let perimeterPoints = nextProps.data;
-
+            this.ctx.beginPath();
+            this.ctx.moveTo(perimeterPoints[1].x, perimeterPoints[1].y);
             for(let pp in perimeterPoints){
-                this.ctx.moveTo(perimeterPoints[pp].x, perimeterPoints[pp].y);
-                this.ctx.arc(perimeterPoints[pp].x, perimeterPoints[pp].y, 5, 0, Math.PI * 2, true);
-                this.ctx.fillStyle = "#ff0000";
-                this.ctx.fill();
+                this.maxNum = perimeterPoints[pp].No;
+                if(pp !== 1){
+                    this.ctx.lineWidth = 1.0;
+                    this.ctx.lineCap = "butt";
+                    this.ctx.lineJoin = "miter";
+                    this.ctx.lineTo(perimeterPoints[pp].x, perimeterPoints[pp].y);
+                    this.ctx.strokeStyle = '#ff0000';
+                    this.ctx.stroke();
+                }
+
             }
+
+            this.state.num = this.maxNum;
         }
     }
 
@@ -205,6 +198,69 @@ export class PerimeterList extends Component {
         this.setFilters(newFilters);
     }
 
+    handleClose = () => {
+        this.setState({open: false,id:0,name:"",num:this.maxNum,mapPosition:0,realPosition:0,x:0,y:0});
+    };
+    save = ()=>{
+        let record = {mapPosition:0,realPosition:0};
+        record.mapPosition = this.state.mapPosition;
+        record.realPosition = this.state.realPosition;
+        record.id=this.state.id;
+        record.name = this.state.name;
+        record.No = this.state.num;
+
+        record.x = this.state.x;
+        record.y = this.state.y;
+        this.props.crudCreate(this.props.resource, record, this.getBasePath(),'list');
+        this.handleClose()
+    };
+    handleChange1 = (event) => {
+
+        const regex = /^[1-9]\d*$/;
+        if(!regex.test(event.target.value)){
+            this.setState({
+                mapErrText: "请输入数字",
+            });
+        }else{
+            this.setState({
+                mapErrText: "",
+            });
+        }
+        this.setState({
+            mapPosition: event.target.value,
+        });
+    };
+    handleChange2 = (event) => {
+        const regex = /^[1-9]\d*$/;
+        if(!regex.test(event.target.value)){
+            this.setState({
+                realErrText: "请输入数字",
+            });
+        }else{
+            this.setState({
+                realErrText: "",
+            });
+        }
+        this.setState({
+            realPosition: event.target.value,
+        });
+    };
+    handleChange3 = (event) => {
+        this.setState({
+            id: event.target.value,
+        });
+    };
+    handleChange4 = (event) => {
+        this.setState({
+            name: event.target.value,
+        });
+    };
+    handleChange5 = (event) => {
+        this.setState({
+            num: event.target.value,
+        });
+    };
+
     changeParams(action) {
         const newParams = queryReducer(this.getQuery(), action);
         this.props.push({ ...this.props.location, search: `?${stringify({ ...newParams, filter: JSON.stringify(newParams.filter) })}` });
@@ -212,8 +268,9 @@ export class PerimeterList extends Component {
     }
 
     render() {
-        const { filters, pagination = <DefaultPagination />, actions = <DefaultActions />, resource, hasCreate, title, data, ids, total, children, isLoading, translate, theme } = this.props;
+        const { filters, pagination = <DefaultPagination />,resource, title, data, ids, total, children, isLoading, translate, theme } = this.props;
         const { key } = this.state;
+        const hasCreate = true;
         const query = this.getQuery();
         const filterValues = query.filter;
         const basePath = this.getBasePath();
@@ -227,6 +284,20 @@ export class PerimeterList extends Component {
         const muiTheme = getMuiTheme(theme);
         const prefix = autoprefixer(muiTheme);
 
+        const actions = [
+            <FlatButton
+                label="删除"
+                primary={true}
+                onClick={this.handleClose}
+            />,
+            <FlatButton
+                label="提交"
+                primary={true}
+                keyboardFocused={true}
+                onClick={this.save}
+            />,
+        ];
+
         return (
             <div style={styles.flex}>
                 <div style={styles.leftCol}>
@@ -239,6 +310,43 @@ export class PerimeterList extends Component {
                         status: 'dfdd'
                     }]}/>
                 </div>
+                <Dialog
+                    title="输入周界点"
+                    actions={actions}
+                    modal={true}
+                    open={this.state.open}
+                    onRequestClose={this.handleClose}
+                >
+                    <TextField
+                        hintText="ID"
+                        value={this.state.id}
+                        onChange={this.handleChange3}
+                        autoFocus
+                    /><br />
+                    <TextField
+                        hintText="名称"
+                        value={this.state.name}
+                        onChange={this.handleChange4}
+                    /><br />
+                    <TextField
+                        hintText="序号"
+                        disabled={true}
+                        value={this.state.num+1}
+                        onChange={this.handleChange5}
+                    /><br />
+                    <TextField
+                        hintText="输入图上距离"
+                        value={this.state.mapPosition}
+                        errorText={this.state.mapErrText}
+                        onChange={this.handleChange1}
+                    /><br />
+                    <TextField
+                        hintText="输入实际距离"
+                        value={this.state.realPosition}
+                        errorText={this.state.realErrText}
+                        onChange={this.handleChange2}
+                    /><br />
+                </Dialog>
 
             </div>
         );
@@ -258,6 +366,7 @@ PerimeterList.propTypes = {
     }),
     changeListParams: PropTypes.func.isRequired,
     crudGetList: PropTypes.func.isRequired,
+    crudCreate: PropTypes.func.isRequired,
     data: PropTypes.object,
     filterValues: PropTypes.object,
     hasCreate: PropTypes.bool.isRequired,
@@ -317,6 +426,7 @@ const enhance = compose(
             crudGetList: crudGetListAction,
             changeListParams: changeListParamsAction,
             push: pushAction,
+            crudCreate: crudCreateAction
         },
     ),
     translate,

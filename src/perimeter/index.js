@@ -14,6 +14,6 @@ const PerimeterPointFilter = (props) =>(
 )
 
 export const PerimeterPointList = ({...props}) =>(
-    <PerimeterList {...props} filters={<PerimeterPointFilter/>} sort={{field:'No',order:'ASC'}}  perPage={25}>
+    <PerimeterList {...props} filters={<PerimeterPointFilter/>} sort={{field:'No',order:'ASC'}}  perPage={1000}>
     </PerimeterList>
 );
