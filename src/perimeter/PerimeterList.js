@@ -29,6 +29,9 @@ import RightLayout from './rightLayout';
 import Background from '../../static/img/background.bmp';
 import TextInput from "../lib/mui/input/TextInput";
 
+import restClient from '../restClient'
+import {GET_LIST} from '../lib';
+
 const styles = {
     noResults: { padding: 20 },
     header: {
@@ -46,13 +49,23 @@ const styles = {
 export class PerimeterList extends Component {
     constructor(props) {
         super(props);
-        this.state = { key: 0,open:false,mapPosition:0,mapErrText:"",realPosition:0,realErrText:"",id:0,name:"",num:0,x:0,y:0};
+        this.state = { key: 0,cameraList:{},open:false,mapPosition:0,mapErrText:"",realPosition:0,realErrText:"",id:0,name:"",num:0,x:0,y:0};
     }
 
     canvasElement = null;
     ctx = null;
     maxNum = 0;
     //prePoint = null
+
+    componentWillMount(){
+        restClient(GET_LIST,'cameras_noPage',{sort: { field: 'name', order: 'DESC' },pagination: { page: 1, perPage: 1000 }})
+            .then(response =>response.data)
+            .then(cameras=> this.setState({
+                cameraList:cameras
+            }));
+
+    }
+
     componentDidMount() {
         this.updateData();
         if (Object.keys(this.props.query).length > 0) {
@@ -304,11 +317,7 @@ export class PerimeterList extends Component {
                     <LeftLayout canvasRef={e1 => this.canvasElement = e1} style={styles.main}/>
                 </div>
                 <div style={styles.rightCol}>
-                    <RightLayout title="摄像头列表" data={[{name: 'test1', type: '0', status: 'df'}, {
-                        name: 'test2',
-                        type: '`',
-                        status: 'dfdd'
-                    }]}/>
+                    <RightLayout title="摄像头列表" data={this.state.cameraList}/>
                 </div>
                 <Dialog
                     title="输入周界点"

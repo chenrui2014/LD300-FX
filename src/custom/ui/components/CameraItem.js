@@ -13,7 +13,7 @@ class CameraItem extends Component{
         const {name,type,status} = this.props;
         return(
             <div>
-                {name},{type},{status}
+                {name}&nbsp;&nbsp;|&nbsp;&nbsp; {type}  &nbsp;&nbsp;|&nbsp;&nbsp;  {status?"离线":"在线"}
             </div>
         )
     }

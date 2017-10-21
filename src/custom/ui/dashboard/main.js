@@ -1,12 +1,13 @@
 /**
  * Created by chen on 17-8-26.
  */
-import React from 'react';
+import React, {Component}from 'react';
 import {Card, CardHeader,CardMedia,CardText} from 'material-ui/Card';
 import { translate } from '../../../lib';
 import FontIcon from 'material-ui/FontIcon';
 import {red500, green500, grey500,black} from 'material-ui/styles/colors';
 import Background from '../../../../static/img/background.bmp';
+import moment from 'moment';
 
 const iconStyles = {
     marginRight: 24,
@@ -19,19 +20,39 @@ const styles={
     footer:{display:'flex', flexDirection:'row',justifyContent:'space-between'}
 }
 
-export default translate(({ style, translate }) => (
-    <Card style={style}>
-        <CardHeader>
-            <FontIcon className="material-icons" style={iconStyles} color={green500}>lens</FontIcon>
-            <FontIcon className="material-icons" style={iconStyles} color={red500}>lens</FontIcon>
-            <FontIcon className="material-icons" style={iconStyles} color={grey500}>lens</FontIcon>
-            <FontIcon className="material-icons" style={iconStyles} color={black}>lens</FontIcon>
-        </CardHeader>
-        <CardMedia>
-            <img src={Background} alt="" style={styles.img}/>
-        </CardMedia>
-        <CardText style={styles.footer}>
-            <span>当前时间：{Date.now()}</span> <span>北京安盾兰达科技有限公司 LD300型监控系统 技术支持电话：010-22856945</span>
-        </CardText>
-    </Card>
-));
+export class Main extends Component{
+    constructor(...args) {
+        super(...args);
+        this.state = {current:moment().format('YYYY年MM月DD日 HH:mm:ss')};
+        var _this=this;
+        setInterval(function(){
+            //_this.currentDate.innerHTML=moment().format('YYYY年MM月DD日 HH:mm:ss');
+            _this.tick();
+        },1000);
+    }
+
+    tick(){
+        this.setState({
+            current:moment().format('YYYY年MM月DD日 HH:mm:ss')
+        });
+    }
+
+    render() {
+        return(
+            <Card>
+                <CardHeader>
+                    <FontIcon className="material-icons" style={iconStyles} color={green500}>lens</FontIcon>
+                    <FontIcon className="material-icons" style={iconStyles} color={red500}>lens</FontIcon>
+                    <FontIcon className="material-icons" style={iconStyles} color={grey500}>lens</FontIcon>
+                    <FontIcon className="material-icons" style={iconStyles} color={black}>lens</FontIcon>
+                </CardHeader>
+                <CardMedia>
+                    <img src={Background} alt="" style={styles.img}/>
+                </CardMedia>
+                <CardText style={styles.footer}>
+                    <span>{this.state.current}</span> <span>北京安盾兰达科技有限公司 LD300型监控系统 技术支持电话：010-22856945</span>
+                </CardText>
+            </Card>
+        );
+    }
+}

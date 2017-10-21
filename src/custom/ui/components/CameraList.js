@@ -13,10 +13,15 @@ class CameraList extends Component{
     }
 
     render(){
-        const {data} = this.props;
+        const data = this.props;
+        let cameraData = [];
+        const temp = data.data;
+        for(let i = 0; i < temp.data.length;i++){
+            cameraData[i] = temp.data[i];
+        }
         return(
             <List>
-                {data.map((camera,i)=>{
+                {cameraData.map((camera,i)=>{
                     return <ListItem  key={i}><CameraItem name={camera.name} type={camera.type} status={camera.state}/></ListItem>
                 })}
 
@@ -27,7 +32,7 @@ class CameraList extends Component{
 
 CameraList.propTypes={
     style:PropTypes.object,
-    data:PropTypes.array.isRequired
+    data:PropTypes.object.isRequired
 }
 
 export default CameraList;
