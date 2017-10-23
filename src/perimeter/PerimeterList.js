@@ -6,6 +6,8 @@ import { push as pushAction } from 'react-router-redux';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 import compose from 'recompose/compose';
 import { createSelector } from 'reselect';
 import inflection from 'inflection';
@@ -49,7 +51,7 @@ const styles = {
 export class PerimeterList extends Component {
     constructor(props) {
         super(props);
-        this.state = { key: 0,cameraList:{},open:false,mapPosition:0,mapErrText:"",realPosition:0,realErrText:"",id:0,name:"",num:0,x:0,y:0};
+        this.state = { key: 0,cameraList:{},hostData:[],value:1,open:false,mapPosition:0,mapErrText:"",realPosition:0,realErrText:"",id:0,name:"",num:0,x:0,y:0};
     }
 
     canvasElement = null;
@@ -58,11 +60,25 @@ export class PerimeterList extends Component {
     //prePoint = null
 
     componentWillMount(){
-        restClient(GET_LIST,'cameras_noPage',{sort: { field: 'name', order: 'DESC' },pagination: { page: 1, perPage: 1000 }})
+        restClient(GET_LIST,'cameras_noPage',{sort: { field: 'id', order: 'asc' },pagination: { page: 1, perPage: 1000 }})
             .then(response =>response.data)
             .then(cameras=> this.setState({
                 cameraList:cameras
             }));
+
+        restClient(GET_LIST,'hosts_noPage',{sort: { field: 'id', order: 'asc' },pagination: { page: 1, perPage: 1000 }})
+            .then(response =>response.data)
+            .then(hosts=> {
+                let hostData = [];
+                for(let hp in hosts){
+                    hostData.push(hosts[hp]);
+                }
+
+                this.setState({
+                    hostData:hostData
+                })
+
+            });
 
     }
 
@@ -214,34 +230,21 @@ export class PerimeterList extends Component {
     handleClose = () => {
         this.setState({open: false,id:0,name:"",num:this.maxNum,mapPosition:0,realPosition:0,x:0,y:0});
     };
+    //保存周界点
     save = ()=>{
         let record = {mapPosition:0,realPosition:0};
-        record.mapPosition = this.state.mapPosition;
+        record.mapPosition = 0;
         record.realPosition = this.state.realPosition;
-        record.id=this.state.id;
         record.name = this.state.name;
-        record.No = this.state.num;
+        let No = this.state.num + 1;
+        record.No = No;
+        record.id = No;
 
         record.x = this.state.x;
         record.y = this.state.y;
+        record.hostId = this.state.value;//主机ID
         this.props.crudCreate(this.props.resource, record, this.getBasePath(),'list');
         this.handleClose()
-    };
-    handleChange1 = (event) => {
-
-        const regex = /^[1-9]\d*$/;
-        if(!regex.test(event.target.value)){
-            this.setState({
-                mapErrText: "请输入数字",
-            });
-        }else{
-            this.setState({
-                mapErrText: "",
-            });
-        }
-        this.setState({
-            mapPosition: event.target.value,
-        });
     };
     handleChange2 = (event) => {
         const regex = /^[1-9]\d*$/;
@@ -258,21 +261,14 @@ export class PerimeterList extends Component {
             realPosition: event.target.value,
         });
     };
-    handleChange3 = (event) => {
-        this.setState({
-            id: event.target.value,
-        });
-    };
     handleChange4 = (event) => {
         this.setState({
             name: event.target.value,
         });
     };
-    handleChange5 = (event) => {
-        this.setState({
-            num: event.target.value,
-        });
-    };
+
+    //主机下拉列表选择事件
+    handleChange = (event, index, value) => this.setState({value:value});
 
     changeParams(action) {
         const newParams = queryReducer(this.getQuery(), action);
@@ -282,7 +278,12 @@ export class PerimeterList extends Component {
 
     render() {
         const { filters, pagination = <DefaultPagination />,resource, title, data, ids, total, children, isLoading, translate, theme } = this.props;
-        const { key } = this.state;
+        const { key,hostData } = this.state;
+
+        // for(let i = 0; i < hostList.length;i++){
+        //     hostData[i] = hostList.data[i];
+        // }
+
         const hasCreate = true;
         const query = this.getQuery();
         const filterValues = query.filter;
@@ -327,28 +328,19 @@ export class PerimeterList extends Component {
                     onRequestClose={this.handleClose}
                 >
                     <TextField
-                        hintText="ID"
-                        value={this.state.id}
-                        onChange={this.handleChange3}
-                        autoFocus
-                    /><br />
-                    <TextField
                         hintText="名称"
                         value={this.state.name}
                         onChange={this.handleChange4}
                     /><br />
-                    <TextField
-                        hintText="序号"
-                        disabled={true}
-                        value={this.state.num+1}
-                        onChange={this.handleChange5}
-                    /><br />
-                    <TextField
-                        hintText="输入图上距离"
-                        value={this.state.mapPosition}
-                        errorText={this.state.mapErrText}
-                        onChange={this.handleChange1}
-                    /><br />
+                    <SelectField
+                        floatingLabelText="关联主机"
+                        value={this.state.value}
+                        onChange={this.handleChange}
+                    >
+                        {hostData.map((host,i)=>{
+                            return <MenuItem key={i} value={host.id} primaryText={host.hostName} />
+                        })}
+                    </SelectField><br />
                     <TextField
                         hintText="输入实际距离"
                         value={this.state.realPosition}
