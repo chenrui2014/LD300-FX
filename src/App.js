@@ -17,10 +17,17 @@ import {systemConfig,SettingsIcon} from './config';
 import perimeterReducer from './custom/reducer';
 import saga from './sagas';
 
+
 import restClient from './restClient';
 
 class App extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {hostState:{}}
+    }
     componentWillMount() {
+
     }
 
     componentWillUnmount() {

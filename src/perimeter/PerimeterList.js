@@ -14,22 +14,18 @@ import inflection from 'inflection';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import autoprefixer from 'material-ui/utils/autoprefixer';
 import queryReducer, { SET_SORT, SET_PAGE, SET_FILTER, SORT_DESC } from '../lib/reducer/resource/list/queryReducer';
-import ViewTitle from '../lib/mui/layout/ViewTitle';
 import Title from '../lib/mui/layout/Title';
 import DefaultPagination from '../lib/mui/list/Pagination';
-import DefaultActions from '../lib/mui/list/Actions';
 import { crudGetList as crudGetListAction } from '../lib/actions/dataActions';
 import { changeListParams as changeListParamsAction } from '../lib/actions/listActions';
 import { crudCreate as crudCreateAction } from '../lib/actions/dataActions';
 import translate from '../lib/i18n/translate';
 import removeKey from '../lib/util/removeKey';
-import {CreateButton} from '../lib/mui/button'
 import defaultTheme from '../defaultTheme';
 
 import {LeftLayout} from './leftLayout';
 import RightLayout from './rightLayout';
 import Background from '../../static/img/background.bmp';
-import TextInput from "../lib/mui/input/TextInput";
 
 import restClient from '../restClient'
 import {GET_LIST} from '../lib';
@@ -106,9 +102,7 @@ export class PerimeterList extends Component {
         //     };
         // }
         $('canvas').mousedown((e) =>{
-            if(e.which == 3){
-                console.log('right');
-            }
+
             var rect = canvas.getBoundingClientRect();
 
             let x = e.clientX - rect.left;
