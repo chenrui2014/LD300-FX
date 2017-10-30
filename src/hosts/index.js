@@ -18,7 +18,7 @@ const HostFilter = (props) =>(
     </Filter>
 )
 export const HostList = (props) =>(
-    <List {...props} filters={<HostFilter/>} sort={{field:'hostName',order:'ASC'}}  perPage={25}>
+    <List {...props} filters={<HostFilter/>} sort={{field:'id',order:'ASC'}}  perPage={25}>
         <Datagrid bodyOptions={{ stripedRows: true, showRowHover: true }}>
             <TextField source="id" />
             <TextField source="hostName" label="resources.hosts.fields.hostName"/>
@@ -37,23 +37,22 @@ export const HostCreate = ({ ...props }) => (
     <Create {...props}>
         <SimpleForm toolbar={<HostCreateToolbar />} defaultValue={{ average_note: 0 }} validate={(values) => {
             const errors = {};
-            ['title', 'teaser'].forEach((field) => {
+            ['hostName', 'alias'].forEach((field) => {
                 if (!values[field]) {
                     errors[field] = ['Required field'];
                 }
             });
 
-            if (values.average_note < 0 || values.average_note > 5) {
-                errors.average_note = ['Should be between 0 and 5'];
+            if (values.port < 0 || values.port > 5) {
+                errors.port = ['Should be between 0 and 5'];
             }
 
             return errors;
         }}
         >
-            <TextInput source="id" />
-            <TextInput source="hostName"/>
-            <TextInput source="alias"/>
-            <TextInput source="port"/>
+            <TextInput source="hostName"style={{display:'inline-block'}}/>
+            <TextInput source="alias"style={{display:'inline-block'}}/>
+            <TextInput source="port"style={{display:'inline-block'}}/>
         </SimpleForm>
     </Create>
 );
@@ -63,7 +62,7 @@ const hostTitle = ({record}) => record?<TextField record={record} style={styles.
 export const HostEdit = (props) =>(
     <Edit title={<hostTitle/>} {...props}>
         <SimpleForm>
-            <DisabledInput source="id" />
+            <DisabledInput source="id" style={{display:'inline-block'}}/>
             <TextInput source="hostName" style={{display:'inline-block'}}/>
             <TextInput source="alias" style={{display:'inline-block'}}/>
             <TextInput source="port" style={{display:'inline-block'}}/>

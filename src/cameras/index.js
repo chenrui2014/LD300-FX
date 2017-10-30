@@ -19,16 +19,23 @@ const CameraFilter = (props) =>(
     </Filter>
 )
 export const CameraList = ({...props}) =>(
-    <List {...props} filters={<CameraFilter/>} sort={{field:'name',order:'ASC'}}  perPage={25}>
+    <List {...props} filters={<CameraFilter/>} sort={{field:'id',order:'ASC'}}  perPage={25}>
         <Datagrid bodyOptions={{ stripedRows: true, showRowHover: true }}>
-            <TextField source="id" />
+            <TextField source="id"/>
             <TextField source="name" label="resources.cameras.fields.name"/>
             <TextField source="ip" label="resources.cameras.fields.ip"/>
+            <TextField source="port" label="resources.cameras.fields.port"/>
+            <TextField source="user" label="resources.cameras.fields.user"/>
+            <TextField source="pwd" label="resources.cameras.fields.pwd"/>
             <TextField source="type" label="resources.cameras.fields.type"/>
-            <TextField source="manufacturer" label="resources.cameras.fields.manufacturer"/>
-            <TextField source="Video_protocol" label="resources.cameras.fields.Video_protocol"/>
-            <BooleanField source="talkBack" label="resources.cameras.fields.talkBack"/>
-            <TextField source="yunTai_protocol" label="resources.cameras.fields.yunTai_protocol"/>
+            <TextField source="brand" label="resources.cameras.fields.brand"/>
+            <BooleanField source="ptz" label="resources.cameras.fields.ptz"/>
+            <BooleanField source="alarm" label="resources.cameras.fields.alarm"/>
+            <BooleanField source="audio" label="resources.cameras.fields.audio"/>
+            <TextField source="onvif_port" label="resources.cameras.fields.onvif_port"/>
+            <TextField source="onvif_user" label="resources.cameras.fields.onvif_user"/>
+            <TextField source="onvif_pwd" label="resources.cameras.fields.onvif_pwd"/>
+            <TextField source="onvif_path" label="resources.cameras.fields.onvif_path"/>
             <BooleanField source="status" label="resources.cameras.fields.status"/>
             <EditButton translate={props.translate}/>
         </Datagrid>
@@ -56,14 +63,20 @@ export const CameraCreate = ({ ...props }) => (
             return errors;
         }}
         >
-            <TextInput source="id" />
             <TextInput source="name" />
             <TextInput source="ip" />
+            <TextInput source="port" />
+            <TextInput source="user" />
+            <TextInput source="pwd" />
             <TextInput source="type" />
-            <TextInput source="manufacturer" />
-            <TextInput source="Video_protocol" />
-            <NullableBooleanInput source="talkBack" />
-            <TextInput source="yunTai_protocol" />
+            <TextInput source="brand" />
+            <NullableBooleanInput source="ptz" />
+            <NullableBooleanInput source="alarm" />
+            <NullableBooleanInput source="audio" />
+            <TextInput source="onvif_port" />
+            <TextInput source="onvif_user" />
+            <TextInput source="onvif_pwd" />
+            <TextInput source="onvif_path" />
             <NullableBooleanInput source="status" />
         </SimpleForm>
     </Create>
@@ -77,13 +90,20 @@ export const CameraEdit = ({...props}) =>(
         <SimpleForm>
             <DisabledInput source="id" />
             <TextInput source="name" style={{display:'inline-block'}}/>
-            <TextInput source="ip" style={{display:'inline-block'}}/>
-            <TextInput source="type" style={{display:'inline-block'}}/>
-            <TextInput source="manufacturer" style={{display:'inline-block'}}/>
-            <TextInput source="Video_protocol" style={{display:'inline-block'}}/>
-            <NullableBooleanInput source="talkBack" />
-            <TextInput source="yunTai_protocol" style={{display:'inline-block'}}/>
-            <NullableBooleanInput source="status"/>
+            <TextInput source="ip" />
+            <TextInput source="port" style={{display:'inline-block'}}/>
+            <TextInput source="user"/>
+            <TextInput source="pwd" style={{display:'inline-block'}}/>
+            <TextInput source="type" />
+            <TextInput source="brand" style={{display:'inline-block'}}/>
+            <NullableBooleanInput source="ptz" />
+            <NullableBooleanInput source="alarm" style={{display:'inline-block'}}/>
+            <NullableBooleanInput source="audio" />
+            <TextInput source="onvif_port" style={{display:'inline-block'}}/>
+            <TextInput source="onvif_user" />
+            <TextInput source="onvif_pwd" style={{display:'inline-block'}}/>
+            <TextInput source="onvif_path" />
+            <NullableBooleanInput source="status" style={{display:'inline-block'}}/>
         </SimpleForm>
     </Edit>
 );

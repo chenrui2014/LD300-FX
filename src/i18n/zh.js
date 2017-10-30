@@ -13,14 +13,22 @@ export default {
             fields:{
                 name:'显示名',
                 ip:'ip地址',
+                port:'端口',
                 type:'类型',
-                manufacturer:'厂商',
-                Video_protocol:'音视频协议及端口',
-                talkBack:'是否支持对讲',
-                yunTai_protocol:'云台协议及端口',
+                user:'用户名',
+                pwd:'密 码',
+                brand:'厂商',
+                ptz:'是否支持云台功能',
+                alarm:'是否支持报警输出',
+                audio:'是否支持音频对讲',
+                onvif_port:'onvif协议端口',
+                onvif_user:'onvif协议用户名',
+                onvif_pwd:'onvif协议密码',
+                onvif_path:'服务地址',
                 status:'状态'
             },
-            add:'添加'
+            add:'添加',
+            notification:{}
         },
         hosts:{
             name:'主机',
@@ -31,7 +39,11 @@ export default {
             }
         },
         perimeterPoint:{
-            name:'周界'
+            name:'周界',
+            notification: {
+                perimeterPoint_success: '绘制周界成功',
+                perimeterPoint_error: '绘制周界失败',
+            },
         },
     },
 };
