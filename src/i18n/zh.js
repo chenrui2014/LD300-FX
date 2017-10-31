@@ -45,5 +45,8 @@ export default {
                 perimeterPoint_error: '绘制周界失败',
             },
         },
+        monitorArea:{
+
+        }
     },
 };

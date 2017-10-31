@@ -43,13 +43,13 @@ class Dashboard extends Component {
                 cameraList:cameras
             }));
 
-        restClient(GET_LIST,'perimeterPoint',{sort: { field: 'id', order: 'asc' },pagination: { page: 1, perPage: 1000 }})
-            .then(response =>response.data)
-            .then(perimeterPoint=> {
-                this.setState({
-                    perimeterPoint: perimeterPoint
-                })
-            });
+        // restClient(GET_LIST,'perimeterPoint',{sort: { field: 'id', order: 'asc' },pagination: { page: 1, perPage: 1000 }})
+        //     .then(response =>response.data)
+        //     .then(perimeterPoint=> {
+        //         this.setState({
+        //             perimeterPoint: perimeterPoint
+        //         })
+        //     });
 
         socket.on('new bc message', msg =>{
             console.log(msg);
@@ -82,6 +82,32 @@ class Dashboard extends Component {
                             this.ctx.lineTo(perimeterPoint[pp].x, perimeterPoint[pp].y);
                             this.ctx.strokeStyle = '#ff0000';
                             this.ctx.stroke();
+                        }
+
+                        if(perimeterPoint[pp].camera && perimeterPoint[pp].camera.status === 0){
+                            this.ctx.beginPath();
+                            this.ctx.arc(perimeterPoint[pp].x, perimeterPoint[pp].y, 5,0, Math.PI*2, true);
+                            this.ctx.fillStyle = "#4caf50";
+                            this.ctx.strokeStyle = "#4caf50";
+                            this.ctx.fill();
+                        } else if(perimeterPoint[pp].camera && perimeterPoint[pp].camera.status === 1){
+                            this.ctx.beginPath();
+                            this.ctx.arc(perimeterPoint[pp].x, perimeterPoint[pp].y, 5,0, Math.PI*2, true);
+                            this.ctx.fillStyle = "#f44336";
+                            this.ctx.strokeStyle = "#f44336";
+                            this.ctx.fill();
+                        }else if(perimeterPoint[pp].camera && perimeterPoint[pp].camera.status === 2){
+                            this.ctx.beginPath();
+                            this.ctx.arc(perimeterPoint[pp].x, perimeterPoint[pp].y, 5,0, Math.PI*2, true);
+                            this.ctx.fillStyle = "#9e9e9e";
+                            this.ctx.strokeStyle = "#9e9e9e";
+                            this.ctx.fill();
+                        }else if(perimeterPoint[pp].camera && perimeterPoint[pp].camera.status === 3){
+                            this.ctx.beginPath();
+                            this.ctx.arc(perimeterPoint[pp].x, perimeterPoint[pp].y, 5,0, Math.PI*2, true);
+                            this.ctx.fillStyle = "#000000";
+                            this.ctx.strokeStyle = "#000000";
+                            this.ctx.fill();
                         }
 
                     }
