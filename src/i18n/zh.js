@@ -45,8 +45,14 @@ export default {
                 perimeterPoint_error: '绘制周界失败',
             },
         },
-        monitorArea:{
-
+        monitoringArea:{
+            name:'监控区域',
+            fields: {
+                hostName: '主机',
+                cameraName: '摄像头',
+                min: '监控起始距离(米)',
+                max: '监控结束距离（米）'
+            }
         }
     },
 };

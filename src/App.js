@@ -12,6 +12,7 @@ import Login from './Login';
 
 import {CameraList,CameraCreate,CameraEdit,CameraDelete,CameraIcon} from './cameras';
 import {HostList,HostCreate,HostEdit,HostDelete,HostIcon} from './hosts';
+import {MonitorAreaList,MonitorAreaCreate,MonitorAreaEdit,MonitorAreaDelete,MonitorAreaIcon} from './monitoringArea';
 import {systemConfig,SettingsIcon} from './config';
  import {PerimeterPointList} from './perimeter';
 import perimeterReducer from './custom/reducer';
@@ -49,6 +50,7 @@ class App extends Component {
             >
                 <Resource name="cameras" create={CameraCreate} list={CameraList} edit={CameraEdit} remove={CameraDelete} icon={CameraIcon} />
                 <Resource name="hosts" list={HostList} create={HostCreate} edit={HostEdit} remove={HostDelete} icon={HostIcon} />
+                <Resource name="monitoringArea" list={MonitorAreaList} create={MonitorAreaCreate} edit={MonitorAreaEdit} remove={MonitorAreaDelete} icon={MonitorAreaIcon} />
                 <Resource name="sys_config" list={systemConfig} icon={SettingsIcon} />
                 <Resource name="perimeterPoint" list={PerimeterPointList}/>
             </Admin>

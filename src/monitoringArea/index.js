@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from 'material-ui/svg-icons/action/visibility';
-import { List,EditButton,Toolbar,Create,SaveButton,Filter,Datagrid,TextField,TextInput,Edit,SimpleForm,Delete,DisabledInput } from '../lib';
+import { List,EditButton,Toolbar,Create,SaveButton,Filter,Datagrid,TextField,TextInput,Edit,SimpleForm,Delete,DisabledInput,ReferenceInput,SelectInput,NumberInput } from '../lib';
 import {translate} from '../lib';
 
 const styles = {
@@ -20,9 +20,10 @@ export const MonitorAreaList = (props) =>(
     <List {...props} filters={<MonitorAreaFilter/>} sort={{field:'id',order:'ASC'}}  perPage={25}>
         <Datagrid bodyOptions={{ stripedRows: true, showRowHover: true }}>
             <TextField source="id" />
-            <TextField source="MonitorAreaName" label="resources.MonitorAreas.fields.MonitorAreaName"/>
-            <TextField source="alias" label="resources.MonitorAreas.fields.alias"/>
-            <TextField source="port" label="resources.MonitorAreas.fields.port"/>
+            <TextField source="hostName" label="resources.monitoringArea.fields.hostName"/>
+            <TextField source="cameraName" label="resources.monitoringArea.fields.cameraName"/>
+            <TextField source="min" label="resources.monitoringArea.fields.min"/>
+            <TextField source="max" label="resources.monitoringArea.fields.max"/>
             <EditButton />
         </Datagrid>
     </List>
@@ -36,22 +37,25 @@ export const MonitorAreaCreate = ({ ...props }) => (
     <Create {...props}>
         <SimpleForm toolbar={<MonitorAreaCreateToolbar />} defaultValue={{ average_note: 0 }} validate={(values) => {
             const errors = {};
-            ['MonitorAreaName', 'alias'].forEach((field) => {
+            ['hostName',].forEach((field) => {
                 if (!values[field]) {
                     errors[field] = ['Required field'];
                 }
             });
 
-            if (values.port < 0 || values.port > 5) {
-                errors.port = ['Should be between 0 and 5'];
-            }
-
             return errors;
         }}
         >
-            <TextInput source="MonitorAreaName"style={{display:'inline-block'}}/>
-            <TextInput source="alias"style={{display:'inline-block'}}/>
-            <TextInput source="port"style={{display:'inline-block'}}/>
+            <ReferenceInput  source="hostName" reference="hosts" allowEmpty>
+
+                <SelectInput source="hostName" />
+            </ReferenceInput>
+            <ReferenceInput  source="cameraName" reference="cameras" allowEmpty>
+
+                <SelectInput source="name" />
+            </ReferenceInput>
+            <NumberInput source="min"style={{display:'inline-block'}}/>
+            <NumberInput source="max"style={{display:'inline-block'}}/>
         </SimpleForm>
     </Create>
 );
@@ -62,9 +66,15 @@ export const MonitorAreaEdit = (props) =>(
     <Edit title={<MonitorAreaTitle/>} {...props}>
         <SimpleForm>
             <DisabledInput source="id" style={{display:'inline-block'}}/>
-            <TextInput source="MonitorAreaName" style={{display:'inline-block'}}/>
-            <TextInput source="alias" style={{display:'inline-block'}}/>
-            <TextInput source="port" style={{display:'inline-block'}}/>
+            <ReferenceInput  source="hostName" reference="hosts" allowEmpty={false}>
+                <SelectInput source="hostName" />
+            </ReferenceInput>
+            <ReferenceInput  source="cameraName" reference="cameras" allowEmpty>
+
+                <SelectInput source="name" />
+            </ReferenceInput>
+            <NumberInput source="min"style={{display:'inline-block'}}/>
+            <NumberInput source="max"style={{display:'inline-block'}}/>
         </SimpleForm>
     </Edit>
 );
