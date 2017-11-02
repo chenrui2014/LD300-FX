@@ -10,11 +10,13 @@ import { HostIcon } from './hosts';
 import { SettingsIcon } from './config';
 import { PerimeterIcon } from './perimeter';
 import { MonitorAreaIcon } from './monitoringArea';
+import { PresetIcon } from './preset';
 
 const items = [
     { name: 'cameras', icon: <CameraIcon /> },
     { name: 'hosts', icon: <HostIcon /> },
     { name: 'monitoringArea', icon: <MonitorAreaIcon /> },
+    { name: 'preset', icon: <PresetIcon /> },
     { name: 'perimeterPoint', icon: <PerimeterIcon /> },
     { name: 'sys_config', icon: <SettingsIcon /> },
 ];

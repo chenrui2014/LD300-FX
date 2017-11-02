@@ -48,10 +48,21 @@ export default {
         monitoringArea:{
             name:'监控区域',
             fields: {
-                hostName: '主机',
-                cameraName: '摄像头',
-                min: '监控起始距离(米)',
-                max: '监控结束距离（米）'
+                hostId: '主机',
+                cameraId: '摄像头',
+                min_dis: '监控起始距离(米)',
+                max_dis: '监控结束距离（米）'
+            }
+        },
+        preset:{
+            name:'预置点',
+            fields: {
+                monitorId: '监控区域',
+                x: 'x坐标',
+                y: 'y坐标',
+                z: 'z坐标',
+                preset:'预置点名称',
+                distance:'监控距离'
             }
         }
     },
