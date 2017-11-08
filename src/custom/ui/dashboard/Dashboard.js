@@ -7,6 +7,17 @@ import {Main} from './main';
 import LeftLayout from "../containers/leftLayout";
 import {GET_LIST} from '../../../lib';
 import restClient from '../../../restClient'
+import Dialog from 'material-ui/Dialog';
+import Reflv from 'reflv';
+import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
+import ArrowDownwardIcon from 'material-ui/svg-icons/navigation/arrow-downward';
+import ArrowUpwardIcon from 'material-ui/svg-icons/navigation/arrow-upward';
+import ArrowForwardIcon from 'material-ui/svg-icons/navigation/arrow-forward';
+import Add from 'material-ui/svg-icons/content/add';
+import Remove from 'material-ui/svg-icons/content/remove'
+import Micro from 'material-ui/svg-icons/hardware/keyboard-voice';
+import Sound from 'material-ui/svg-icons/av/volume-up';
+import RaisedButton from 'material-ui/RaisedButton';
 
 import Background from '../../../../static/img/background.bmp';
 
@@ -21,6 +32,9 @@ const styles = {
     rightCol:{
         flex:'1 0 auto',
         width:200
+    },
+    button:{
+        margin:12
     }
 }
 
@@ -29,7 +43,7 @@ class Dashboard extends Component {
     constructor(...args){
         super(...args);
 
-        this.state = {cameraList:{},hostState:{},perimeterPoint:{},key: 0};
+        this.state = {open:false,cameraList:{},hostState:{},perimeterPoint:{},key: 0};
 
     }
 
@@ -84,25 +98,25 @@ class Dashboard extends Component {
                             this.ctx.stroke();
                         }
 
-                        if(perimeterPoint[pp].camera && perimeterPoint[pp].camera.status === 0){
+                        if(perimeterPoint[pp].host && perimeterPoint[pp].host.status === 0){
                             this.ctx.beginPath();
                             this.ctx.arc(perimeterPoint[pp].x, perimeterPoint[pp].y, 5,0, Math.PI*2, true);
                             this.ctx.fillStyle = "#4caf50";
                             this.ctx.strokeStyle = "#4caf50";
                             this.ctx.fill();
-                        } else if(perimeterPoint[pp].camera && perimeterPoint[pp].camera.status === 1){
+                        } else if(perimeterPoint[pp].host && perimeterPoint[pp].host.status === 1){
                             this.ctx.beginPath();
                             this.ctx.arc(perimeterPoint[pp].x, perimeterPoint[pp].y, 5,0, Math.PI*2, true);
                             this.ctx.fillStyle = "#f44336";
                             this.ctx.strokeStyle = "#f44336";
                             this.ctx.fill();
-                        }else if(perimeterPoint[pp].camera && perimeterPoint[pp].camera.status === 2){
+                        }else if(perimeterPoint[pp].host && perimeterPoint[pp].host.status === 2){
                             this.ctx.beginPath();
                             this.ctx.arc(perimeterPoint[pp].x, perimeterPoint[pp].y, 5,0, Math.PI*2, true);
                             this.ctx.fillStyle = "#9e9e9e";
                             this.ctx.strokeStyle = "#9e9e9e";
                             this.ctx.fill();
-                        }else if(perimeterPoint[pp].camera && perimeterPoint[pp].camera.status === 3){
+                        }else if(perimeterPoint[pp].host && perimeterPoint[pp].host.status === 3){
                             this.ctx.beginPath();
                             this.ctx.arc(perimeterPoint[pp].x, perimeterPoint[pp].y, 5,0, Math.PI*2, true);
                             this.ctx.fillStyle = "#000000";
@@ -128,7 +142,34 @@ class Dashboard extends Component {
                     <LeftLayout data={this.state.cameraList}/>
                 </div>
 
+                <Dialog
+                    title="触警处理窗口"
+                    modal={true}
+                    open={this.state.open}
+                    onRequestClose={this.handleClose}
+                >
+
+                    <Reflv
+                        url={`http://localhost:7001/live/test.flv`}
+                        type="flv"
+                        isLive
+                        cors
+                    />
+                    <div>
+                        <ArrowBackIcon />
+                        <ArrowDownwardIcon />
+                        <ArrowUpwardIcon />
+                        <ArrowForwardIcon />
+
+                        放大：<Add /> <Remove /><br/>
+                        聚焦：<Add /> <Remove /><br/>
+                        光圈：<Add /> <Remove /><br/>
+                        <Sound /><Micro/><br/>
+                        <RaisedButton label='手动解除' secondary={true} style={styles.button}/>
+                    </div>
+                </Dialog>
             </div>
+
         )
     }
 }
