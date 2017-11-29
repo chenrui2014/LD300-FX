@@ -5,7 +5,6 @@ import React, {Component}from 'react';
 import {Card, CardHeader,CardMedia,CardText} from 'material-ui/Card';
 import FontIcon from 'material-ui/FontIcon';
 import {red500, green500, grey500,black} from 'material-ui/styles/colors';
-import Background from '../../../../static/img/background.bmp';
 import moment from 'moment';
 
 const iconStyles = {

@@ -59,7 +59,7 @@ export const HostCreate = ({ ...props }) => (
 
 const hostTitle = ({record}) => record?<TextField record={record} style={styles.edit_title}/>:null;
 
-export const HostEdit = (props) =>(
+export const HostEdit = ({...props}) =>(
     <Edit title={<hostTitle/>} {...props}>
         <SimpleForm>
             <DisabledInput source="id" style={{display:'inline-block'}}/>

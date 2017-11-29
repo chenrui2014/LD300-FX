@@ -20,10 +20,10 @@ export const MonitorAreaList = (props) =>(
     <List {...props} filters={<MonitorAreaFilter/>} sort={{field:'id',order:'ASC'}}  perPage={25}>
         <Datagrid bodyOptions={{ stripedRows: true, showRowHover: true }}>
             <TextField source="id" />
-            <TextField source="hostName" label="resources.monitoringArea.fields.hostName"/>
-            <TextField source="cameraName" label="resources.monitoringArea.fields.cameraName"/>
-            <TextField source="min" label="resources.monitoringArea.fields.min"/>
-            <TextField source="max" label="resources.monitoringArea.fields.max"/>
+            <TextField source="hostName" label="resources.monitoringArea.fields.hostId"/>
+            <TextField source="cameraName" label="resources.monitoringArea.fields.cameraId"/>
+            <TextField source="min_dis" label="resources.monitoringArea.fields.min_dis"/>
+            <TextField source="max_dis" label="resources.monitoringArea.fields.max_dis"/>
             <EditButton />
         </Datagrid>
     </List>
@@ -46,35 +46,35 @@ export const MonitorAreaCreate = ({ ...props }) => (
             return errors;
         }}
         >
-            <ReferenceInput  source="hostName" reference="hosts" allowEmpty>
+            <ReferenceInput  source="hostId" reference="hosts" allowEmpty>
 
-                <SelectInput source="hostName" />
+                <SelectInput source='hostName' optionText="hostName" optionValue="id" />
             </ReferenceInput>
-            <ReferenceInput  source="cameraName" reference="cameras" allowEmpty>
+            <ReferenceInput  source="cameraId" reference="cameras" allowEmpty>
 
-                <SelectInput source="name" />
+                <SelectInput source="cameraName" optionText="name" optionValue="id" />
             </ReferenceInput>
-            <NumberInput source="min"style={{display:'inline-block'}}/>
-            <NumberInput source="max"style={{display:'inline-block'}}/>
+            <NumberInput source="min_dis"style={{display:'inline-block'}}/>
+            <NumberInput source="max_dis"style={{display:'inline-block'}}/>
         </SimpleForm>
     </Create>
 );
 
-const MonitorAreaTitle = ({record}) => record?<TextField record={record} style={styles.edit_title}/>:null;
+const MonitorAreaTitle = ({record}) => record?<TextField source='cameraName'  record={record} style={styles.edit_title}/>:null;
 
-export const MonitorAreaEdit = (props) =>(
+export const MonitorAreaEdit = ({...props}) =>(
     <Edit title={<MonitorAreaTitle/>} {...props}>
         <SimpleForm>
             <DisabledInput source="id" style={{display:'inline-block'}}/>
-            <ReferenceInput  source="hostName" reference="hosts" allowEmpty={false}>
-                <SelectInput source="hostName" />
+            <ReferenceInput  source="hostId" reference="hosts" allowEmpty>
+                <SelectInput source='hostName' optionText="hostName" optionValue="id" />
             </ReferenceInput>
-            <ReferenceInput  source="cameraName" reference="cameras" allowEmpty>
+            <ReferenceInput  source="cameraId" reference="cameras" allowEmpty>
 
-                <SelectInput source="name" />
+                <SelectInput source="cameraName" optionText="name" optionValue="id" />
             </ReferenceInput>
-            <NumberInput source="min"style={{display:'inline-block'}}/>
-            <NumberInput source="max"style={{display:'inline-block'}}/>
+            <NumberInput source="min_dis"style={{display:'inline-block'}}/>
+            <NumberInput source="max_dis"style={{display:'inline-block'}}/>
         </SimpleForm>
     </Edit>
 );

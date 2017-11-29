@@ -21,10 +21,17 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import Background from '../../../../static/img/background.bmp';
 
+import $ from 'jquery';
+
 import io from 'socket.io-client';
 
-const socket = io('http://127.0.0.1:3000');
-const initialChannel = 'hostState';
+const socket=io('http://localhost:3001',{
+    path:'/stateServer'
+});
+
+socket.on('connect',()=> {
+    console.log("已连接服务器");
+});
 
 const styles = {
     flex: { display: 'flex',flexDirection:'row',justifyContent:'flex-start',alignItems:'stretch' },
@@ -43,7 +50,8 @@ class Dashboard extends Component {
     constructor(...args){
         super(...args);
 
-        this.state = {open:false,cameraList:{},hostState:{},perimeterPoint:{},key: 0};
+        this.state = {open:true,alarmHostId:5,videoData:{path:'/live/5'},cameraList:{},hostState:{},perimeterPoint:{},key: 0};
+
 
     }
 
@@ -65,11 +73,32 @@ class Dashboard extends Component {
         //         })
         //     });
 
-        socket.on('new bc message', msg =>{
-            console.log(msg);
-            this.setState({hostState:msg})
+        socket.on('init',(evt)=> {
+            this.state.hostState = evt;
         });
 
+
+    }
+
+    componentWillReceiveProps(){
+        socket.on('update',(evt)=> {
+            this.setState({
+                hostState:evt,
+                open:true
+            });
+        });
+
+        var _this = this;
+
+        $.ajax({
+            url:'http://localhost:3000/ipc/'+this.state.alarmHostId+'/live'+'?t='+new Date().getTime(),
+            dataType:'json',
+            success:function (data) {
+                _this.setState({
+                    videoData: data
+                });
+            }
+        });
     }
 
     componentDidMount() {
@@ -150,7 +179,7 @@ class Dashboard extends Component {
                 >
 
                     <Reflv
-                        url={`http://localhost:7001/live/test.flv`}
+                        url={`http://localhost:3000${this.state.videoData.path}`}
                         type="flv"
                         isLive
                         cors
