@@ -22,7 +22,7 @@ class CameraList extends Component{
         return(
             <List>
                 {cameraData.map((camera,i)=>{
-                    return <ListItem  key={i}><CameraItem name={camera.name} type={camera.type} status={camera.state}/></ListItem>
+                    return <ListItem  key={i}><CameraItem camera={camera}/></ListItem>
                 })}
 
             </List>

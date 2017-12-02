@@ -9,25 +9,36 @@ class CameraItem extends Component{
         super(props);
     }
 
+    handleClick(camera,e){
+
+        //console.log(camera.id)
+        this.setState({
+            open:true,
+            alarmHostId:camera.id
+        });
+
+
+    }
+
     render(){
-        const {name,type,status} = this.props;
+        const {camera} = this.props;
         return(
-            <div>
-                {name}&nbsp;&nbsp;|&nbsp;&nbsp; {type}  &nbsp;&nbsp;|&nbsp;&nbsp;  {status?"离线":"在线"}
+            <div onClick={this.handleClick.bind(this,camera)}>
+                {camera.name}&nbsp;&nbsp;|&nbsp;&nbsp;{camera.ip} &nbsp;&nbsp;|&nbsp;&nbsp; {camera.type}  &nbsp;&nbsp;|&nbsp;&nbsp;  {camera.status?"离线":"在线"}
             </div>
         )
     }
 }
 
 CameraItem.propTypes = {
-    name:PropTypes.string.isRequired,
-    type:PropTypes.string.isRequired,
-    status:PropTypes.number.isRequired
+
+    camera:PropTypes.object.isRequired
 }
 
 CameraItem.defaultProps={
     name:'摄像头',
     type:'枪机',
+    ip:'0.0.0.0',
     status:0
 }
 

@@ -17,7 +17,6 @@ import {PresetList,PresetCreate,PresetEdit,PresetDelete,PresetIcon} from './pres
 import {systemConfig,SettingsIcon} from './config';
  import {PerimeterPointList} from './perimeter';
 import perimeterReducer from './custom/reducer';
-import saga from './sagas';
 
 
 import restClient from './restClient';
@@ -44,7 +43,6 @@ class App extends Component {
                 dashboard={Dashboard}
                 loginPage={Login}
                 customReducers={{perimeterPoint:perimeterReducer}}
-                customSagas={saga}
                 menu={Menu}
                 locale="zh"
                 messages={translations}

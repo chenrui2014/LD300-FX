@@ -18,10 +18,11 @@ import Remove from 'material-ui/svg-icons/content/remove'
 import Micro from 'material-ui/svg-icons/hardware/keyboard-voice';
 import Sound from 'material-ui/svg-icons/av/volume-up';
 import RaisedButton from 'material-ui/RaisedButton';
-
+import FlatButton from 'material-ui/FlatButton';
 import Background from '../../../../static/img/background.bmp';
 
 import $ from 'jquery';
+import flvjs from 'flv.js';
 
 import io from 'socket.io-client';
 
@@ -42,7 +43,14 @@ const styles = {
     },
     button:{
         margin:12
-    }
+    },
+    video:{
+        flexDirection:'column',
+        flex:'2 0 auto',
+        width: 600,
+        height: 400
+    },
+    option:{flex:'1,1,auto'}
 }
 
 class Dashboard extends Component {
@@ -50,7 +58,7 @@ class Dashboard extends Component {
     constructor(...args){
         super(...args);
 
-        this.state = {open:true,alarmHostId:5,videoData:{path:'/live/5'},cameraList:{},hostState:{},perimeterPoint:{},key: 0};
+        this.state = {open:true,alarmHostId:5,videoData:{path:'/live/5'},cameraList:{},hosts:{},perimeterPoint:{},key: 0};
 
 
     }
@@ -74,31 +82,37 @@ class Dashboard extends Component {
         //     });
 
         socket.on('init',(evt)=> {
-            this.state.hostState = evt;
-        });
-
-
-    }
-
-    componentWillReceiveProps(){
-        socket.on('update',(evt)=> {
-            this.setState({
-                hostState:evt,
-                open:true
-            });
+            console.log("init" + evt);
         });
 
         var _this = this;
-
-        $.ajax({
-            url:'http://localhost:3000/ipc/'+this.state.alarmHostId+'/live'+'?t='+new Date().getTime(),
-            dataType:'json',
-            success:function (data) {
-                _this.setState({
-                    videoData: data
-                });
+        socket.on('update',(evt)=> {
+            var hostList = this.state.hosts;
+            for (let h in hostList) {
+                for (let e in evt) {
+                    if(h.id === e.hostId){
+                        h.status = e.hostState;
+                    }
+                }
             }
+
+            _this.setState({
+                hosts:hostList
+            });
+
+            for (let h in hostList) {
+                if(h.status === 1){
+                    _this.setState({
+                        open:true,
+                        alarmHostId:5
+                    });
+                }
+            }
+
+
         });
+
+
     }
 
     componentDidMount() {
@@ -159,9 +173,79 @@ class Dashboard extends Component {
                     perimeterPoint: perimeterPoint
                 })
             });
+        function play(v,path,port) {
+            var flvPlayer = flvjs.createPlayer({
+                type: 'flv',
+                isLive: true,
+                enableWorker:true,
+                enableStashBuffer: false,
+                stashInitialSize: 128,
+                autoCleanupSourceBuffer:true,
+                url:'ws://localhost:'+port+path
+            },{
+                enableStashBuffer:false
+            });
+            flvPlayer.attachMediaElement(v);
+            flvPlayer.load();
+            flvPlayer.play();
+        }
+
+            $.ajax({
+                url:'http://localhost:3000/ipc/' + this.state.alarmHostId + '/live'+'?t='+new Date().getTime(),
+                dataType:'json',
+                success:function (data) {
+                    play($('<video></video>').prop('class','v5').appendTo('#c')[0],data.path,data.port);
+                }
+            });
 
     }
+
+    handleAlarm = () => {
+        this.setState({open: false});
+    };
+
+    handlePtz = (e,code) =>{
+        var handle='';
+        var stop='';
+        $.ajax({
+            url:'http://localhost:3000/ipc/'+this.state.alarmHostId+'/ptz/move?position='+code+'&stop='+stop+'&handle='+handle+'&t='+new Date().getTime(),
+            dataType:'json',
+            success:function (data) {
+                handle=data.handle;
+                console.log(JSON.stringify(data));
+            }
+        });
+    };
+    handleOption = (e,code) =>{
+        var handle='';
+        var stop='';
+        $.ajax({
+            url:'http://localhost:3000/ipc/'+this.state.alarmHostId+'/ptz/'+code+'?handle='+handle+'&stop='+stop+'&t='+new Date().getTime(),
+            dataType:'json',
+            success:function(data) {
+                console.log(JSON.stringify(data));
+            }
+        });
+    };
+
+    handleClose = () => {
+        this.setState({open: false});
+    };
+
     render() {
+        const actions = [
+            <FlatButton
+                label="关闭"
+                primary={true}
+                onClick={this.handleClose}
+            />,
+            <FlatButton
+                label="手动解除"
+                primary={true}
+                onClick={this.handleAlarm}
+            />,
+        ];
+
         return(
             <div style={styles.flex}>
                 <div style={styles.leftCol}>
@@ -173,26 +257,31 @@ class Dashboard extends Component {
 
                 <Dialog
                     title="触警处理窗口"
+                    actions={actions}
                     modal={true}
                     open={this.state.open}
                     onRequestClose={this.handleClose}
                 >
+                    <div style={styles.video} id="c" />
 
-                    <Reflv
-                        url={`http://localhost:3000${this.state.videoData.path}`}
-                        type="flv"
-                        isLive
-                        cors
-                    />
-                    <div>
-                        <ArrowBackIcon />
-                        <ArrowDownwardIcon />
-                        <ArrowUpwardIcon />
-                        <ArrowForwardIcon />
+                    {/*<Reflv*/}
+                        {/*url={`ws://localhost:3000${this.state.videoData.path}`}*/}
+                        {/*type="flv"*/}
+                        {/*isLive*/}
+                        {/*cors*/}
+                        {/*config={{enableWorker:true,enableStashBuffer: false,stashInitialSize: 128,autoCleanupSourceBuffer:true}}*/}
 
-                        放大：<Add /> <Remove /><br/>
-                        聚焦：<Add /> <Remove /><br/>
-                        光圈：<Add /> <Remove /><br/>
+                    {/*/>*/}
+                    <div style={styles.option}>
+                        <ArrowBackIcon onClick={this.handlePtz.bind(this,1)} />
+                        <ArrowDownwardIcon onClick={this.handlePtz.bind(this,2)} />
+                        <ArrowUpwardIcon onClick={this.handlePtz.bind(this,3)} />
+                        <ArrowForwardIcon onClick={this.handlePtz.bind(this,4)} />
+                        <br/>
+
+                        放大：<Add onClick={this.handleOption.bind(this,'zoomAdd')}/> <Remove onClick={this.handleOption.bind(this,'zoomDes')}/><br/>
+                        聚焦：<Add onClick={this.handleOption.bind(this,'focusAdd')}/> <Remove onClick={this.handleOption.bind(this,'focusDec')}/><br/>
+                        光圈：<Add onClick={this.handleOption.bind(this,'apertureAdd')}/> <Remove onClick={this.handleOption.bind(this,'apertureDec')}/><br/>
                         <Sound /><Micro/><br/>
                         <RaisedButton label='手动解除' secondary={true} style={styles.button}/>
                     </div>
