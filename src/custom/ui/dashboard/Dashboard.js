@@ -8,7 +8,6 @@ import LeftLayout from "../containers/leftLayout";
 import {GET_LIST} from '../../../lib';
 import restClient from '../../../restClient'
 import Dialog from 'material-ui/Dialog';
-import Reflv from 'reflv';
 import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
 import ArrowDownwardIcon from 'material-ui/svg-icons/navigation/arrow-downward';
 import ArrowUpwardIcon from 'material-ui/svg-icons/navigation/arrow-upward';
@@ -264,14 +263,6 @@ class Dashboard extends Component {
                 >
                     <div style={styles.video} id="c" />
 
-                    {/*<Reflv*/}
-                        {/*url={`ws://localhost:3000${this.state.videoData.path}`}*/}
-                        {/*type="flv"*/}
-                        {/*isLive*/}
-                        {/*cors*/}
-                        {/*config={{enableWorker:true,enableStashBuffer: false,stashInitialSize: 128,autoCleanupSourceBuffer:true}}*/}
-
-                    {/*/>*/}
                     <div style={styles.option}>
                         <ArrowBackIcon onClick={this.handlePtz.bind(this,1)} />
                         <ArrowDownwardIcon onClick={this.handlePtz.bind(this,2)} />
