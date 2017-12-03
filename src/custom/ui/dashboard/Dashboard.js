@@ -274,7 +274,6 @@ class Dashboard extends Component {
                         聚焦：<Add onClick={this.handleOption.bind(this,'focusAdd')}/> <Remove onClick={this.handleOption.bind(this,'focusDec')}/><br/>
                         光圈：<Add onClick={this.handleOption.bind(this,'apertureAdd')}/> <Remove onClick={this.handleOption.bind(this,'apertureDec')}/><br/>
                         <Sound /><Micro/><br/>
-                        <RaisedButton label='手动解除' secondary={true} style={styles.button}/>
                     </div>
                 </Dialog>
             </div>
