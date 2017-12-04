@@ -10,14 +10,7 @@ class CameraItem extends Component{
     }
 
     handleClick(camera,e){
-
-        //console.log(camera.id)
-        this.setState({
-            open:true,
-            alarmHostId:camera.id
-        });
-
-
+        this.props.handleSelect(camera);
     }
 
     render(){

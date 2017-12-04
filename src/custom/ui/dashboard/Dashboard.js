@@ -114,6 +114,35 @@ class Dashboard extends Component {
 
     }
 
+    componentDidUpdate(){
+        function play(v,path,port) {
+            var flvPlayer = flvjs.createPlayer({
+                type: 'flv',
+                isLive: true,
+                enableWorker:true,
+                enableStashBuffer: false,
+                stashInitialSize: 128,
+                autoCleanupSourceBuffer:true,
+                url:'ws://localhost:'+port+path
+            },{
+                enableStashBuffer:false
+            });
+            flvPlayer.attachMediaElement(v);
+            flvPlayer.load();
+            flvPlayer.play();
+        }
+
+        var cameraId = this.state.alarmHostId;
+
+        $.ajax({
+            url:'http://localhost:3000/ipc/' + cameraId + '/live'+'?t='+new Date().getTime(),
+            dataType:'json',
+            success:function (data) {
+                play($('<video></video>').prop('class','v'+cameraId).appendTo('#c')[0],data.path,data.port);
+            }
+        });
+    }
+
     componentDidMount() {
 
         this.ctx = this.canvasElement.getContext("2d");
@@ -172,35 +201,40 @@ class Dashboard extends Component {
                     perimeterPoint: perimeterPoint
                 })
             });
-        function play(v,path,port) {
-            var flvPlayer = flvjs.createPlayer({
-                type: 'flv',
-                isLive: true,
-                enableWorker:true,
-                enableStashBuffer: false,
-                stashInitialSize: 128,
-                autoCleanupSourceBuffer:true,
-                url:'ws://localhost:'+port+path
-            },{
-                enableStashBuffer:false
-            });
-            flvPlayer.attachMediaElement(v);
-            flvPlayer.load();
-            flvPlayer.play();
-        }
-
-            $.ajax({
-                url:'http://localhost:3000/ipc/' + this.state.alarmHostId + '/live'+'?t='+new Date().getTime(),
-                dataType:'json',
-                success:function (data) {
-                    play($('<video></video>').prop('class','v5').appendTo('#c')[0],data.path,data.port);
-                }
-            });
+        // function play(v,path,port) {
+        //     var flvPlayer = flvjs.createPlayer({
+        //         type: 'flv',
+        //         isLive: true,
+        //         enableWorker:true,
+        //         enableStashBuffer: false,
+        //         stashInitialSize: 128,
+        //         autoCleanupSourceBuffer:true,
+        //         url:'ws://localhost:'+port+path
+        //     },{
+        //         enableStashBuffer:false
+        //     });
+        //     flvPlayer.attachMediaElement(v);
+        //     flvPlayer.load();
+        //     flvPlayer.play();
+        // }
+        //
+        //     $.ajax({
+        //         url:'http://localhost:3000/ipc/' + this.state.alarmHostId + '/live'+'?t='+new Date().getTime(),
+        //         dataType:'json',
+        //         success:function (data) {
+        //             play($('<video></video>').prop('class','v5').appendTo('#c')[0],data.path,data.port);
+        //         }
+        //     });
 
     }
 
+    //手动解除报警
     handleAlarm = () => {
         this.setState({open: false});
+    };
+
+    handleStream =(camera)=>{
+        this.setState({alarmHostId:camera.id,open:true});
     };
 
     handlePtz = (e,code) =>{
@@ -251,7 +285,7 @@ class Dashboard extends Component {
                     <Main canvasRef={e1 => this.canvasElement = e1}/>
                 </div>
                 <div style={styles.rightCol}>
-                    <LeftLayout data={this.state.cameraList}/>
+                    <LeftLayout data={this.state.cameraList} handleStream={this.handleStream.bind(this)}/>
                 </div>
 
                 <Dialog

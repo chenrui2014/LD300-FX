@@ -11,18 +11,25 @@ class CameraList extends Component{
         super(props)
 
     }
+    handleSelect(val){
+
+        this.props.handleCamera(val);
+    }
 
     render(){
         const data = this.props;
         let cameraData = [];
         const temp = data.data;
-        for(let i = 0; i < temp.data.length;i++){
-            cameraData[i] = temp.data[i];
+        if(temp){
+            for(let i = 0; i < temp.length;i++){
+                cameraData[i] = temp[i];
+            }
         }
+
         return(
             <List>
                 {cameraData.map((camera,i)=>{
-                    return <ListItem  key={i}><CameraItem camera={camera}/></ListItem>
+                    return <ListItem  key={i}><CameraItem handleSelect={this.handleSelect.bind(this)} camera={camera}/></ListItem>
                 })}
 
             </List>
