@@ -68,6 +68,7 @@ export class SelectInput extends Component {
                 onChange={this.handleChange}
                 autoWidth
                 style={elStyle}
+                underlineStyle={{marginBottom:-14}}
                 errorText={touched && error}
                 {...options}
             >

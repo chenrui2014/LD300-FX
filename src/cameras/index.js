@@ -63,21 +63,21 @@ export const CameraCreate = ({ ...props }) => (
             return errors;
         }}
         >
-            <TextInput source="name" />
-            <TextInput source="ip" />
-            <TextInput source="port" />
-            <TextInput source="user" />
-            <TextInput source="pwd" />
-            <TextInput source="type" />
-            <TextInput source="brand" />
-            <NullableBooleanInput source="ptz" />
-            <NullableBooleanInput source="alarm" />
-            <NullableBooleanInput source="audio" />
-            <TextInput source="onvif_port" />
-            <TextInput source="onvif_user" />
-            <TextInput source="onvif_pwd" />
-            <TextInput source="onvif_path" />
-            <NullableBooleanInput source="status" />
+            <TextInput source="name" style={{display:'inline-block'}}/>
+            <TextInput source="ip" style={{display:'inline-block'}}/>
+            <TextInput source="port" style={{display:'inline-block'}}/><br/>
+            <TextInput source="user"style={{display:'inline-block'}}/>
+            <TextInput source="pwd" style={{display:'inline-block'}}/>
+            <TextInput source="type" style={{display:'inline-block'}}/><br/>
+            <TextInput source="brand" style={{display:'inline-block'}}/>
+            <NullableBooleanInput source="ptz" style={{display:'inline-block'}}/>
+            <NullableBooleanInput source="alarm" style={{display:'inline-block'}}/><br/>
+            <NullableBooleanInput source="audio" style={{display:'inline-block'}}/>
+            <TextInput source="onvif_port" style={{display:'inline-block'}}/>
+            <TextInput source="onvif_user" style={{display:'inline-block'}}/><br/>
+            <TextInput source="onvif_pwd" style={{display:'inline-block'}}/>
+            <TextInput source="onvif_path" style={{display:'inline-block'}}/>
+            <NullableBooleanInput source="status" style={{display:'inline-block'}}/>
         </SimpleForm>
     </Create>
 );
@@ -88,21 +88,21 @@ const cameraTitle = (record) => record?<TextField source='name' record={record} 
 export const CameraEdit = ({...props}) =>(
     <Edit title={<cameraTitle/>} {...props}>
         <SimpleForm>
-            <DisabledInput source="id" />
+            <DisabledInput source="id" style={{display:'inline-block'}}/>
             <TextInput source="name" style={{display:'inline-block'}}/>
-            <TextInput source="ip" />
+            <TextInput source="ip" style={{display:'inline-block'}}/><br/>
             <TextInput source="port" style={{display:'inline-block'}}/>
-            <TextInput source="user"/>
-            <TextInput source="pwd" style={{display:'inline-block'}}/>
-            <TextInput source="type" />
+            <TextInput source="user" style={{display:'inline-block'}}/>
+            <TextInput source="pwd" style={{display:'inline-block'}}/><br/>
+            <TextInput source="type"  style={{display:'inline-block'}}/>
             <TextInput source="brand" style={{display:'inline-block'}}/>
-            <NullableBooleanInput source="ptz" />
+            <NullableBooleanInput source="ptz" style={{display:'inline-block'}}/><br/>
             <NullableBooleanInput source="alarm" style={{display:'inline-block'}}/>
-            <NullableBooleanInput source="audio" />
-            <TextInput source="onvif_port" style={{display:'inline-block'}}/>
-            <TextInput source="onvif_user" />
+            <NullableBooleanInput source="audio" style={{display:'inline-block'}}/>
+            <TextInput source="onvif_port" style={{display:'inline-block'}}/><br/>
+            <TextInput source="onvif_user" style={{display:'inline-block'}}/>
             <TextInput source="onvif_pwd" style={{display:'inline-block'}}/>
-            <TextInput source="onvif_path" />
+            <TextInput source="onvif_path" style={{display:'inline-block'}}/><br/>
             <NullableBooleanInput source="status" style={{display:'inline-block'}}/>
         </SimpleForm>
     </Edit>

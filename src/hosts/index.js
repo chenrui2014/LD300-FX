@@ -50,9 +50,9 @@ export const HostCreate = ({ ...props }) => (
             return errors;
         }}
         >
-            <TextInput source="hostName"style={{display:'inline-block'}}/>
-            <TextInput source="alias"style={{display:'inline-block'}}/>
-            <TextInput source="port"style={{display:'inline-block'}}/>
+            <TextInput source="hostName" style={{display:'inline-block'}}/>
+            <TextInput source="alias" style={{display:'inline-block'}}/>
+            <TextInput source="port" style={{display:'inline-block'}}/>
         </SimpleForm>
     </Create>
 );
