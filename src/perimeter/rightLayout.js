@@ -10,7 +10,7 @@ const styles ={
 }
 export default (data) =>(
         <Card style={styles.card}>
-            <CardTitle title="摄像头列表" style={styles.title}/>
+            <CardTitle title="周界点列表" style={styles.title}/>
             <CameraList data={data} />
         </Card>
 );

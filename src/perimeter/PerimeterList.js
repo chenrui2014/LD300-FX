@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { parse, stringify } from 'query-string';
 import { push as pushAction } from 'react-router-redux';
 import Dialog from 'material-ui/Dialog';
+import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
@@ -37,17 +38,17 @@ const styles = {
         justifyContent: 'space-between',
     },
     flex: {display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'stretch'},
-    leftCol: {marginBottom: '2em', flex: '10 1 auto'},
+    leftCol: { flex: '10 1 auto'},
     rightCol: {
-        flex: '1 0 auto',
-        width: 200
+        flex: '0 0 auto',
+        width: 360
     }
 };
 
 export class PerimeterList extends Component {
     constructor(props) {
         super(props);
-        this.state = { key: 0,cameraList:{},hostData:[],value:1,open:false,mapPosition:0,mapErrText:"",realPosition:0,realErrText:"",id:0,name:"",num:0,x:0,y:0};
+        this.state = { key: 0,data:{},cameraList:{},hostData:[],value:1,open:false,mapPosition:0,mapErrText:"",realPosition:0,realErrText:"",id:0,name:"",num:0,x:0,y:0};
     }
 
     canvasElement = null;
@@ -92,7 +93,7 @@ export class PerimeterList extends Component {
         img.onload = function () {
             canCtx.drawImage(img, 0, 0);
         }
-        this.ctx.scale(0.9, 0.9);
+        this.ctx.scale(0.88, 0.66);
 
         // function mousePos(e) {//获取鼠标所在位置的坐标，相对于整个页面
         //     var e = e || window.event;
@@ -107,8 +108,8 @@ export class PerimeterList extends Component {
 
             let x = e.clientX - rect.left;
             let y = e.clientY - rect.top;
-            x = Math.floor(x * (canvas.width / rect.width) / 0.9);
-            y = Math.floor(y * (canvas.height / rect.height) / 0.9);
+            x = Math.floor(x * (canvas.width / rect.width) / 0.88);
+            y = Math.floor(y * (canvas.height / rect.height) / 0.66);
 
             // if(this.prePoint == null){
             //     this.prePoint = {x:x,y:y};
@@ -141,7 +142,7 @@ export class PerimeterList extends Component {
             this.updateData(Object.keys(nextProps.query).length > 0 ? nextProps.query : nextProps.params);
         }
         if (nextProps.data !== this.props.data) {
-            this.setState({ key: this.state.key + 1 });
+            this.setState({ key: this.state.key + 1,data:nextProps.data });
             let perimeterPoints = nextProps.data;
             this.ctx.beginPath();
             this.ctx.moveTo(perimeterPoints[1].x, perimeterPoints[1].y);
@@ -311,9 +312,9 @@ export class PerimeterList extends Component {
                 <div style={styles.leftCol}>
                     <LeftLayout canvasRef={e1 => this.canvasElement = e1} style={styles.main}/>
                 </div>
-                <div style={styles.rightCol}>
-                    <RightLayout title="摄像头列表" data={this.state.cameraList}/>
-                </div>
+                <Paper style={styles.rightCol}>
+                    <RightLayout title="摄像头列表" data={data}/>
+                </Paper>
                 <Dialog
                     title="输入周界点"
                     actions={actions}

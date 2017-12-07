@@ -8,6 +8,7 @@ import LeftLayout from "../containers/leftLayout";
 import {GET_LIST} from '../../../lib';
 import restClient from '../../../restClient'
 import Dialog from 'material-ui/Dialog';
+import Paper from 'material-ui/Paper';
 import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
 import ArrowDownwardIcon from 'material-ui/svg-icons/navigation/arrow-downward';
 import ArrowUpwardIcon from 'material-ui/svg-icons/navigation/arrow-upward';
@@ -16,7 +17,6 @@ import Add from 'material-ui/svg-icons/content/add';
 import Remove from 'material-ui/svg-icons/content/remove'
 import Micro from 'material-ui/svg-icons/hardware/keyboard-voice';
 import Sound from 'material-ui/svg-icons/av/volume-up';
-import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Background from '../../../../static/img/background.bmp';
 
@@ -35,10 +35,11 @@ socket.on('connect',()=> {
 
 const styles = {
     flex: { display: 'flex',flexDirection:'row',justifyContent:'flex-start',alignItems:'stretch' },
-    leftCol: { marginBottom: '2em',flex:'3 1 auto' },
+    leftCol: { flex:'3 1 auto' },
     rightCol:{
-        flex:'1 0 auto',
-        width:200
+        flex:'0 0 auto',
+        width:360,
+        background:'#ffffff'
     },
     button:{
         margin:12
@@ -150,9 +151,16 @@ class Dashboard extends Component {
         //将图片绘制到canvas
         img.src = Background;
         img.onload = function () {
+            // let w = img.width,h = img.height;
+            // this.canvasElement.width = w;
+            // this.canvasElement.height = h;
             canCtx.drawImage(img, 0, 0);
+            // context.clearRect(0, 0, 400, 300);
+            // var ptrn = canCtx.createPattern(img,"repeat");
+            // context.fillStyle = ptrn;
+            // context.fillRect(0, 0, 400, 300);
         }
-        this.ctx.scale(0.9, 0.9);
+        this.ctx.scale(0.88, 0.66);
         restClient(GET_LIST,'perimeterPoint',{sort: { field: 'id', order: 'asc' },pagination: { page: 1, perPage: 1000 }})
             .then(response =>response.data)
             .then(perimeterPoint=> {
@@ -284,9 +292,9 @@ class Dashboard extends Component {
                 <div style={styles.leftCol}>
                     <Main canvasRef={e1 => this.canvasElement = e1}/>
                 </div>
-                <div style={styles.rightCol}>
+                <Paper style={styles.rightCol}>
                     <LeftLayout data={this.state.cameraList} handleStream={this.handleStream.bind(this)}/>
-                </div>
+                </Paper>
 
                 <Dialog
                     title="触警处理窗口"

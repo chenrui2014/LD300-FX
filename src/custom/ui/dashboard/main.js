@@ -44,7 +44,7 @@ export class Main extends Component{
                     <FontIcon className="material-icons" style={iconStyles} color={black}>lens <span>主机故障</span></FontIcon>
                 </CardHeader>
                 <CardMedia>
-                    <canvas ref={this.props.canvasRef} id="canvas" width="500" height="500">
+                    <canvas ref={this.props.canvasRef} id="canvas" width="500" height="290">
 
                     </canvas>
                 </CardMedia>
