@@ -1,0 +1,1 @@
+export const getHost = (state) => state.entities.hosts

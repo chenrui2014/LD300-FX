@@ -2,7 +2,9 @@
  * Created by chen on 17-8-26.
  */
 import React, { Component } from 'react';
+// import {connect} from 'react-redux';
 import withWidth from 'material-ui/utils/withWidth';
+// import compose from 'recompose/compose';
 import {Main} from './main';
 import LeftLayout from "../containers/leftLayout";
 import {GET_LIST} from '../../../lib';
@@ -19,11 +21,20 @@ import Micro from 'material-ui/svg-icons/hardware/keyboard-voice';
 import Sound from 'material-ui/svg-icons/av/volume-up';
 import FlatButton from 'material-ui/FlatButton';
 import Background from '../../../../static/img/background.bmp';
+import {Tab,Tabs} from 'material-ui/Tabs';
+import {Table,TableBody,TableHeader,TableRow,TableRowColumn,TableHeaderColumn,TableFooter} from 'material-ui/Table';
+
+import {red500, green500, grey500,black} from 'material-ui/styles/colors';
+import IconButton from 'material-ui/IconButton';
+import FontIcon from 'material-ui/FontIcon';
+// import ListTab from '../containers/ListTab';
+// import {host} from '../../action';
 
 import $ from 'jquery';
 import flvjs from 'flv.js';
 
 import io from 'socket.io-client';
+// import {green500} from "material-ui/styles/colors";
 
 const socket=io('http://localhost:3001',{
     path:'/stateServer'
@@ -58,7 +69,7 @@ class Dashboard extends Component {
     constructor(...args){
         super(...args);
 
-        this.state = {open:true,alarmHostId:5,videoData:{path:'/live/5'},cameraList:{},hosts:{},perimeterPoint:{},key: 0};
+        this.state = {selected: [1],open:true,alarmHostId:5,videoData:{path:'/live/5'},cameraList:{},hosts:{},perimeterPoint:{},key: 0};
 
 
     }
@@ -67,10 +78,16 @@ class Dashboard extends Component {
     ctx = null;
 
     componentWillMount(){
+        // this.props.loadHost();
         restClient(GET_LIST,'cameras_noPage',{sort: { field: 'name', order: 'DESC' },pagination: { page: 1, perPage: 1000 }})
             .then(response =>response.data)
             .then(cameras=> this.setState({
                 cameraList:cameras
+            }));
+        restClient(GET_LIST,'hosts_noPage',{sort: { field: 'port', order: 'DESC' },pagination: { page: 1, perPage: 1000 }})
+            .then(response =>response.data)
+            .then(hosts=> this.setState({
+                hosts:hosts
             }));
 
         // restClient(GET_LIST,'perimeterPoint',{sort: { field: 'id', order: 'asc' },pagination: { page: 1, perPage: 1000 }})
@@ -272,6 +289,16 @@ class Dashboard extends Component {
     handleClose = () => {
         this.setState({open: false});
     };
+    handleHostSelect = (host)=>{
+
+    }
+    handleCameraSelect = (camera)=>{
+
+    }
+
+    isSelected = (index) => {
+        return this.state.selected.indexOf(index) !== -1;
+    };
 
     render() {
         const actions = [
@@ -287,13 +314,82 @@ class Dashboard extends Component {
             />,
         ];
 
+        // const {hosts,cameras} = this.props;
+        const {hosts,cameraList} = this.state;
+        let temp = Array.isArray(hosts)?hosts:[];
+        let temp2 = Array.isArray(cameraList)?cameraList:[];
         return(
             <div style={styles.flex}>
                 <div style={styles.leftCol}>
                     <Main canvasRef={e1 => this.canvasElement = e1}/>
                 </div>
                 <Paper style={styles.rightCol}>
-                    <LeftLayout data={this.state.cameraList} handleStream={this.handleStream.bind(this)}/>
+                    <Tabs>
+                        <Tab label="主机列表"><Table onRowSelection={this.handleHostSelect}>
+                            <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+                                <TableRow>
+                                    {
+                                        ['主机名称','主机端口','主机状态'].map((text,i) =>{
+                                            return <TableHeaderColumn>{text}</TableHeaderColumn>
+                                        })
+                                    }
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody displayRowCheckbox={false}>
+                                {
+                                    temp.map((item,i)=>{
+                                        let fi = <FontIcon className="material-icons" color={green500}>lens</FontIcon>;
+                                        switch(item.status){
+
+                                            case 0:
+                                                fi=<FontIcon className="material-icons" color={green500}>lens</FontIcon>;
+                                                break;
+                                            case 1:
+                                                fi=<FontIcon className="material-icons" color={red500}>lens</FontIcon>;
+                                                break;
+                                            case 2:
+                                                fi=<FontIcon className="material-icons" color={grey500}>lens</FontIcon>;
+                                                break;
+                                            case 3:
+                                                fi=<FontIcon className="material-icons" color={black}>lens</FontIcon>;
+                                                break;
+                                            default: fi=<FontIcon className="material-icons" color={green500}>lens</FontIcon>;
+
+                                        }
+                                        return <TableRow selected={this.isSelected(i)}>
+                                            <TableRowColumn>{item.hostName}</TableRowColumn>
+                                            <TableRowColumn>{item.port}</TableRowColumn>
+                                            <TableRowColumn>{fi}</TableRowColumn>
+                                        </TableRow>
+                                    })
+                                }
+                            </TableBody>
+                        </Table></Tab>
+                            <Tab label="摄像头列表"><Table onRowSelection={this.handleCameraSelect}>
+                                <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+                                    <TableRow>
+                                        {
+                                            ['摄像头名称','IP','摄像头状态'].map((text,i) =>{
+                                                return <TableHeaderColumn>{text}</TableHeaderColumn>
+                                            })
+                                        }
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody displayRowCheckbox={false}>
+                                    {
+                                        temp2.map((item,i)=>{
+                                            return <TableRow selected={this.isSelected(i)}>
+                                                <TableRowColumn>{item.name}</TableRowColumn>
+                                                <TableRowColumn style={{width:100}}>{item.ip}</TableRowColumn>
+                                                <TableRowColumn>{item.status?"在线":"离线"}</TableRowColumn>
+                                            </TableRow>
+                                        })
+                                    }
+                                </TableBody>
+                            </Table></Tab>
+                      {/*<ListTab title="主机列表" header={['主机名称','主机端口','主机状态']} data={hosts} itemSelect={this.handleHostSelect}/>*/}
+                      {/*<ListTab title="摄像头列表" header={['摄像头名称','IP','摄像头状态']} data={cameraList} itemSelect={this.handleCameraSelect}/>*/}
+                    </Tabs>
                 </Paper>
 
                 <Dialog
@@ -323,5 +419,24 @@ class Dashboard extends Component {
         )
     }
 }
+
+
+// function mapStateToProps(state) {
+//     const {hosts,cameras} = state.customReducers.entities;
+//
+//     return {
+//         hosts: hosts,
+//         cameras:cameras
+//     }
+// }
+//
+// const enhance = compose(
+//     connect(mapStateToProps, {
+//         loadHost: host.request,
+//     }),
+//     withWidth()
+// );
+//
+// export default enhance(Dashboard);
 
 export default withWidth()(Dashboard)

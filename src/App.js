@@ -15,11 +15,12 @@ import {HostList,HostCreate,HostEdit,HostDelete,HostIcon} from './hosts';
 import {MonitorAreaList,MonitorAreaCreate,MonitorAreaEdit,MonitorAreaDelete,MonitorAreaIcon} from './monitoringArea';
 import {PresetList,PresetCreate,PresetEdit,PresetDelete,PresetIcon} from './preset';
 import {systemConfig,SettingsIcon} from './config';
- import {PerimeterPointList} from './perimeter';
-import perimeterReducer from './custom/reducer';
+import {PerimeterPointList} from './perimeter';
 
 
 import restClient from './restClient';
+import customSagas from './custom/sagas';
+import customReducers from './custom/reducer';
 
 class App extends Component {
 
@@ -42,7 +43,8 @@ class App extends Component {
                 authClient={authClient}
                 dashboard={Dashboard}
                 loginPage={Login}
-                customReducers={{perimeterPoint:perimeterReducer}}
+                customSagas={customSagas}
+                customReducers={{customReducers:customReducers}}
                 menu={Menu}
                 locale="zh"
                 messages={translations}
