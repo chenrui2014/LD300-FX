@@ -6,7 +6,8 @@ export default {
         sys_config:{
             name:'系统配置',
             sys_name:"系统名称",
-            support_phone:"技术支持电话"
+            support_phone:"技术支持电话",
+            use_unit:"使用单位"
         },
         cameras:{
             name:'摄像头',
