@@ -56,12 +56,14 @@ const styles = {
         margin:12
     },
     video:{
-        flexDirection:'column',
-        flex:'2 0 auto',
         width: 600,
-        height: 400
+        height: 400,
+        flex:'2 1 auto'
     },
-    option:{flex:'1,1,auto'}
+    option:{
+        flex:'1 1 auto',
+        marginTop:20
+    }
 }
 
 class Dashboard extends Component {
@@ -69,7 +71,7 @@ class Dashboard extends Component {
     constructor(...args){
         super(...args);
 
-        this.state = {selected: [1],open:true,alarmHostId:5,videoData:{path:'/live/5'},cameraList:{},hosts:{},perimeterPoint:{},key: 0};
+        this.state = {selected: [1],open:true,value:1,alarmHostId:[1,2],videoData:{path:'/live/1'},cameraList:{},hosts:{},perimeterPoint:{},key: 0};
 
 
     }
@@ -117,14 +119,18 @@ class Dashboard extends Component {
                 hosts:hostList
             });
 
+            let alarmHost = this.state.alarmHostId;
+            alarmHost.push(1);
             for (let h in hostList) {
                 if(h.status === 1){
-                    _this.setState({
-                        open:true,
-                        alarmHostId:5
-                    });
+                    alarmHost.push(h.id)
                 }
             }
+
+            _this.setState({
+                open:true,
+                alarmHostId:alarmHost
+            });
 
 
         });
@@ -150,13 +156,16 @@ class Dashboard extends Component {
             flvPlayer.play();
         }
 
-        var cameraId = this.state.alarmHostId;
+        var cameraId = this.state.value;
 
         $.ajax({
             url:'http://localhost:3000/ipc/' + cameraId + '/live'+'?t='+new Date().getTime(),
             dataType:'json',
             success:function (data) {
-                play($('<video></video>').prop('class','v'+cameraId).appendTo('#c')[0],data.path,data.port);
+                if($("#" + cameraId).children("video").length > 0){
+                    return;
+                }
+                play($('<video></video>').prop('class','v'+cameraId).appendTo('#'+cameraId)[0],data.path,data.port);
             }
         });
     }
@@ -266,7 +275,7 @@ class Dashboard extends Component {
         var handle='';
         var stop='';
         $.ajax({
-            url:'http://localhost:3000/ipc/'+this.state.alarmHostId+'/ptz/move?position='+code+'&stop='+stop+'&handle='+handle+'&t='+new Date().getTime(),
+            url:'http://localhost:3000/ipc/'+this.state.value+'/ptz/move?position='+code+'&stop='+stop+'&handle='+handle+'&t='+new Date().getTime(),
             dataType:'json',
             success:function (data) {
                 handle=data.handle;
@@ -293,12 +302,23 @@ class Dashboard extends Component {
 
     }
     handleCameraSelect = (camera)=>{
-
+        this.setState({value:camera[0],open:true});
     }
 
     isSelected = (index) => {
         return this.state.selected.indexOf(index) !== -1;
     };
+
+    handleActive(tab) {
+
+    }
+
+    handleChange = (value) => {
+        this.setState({
+            value: value,
+        });
+    };
+
 
     render() {
         const actions = [
@@ -315,7 +335,7 @@ class Dashboard extends Component {
         ];
 
         // const {hosts,cameras} = this.props;
-        const {hosts,cameraList} = this.state;
+        const {hosts,cameraList,alarmHostId} = this.state;
         let temp = Array.isArray(hosts)?hosts:[];
         let temp2 = Array.isArray(cameraList)?cameraList:[];
         return(
@@ -398,21 +418,27 @@ class Dashboard extends Component {
                     modal={true}
                     open={this.state.open}
                     onRequestClose={this.handleClose}
-                >
-                    <div style={styles.video} id="c" />
+                ><Tabs value={this.state.value}
+                            onChange={this.handleChange}>
+                    {
+                        alarmHostId.map(id=>{
+                            return <Tab label={id} value={id} onActive={this.handleActive}><div style={styles.video} id={id} />
 
-                    <div style={styles.option}>
-                        <ArrowBackIcon onClick={this.handlePtz.bind(this,1)} />
-                        <ArrowDownwardIcon onClick={this.handlePtz.bind(this,2)} />
-                        <ArrowUpwardIcon onClick={this.handlePtz.bind(this,3)} />
-                        <ArrowForwardIcon onClick={this.handlePtz.bind(this,4)} />
-                        <br/>
+                                <div style={styles.option}>
+                                    <IconButton tooltip="向左"><ArrowBackIcon onClick={this.handlePtz.bind(this,1)} /></IconButton>
+                                    <IconButton tooltip="向下"><ArrowDownwardIcon onClick={this.handlePtz.bind(this,2)} /></IconButton>
+                                    <IconButton tooltip="向上"><ArrowUpwardIcon onClick={this.handlePtz.bind(this,3)} /></IconButton>
+                                    <IconButton tooltip="向右"><ArrowForwardIcon onClick={this.handlePtz.bind(this,4)} /></IconButton> |
 
-                        放大：<Add onClick={this.handleOption.bind(this,'zoomAdd')}/> <Remove onClick={this.handleOption.bind(this,'zoomDes')}/><br/>
-                        聚焦：<Add onClick={this.handleOption.bind(this,'focusAdd')}/> <Remove onClick={this.handleOption.bind(this,'focusDec')}/><br/>
-                        光圈：<Add onClick={this.handleOption.bind(this,'apertureAdd')}/> <Remove onClick={this.handleOption.bind(this,'apertureDec')}/><br/>
-                        <Sound /><Micro/><br/>
-                    </div>
+                                    放大：<IconButton><Add onClick={this.handleOption.bind(this,'zoomAdd')}/> </IconButton><IconButton><Remove onClick={this.handleOption.bind(this,'zoomDes')}/></IconButton> |
+                                    聚焦：<IconButton><Add onClick={this.handleOption.bind(this,'focusAdd')}/> </IconButton><IconButton><Remove onClick={this.handleOption.bind(this,'focusDec')}/></IconButton> |
+                                    光圈：<IconButton><Add onClick={this.handleOption.bind(this,'apertureAdd')}/> </IconButton><IconButton><Remove onClick={this.handleOption.bind(this,'apertureDec')}/></IconButton>
+                                                            | <IconButton tooltip="声音"><Sound /></IconButton><IconButton tooltip="麦克风"><Micro/></IconButton>
+                                </div>
+                            </Tab>
+                        })
+                    }
+                </Tabs>
                 </Dialog>
             </div>
 
