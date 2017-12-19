@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from 'material-ui/svg-icons/action/visibility';
-import { List,EditButton,Toolbar,Create,SaveButton,Filter,Datagrid,TextField,TextInput,Edit,SimpleForm,Delete,DisabledInput,ReferenceInput,SelectInput,NumberInput } from '../lib';
+import { List,EditButton,DeleteButton,Toolbar,Create,SaveButton,Filter,Datagrid,TextField,TextInput,Edit,SimpleForm,Delete,DisabledInput,ReferenceInput,SelectInput,NumberInput } from '../lib';
 import {translate} from '../lib';
 
 const styles = {
@@ -19,12 +19,12 @@ const MonitorAreaFilter = (props) =>(
 export const MonitorAreaList = (props) =>(
     <List {...props} filters={<MonitorAreaFilter/>} sort={{field:'id',order:'ASC'}}  perPage={25}>
         <Datagrid bodyOptions={{ stripedRows: true, showRowHover: true }}>
-            <TextField source="id" />
             <TextField source="hostName" label="resources.monitoringArea.fields.hostId"/>
             <TextField source="cameraName" label="resources.monitoringArea.fields.cameraId"/>
             <TextField source="min_dis" label="resources.monitoringArea.fields.min_dis"/>
             <TextField source="max_dis" label="resources.monitoringArea.fields.max_dis"/>
             <EditButton />
+            <DeleteButton basePath={props.basePath} record={props.data} translate={props.translate}/>
         </Datagrid>
     </List>
 );
@@ -65,7 +65,6 @@ const MonitorAreaTitle = ({record}) => record?<TextField source='cameraName'  re
 export const MonitorAreaEdit = ({...props}) =>(
     <Edit title={<MonitorAreaTitle/>} {...props}>
         <SimpleForm>
-            <DisabledInput source="id" style={{display:'inline-block'}}/>
             <ReferenceInput  source="hostId" reference="hosts" allowEmpty>
                 <SelectInput source='hostName' optionText="hostName" optionValue="id" />
             </ReferenceInput>

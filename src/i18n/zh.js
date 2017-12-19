@@ -6,6 +6,7 @@ export default {
         sys_config:{
             name:'系统配置',
             sys_name:"系统名称",
+            company:"公司",
             support_phone:"技术支持电话",
             use_unit:"使用单位"
         },
@@ -64,6 +65,15 @@ export default {
                 z: 'z坐标',
                 preset:'预置点名称',
                 distance:'监控距离'
+            }
+        },
+        config:{
+            name:'系统配置',
+            fields:{
+                sysName:'系统名称',
+                company:'公司',
+                telephone:'技术支持电话',
+                useUnit:'使用单位'
             }
         }
     },

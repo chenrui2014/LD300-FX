@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from 'material-ui/svg-icons/hardware/computer';
-import { List,EditButton,Toolbar,Create,SaveButton,Filter,Datagrid,TextField,TextInput,Edit,SimpleForm,Delete,DisabledInput } from '../lib';
+import { List,EditButton,DeleteButton,Toolbar,Create,SaveButton,Filter,Datagrid,TextField,TextInput,Edit,SimpleForm,Delete,DisabledInput } from '../lib';
 import {translate} from '../lib';
 // import EditButton from '../buttons/EditButton';
 
@@ -20,11 +20,11 @@ const HostFilter = (props) =>(
 export const HostList = (props) =>(
     <List {...props} filters={<HostFilter/>} sort={{field:'id',order:'ASC'}}  perPage={25}>
         <Datagrid bodyOptions={{ stripedRows: true, showRowHover: true }}>
-            <TextField source="id" />
             <TextField source="hostName" label="resources.hosts.fields.hostName"/>
             <TextField source="alias" label="resources.hosts.fields.alias"/>
             <TextField source="port" label="resources.hosts.fields.port"/>
             <EditButton />
+            <DeleteButton basePath={props.basePath} record={props.data} translate={props.translate}/>
         </Datagrid>
     </List>
 );
@@ -62,7 +62,6 @@ const hostTitle = ({record}) => record?<TextField record={record} style={styles.
 export const HostEdit = ({...props}) =>(
     <Edit title={<hostTitle/>} {...props}>
         <SimpleForm>
-            <DisabledInput source="id" style={{display:'inline-block'}}/>
             <TextInput source="hostName" style={{display:'inline-block'}}/>
             <TextInput source="alias" style={{display:'inline-block'}}/>
             <TextInput source="port" style={{display:'inline-block'}}/>

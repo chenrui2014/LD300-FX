@@ -83,7 +83,6 @@ const cameraTitle = (record) => record?<TextField source='name' record={record} 
 export const CameraEdit = ({...props}) =>(
     <Edit title={<cameraTitle/>} {...props}>
         <SimpleForm>
-            <DisabledInput source="id" style={{display:'inline-block'}}/>
             <TextInput source="name" style={{display:'inline-block'}}/>
             <TextInput source="ip" style={{display:'inline-block'}}/><br/>
             <TextInput source="port" style={{display:'inline-block'}}/>

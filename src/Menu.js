@@ -18,7 +18,7 @@ const items = [
     { name: 'monitoringArea', icon: <MonitorAreaIcon /> },
     { name: 'preset', icon: <PresetIcon /> },
     { name: 'perimeterPoint', icon: <PerimeterIcon /> },
-    { name: 'sys_config', icon: <SettingsIcon /> },
+    { name: 'config', icon: <SettingsIcon /> },
 ];
 
 const styles = {
