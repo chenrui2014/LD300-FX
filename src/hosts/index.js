@@ -37,15 +37,11 @@ export const HostCreate = ({ ...props }) => (
     <Create {...props}>
         <SimpleForm toolbar={<HostCreateToolbar />} defaultValue={{ average_note: 0 }} validate={(values) => {
             const errors = {};
-            ['hostName', 'alias'].forEach((field) => {
+            ['port'].forEach((field) => {
                 if (!values[field]) {
-                    errors[field] = ['Required field'];
+                    errors[field] = ['必填项'];
                 }
             });
-
-            if (values.port < 0 || values.port > 5) {
-                errors.port = ['Should be between 0 and 5'];
-            }
 
             return errors;
         }}

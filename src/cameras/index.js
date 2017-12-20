@@ -45,15 +45,11 @@ export const CameraCreate = ({ ...props }) => (
     <Create {...props}>
         <SimpleForm toolbar={<CameraCreateToolbar />} defaultValue={{ average_note: 0 }} validate={(values) => {
             const errors = {};
-            ['title', 'teaser'].forEach((field) => {
+            ['ip', 'port','user','pwd'].forEach((field) => {
                 if (!values[field]) {
-                    errors[field] = ['Required field'];
+                    errors[field] = ['必填项'];
                 }
             });
-
-            if (values.average_note < 0 || values.average_note > 5) {
-                errors.average_note = ['Should be between 0 and 5'];
-            }
 
             return errors;
         }}

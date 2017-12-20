@@ -48,12 +48,13 @@ const styles = {
 export class PerimeterList extends Component {
     constructor(props) {
         super(props);
-        this.state = { key: 0,data:{},cameraList:{},hostData:[],value:1,open:false,mapPosition:0,mapErrText:"",realPosition:0,realErrText:"",id:0,name:"",num:0,x:0,y:0};
+        this.state = { key: 0,data:{},ppData:{name:"",pp:[]},cameraList:{},hostData:[],value:1,open:false,mapPosition:0,mapErrText:"",realPosition:0,realErrText:"",id:0,name:"",num:0,x:0,y:0};
     }
 
     canvasElement = null;
     ctx = null;
     maxNum = 0;
+    name = '';
     //prePoint = null
 
     componentWillMount(){
@@ -141,26 +142,48 @@ export class PerimeterList extends Component {
          || nextProps.query.filter !== this.props.query.filter) {
             this.updateData(Object.keys(nextProps.query).length > 0 ? nextProps.query : nextProps.params);
         }
-        if (nextProps.data !== this.props.data) {
-            this.setState({ key: this.state.key + 1,data:nextProps.data });
-            let perimeterPoints = nextProps.data;
+        // if (nextProps.data !== this.props.data) {
+        //     this.setState({ key: this.state.key + 1,data:nextProps.data });
+        //     let perimeterPoints = nextProps.data;
+        //     this.ctx.beginPath();
+        //     this.ctx.moveTo(perimeterPoints[1].x, perimeterPoints[1].y);
+        //     for(let pp in perimeterPoints){
+        //         this.maxNum = perimeterPoints[pp].No;
+        //         if(pp !== 1){
+        //             this.ctx.lineWidth = 1.0;
+        //             this.ctx.lineCap = "butt";
+        //             this.ctx.lineJoin = "miter";
+        //             this.ctx.lineTo(perimeterPoints[pp].x, perimeterPoints[pp].y);
+        //             this.ctx.strokeStyle = '#ff0000';
+        //             this.ctx.stroke();
+        //         }
+        //
+        //     }
+        //
+        //     this.state.num = this.maxNum;
+        // }
+    }
+
+    componentWillUpdate(){
+        let ppData = this.state.ppData;
+        if(ppData.pp.length > 0){
             this.ctx.beginPath();
-            this.ctx.moveTo(perimeterPoints[1].x, perimeterPoints[1].y);
-            for(let pp in perimeterPoints){
-                this.maxNum = perimeterPoints[pp].No;
-                if(pp !== 1){
+            this.ctx.moveTo(ppData.pp[0].x, ppData.pp[0].y);
+            for(let p in ppData.pp){
+                this.maxNum = ppData.pp[p].No;
+                if(p !== 1){
                     this.ctx.lineWidth = 1.0;
                     this.ctx.lineCap = "butt";
                     this.ctx.lineJoin = "miter";
-                    this.ctx.lineTo(perimeterPoints[pp].x, perimeterPoints[pp].y);
+                    this.ctx.lineTo(ppData.pp[p].x, ppData.pp[p].y);
                     this.ctx.strokeStyle = '#ff0000';
                     this.ctx.stroke();
                 }
 
             }
-
             this.state.num = this.maxNum;
         }
+
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -230,15 +253,20 @@ export class PerimeterList extends Component {
         let record = {mapPosition:0,realPosition:0};
         record.mapPosition = 0;
         record.realPosition = this.state.realPosition;
-        record.name = this.state.name;
-        let No = this.state.num + 1;
+        //record.name = this.state.name;
+        let No = this.maxNum + 1;
         record.No = No;
-        record.id = No;
 
         record.x = this.state.x;
         record.y = this.state.y;
-        record.hostId = this.state.value;//主机ID
-        this.props.crudCreate(this.props.resource, record, this.getBasePath(),'list');
+        let pp = this.state.ppData.pp;
+        pp.push(record);
+        this.setState({ppData:{name:this.name,pp:pp}})
+        //record.hostId = this.state.value;//主机ID
+        this.handleClose()
+    };
+    complete = ()=>{
+        this.props.crudCreate(this.props.resource, this.state.ppData, this.getBasePath(),'list');
         this.handleClose()
     };
     handleChange2 = (event) => {
@@ -257,13 +285,14 @@ export class PerimeterList extends Component {
         });
     };
     handleChange4 = (event) => {
+        this.name = event.target.value;
         this.setState({
             name: event.target.value,
         });
     };
 
     //主机下拉列表选择事件
-    handleChange = (event, index, value) => this.setState({value:value});
+    //handleChange = (event, index, value) => this.setState({value:value});
 
     changeParams(action) {
         const newParams = queryReducer(this.getQuery(), action);
@@ -273,7 +302,7 @@ export class PerimeterList extends Component {
 
     render() {
         const { filters, pagination = <DefaultPagination />,resource, title, data, ids, total, children, isLoading, translate, theme } = this.props;
-        const { key,hostData } = this.state;
+        const { key,hostData,ppData } = this.state;
 
         // for(let i = 0; i < hostList.length;i++){
         //     hostData[i] = hostList.data[i];
@@ -295,15 +324,21 @@ export class PerimeterList extends Component {
 
         const actions = [
             <FlatButton
-                label="删除"
+                label="取消"
                 primary={true}
                 onClick={this.handleClose}
             />,
             <FlatButton
-                label="提交"
+                label="确定"
                 primary={true}
                 keyboardFocused={true}
                 onClick={this.save}
+            />,
+            <FlatButton
+                label="完成周界绘制"
+                primary={true}
+                keyboardFocused={true}
+                onClick={this.complete}
             />,
         ];
 
@@ -313,35 +348,28 @@ export class PerimeterList extends Component {
                     <LeftLayout canvasRef={e1 => this.canvasElement = e1} style={styles.main}/>
                 </div>
                 <Paper style={styles.rightCol}>
-                    <RightLayout title="摄像头列表" data={data}/>
+                    <RightLayout data={data}/>
                 </Paper>
                 <Dialog
-                    title="输入周界点"
+                    title="设置周界点"
                     actions={actions}
                     modal={true}
                     open={this.state.open}
                     onRequestClose={this.handleClose}
-                >
-                    <TextField
-                        hintText="名称"
-                        value={this.state.name}
-                        onChange={this.handleChange4}
-                    /><br />
-                    <SelectField
-                        floatingLabelText="关联主机"
-                        value={this.state.value}
-                        onChange={this.handleChange}
-                    >
-                        {hostData.map((host,i)=>{
-                            return <MenuItem key={i} value={host.id} primaryText={host.hostName} />
-                        })}
-                    </SelectField><br />
+                >{
+                    ppData.pp.length === 0? <TextField
+                    hintText="名称"
+                    value={this.state.name}
+                    onChange={this.handleChange4}
+                    />:<br/>
+                }
                     <TextField
                         hintText="输入实际距离"
                         value={this.state.realPosition}
                         errorText={this.state.realErrText}
                         onChange={this.handleChange2}
                     /><br />
+
                 </Dialog>
 
             </div>

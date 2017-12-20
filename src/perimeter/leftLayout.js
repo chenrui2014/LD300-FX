@@ -10,13 +10,8 @@ export class LeftLayout extends Component{
     render() {
         return(
             <Card style={this.props.style}>
-                <CardHeader style={{paddingTop:0,paddingBottom:0}}>
-                    <FileInput input={<TextInput addField={true}/>}>
-                        <TextInput addField={true}/>
-                    </FileInput>
-                </CardHeader>
                 <CardMedia>
-                    <canvas ref={this.props.canvasRef} id="canvas" width="500" height="290">
+                    <canvas ref={this.props.canvasRef} id="canvas" width="500" height="314">
 
                     </canvas>
 

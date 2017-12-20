@@ -71,7 +71,7 @@ class Dashboard extends Component {
     constructor(...args){
         super(...args);
 
-        this.state = {selected: [1],open:true,value:1,alarmHostId:[1,2],videoData:{path:'/live/1'},cameraList:{},hosts:{},perimeterPoint:{},key: 0};
+        this.state = {selected: [1],open:true,value:1,alarmHostId:[1,2],config:{},videoData:{path:'/live/1'},cameraList:{},hosts:{},perimeterPoint:{},key: 0};
 
 
     }
@@ -90,6 +90,12 @@ class Dashboard extends Component {
             .then(response =>response.data)
             .then(hosts=> this.setState({
                 hosts:hosts
+            }));
+
+        restClient(GET_LIST,'config_noPage',{sort: { field: 'configDate', order: 'DESC' },pagination: { page: 1, perPage: 1000 }})
+            .then(response =>response.data)
+            .then(config=> this.setState({
+                config:config
             }));
 
         // restClient(GET_LIST,'perimeterPoint',{sort: { field: 'id', order: 'asc' },pagination: { page: 1, perPage: 1000 }})
@@ -341,7 +347,7 @@ class Dashboard extends Component {
         return(
             <div style={styles.flex}>
                 <div style={styles.leftCol}>
-                    <Main canvasRef={e1 => this.canvasElement = e1}/>
+                    <Main canvasRef={e1 => this.canvasElement = e1} config={this.state.config}/>
                 </div>
                 <Paper style={styles.rightCol}>
                     <Tabs>
@@ -407,8 +413,6 @@ class Dashboard extends Component {
                                     }
                                 </TableBody>
                             </Table></Tab>
-                      {/*<ListTab title="主机列表" header={['主机名称','主机端口','主机状态']} data={hosts} itemSelect={this.handleHostSelect}/>*/}
-                      {/*<ListTab title="摄像头列表" header={['摄像头名称','IP','摄像头状态']} data={cameraList} itemSelect={this.handleCameraSelect}/>*/}
                     </Tabs>
                 </Paper>
 

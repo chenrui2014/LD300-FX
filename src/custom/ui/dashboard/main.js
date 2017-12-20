@@ -35,6 +35,10 @@ export class Main extends Component{
     }
 
     render() {
+        const {config} = this.props;
+        let com = config && config.length > 0 && config[0].company?config[0].company:'北京安盾兰达科技有限公司';
+        let sys = config && config.length > 0 && config[0].sysName?config[0].sysName:'LD300型监控系统';
+        let tel = config && config.length > 0 && config[0].telephone?config[0].telephone:'010-22856945';
         return(
             <Card>
                 <CardHeader>
@@ -49,7 +53,7 @@ export class Main extends Component{
                     </canvas>
                 </CardMedia>
                 <CardText style={styles.footer}>
-                    <span>{this.state.current}</span> <span>北京安盾兰达科技有限公司 LD300型监控系统 技术支持电话：010-22856945</span>
+                    <span>{this.state.current}</span> <span>{com} &nbsp;&nbsp;&nbsp;&nbsp; {sys} &nbsp;&nbsp;&nbsp;&nbsp; 技术支持电话：{tel}</span>
                 </CardText>
             </Card>
         );

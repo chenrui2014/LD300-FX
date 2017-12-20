@@ -46,16 +46,16 @@ export const MonitorAreaCreate = ({ ...props }) => (
             return errors;
         }}
         >
-            <ReferenceInput  source="hostId" reference="hosts" allowEmpty>
+            <ReferenceInput  source="hostId" reference="hosts" allowEmpty  style={{display:'inline-block'}}>
 
                 <SelectInput source='hostName' optionText="hostName" optionValue="id" />
             </ReferenceInput>
-            <ReferenceInput  source="cameraId" reference="cameras" allowEmpty>
+            <ReferenceInput  source="cameraId" reference="cameras" allowEmpty  style={{display:'inline-block'}}>
 
                 <SelectInput source="cameraName" optionText="name" optionValue="id" />
-            </ReferenceInput>
-            <NumberInput source="min_dis"style={{display:'inline-block'}}/>
-            <NumberInput source="max_dis"style={{display:'inline-block'}}/>
+            </ReferenceInput><br/>
+            <NumberInput source="min_dis" style={{display:'inline-block'}}/>
+            <NumberInput source="max_dis" style={{display:'inline-block'}}/>
         </SimpleForm>
     </Create>
 );

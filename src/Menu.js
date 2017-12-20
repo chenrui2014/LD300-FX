@@ -13,11 +13,11 @@ import { MonitorAreaIcon } from './monitoringArea';
 import { PresetIcon } from './preset';
 
 const items = [
-    { name: 'cameras', icon: <CameraIcon /> },
-    { name: 'hosts', icon: <HostIcon /> },
-    { name: 'monitoringArea', icon: <MonitorAreaIcon /> },
-    { name: 'preset', icon: <PresetIcon /> },
     { name: 'perimeterPoint', icon: <PerimeterIcon /> },
+    { name: 'hosts', icon: <HostIcon /> },
+    { name: 'cameras', icon: <CameraIcon /> },
+    { name: 'preset', icon: <PresetIcon /> },
+    { name: 'monitoringArea', icon: <MonitorAreaIcon /> },
     { name: 'config', icon: <SettingsIcon /> },
 ];
 
