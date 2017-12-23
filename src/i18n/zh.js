@@ -40,11 +40,11 @@ export default {
                 port:'端口号'
             }
         },
-        perimeterPoint:{
+        pp:{
             name:'周界',
             notification: {
-                perimeterPoint_success: '绘制周界成功',
-                perimeterPoint_error: '绘制周界失败',
+                pp_success: '绘制周界成功',
+                pp_error: '绘制周界失败',
             },
         },
         monitoringArea:{

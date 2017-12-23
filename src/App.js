@@ -54,7 +54,7 @@ class App extends Component {
                 <Resource name="monitoringArea" list={MonitorAreaList} create={MonitorAreaCreate} edit={MonitorAreaEdit} remove={MonitorAreaDelete} icon={MonitorAreaIcon} />
                 <Resource name="preset" list={PresetList} create={PresetCreate} edit={PresetEdit} remove={PresetDelete} icon={PresetIcon} />
                 <Resource name="config" list={ConfigList} edit={ConfigEdit} icon={SettingsIcon} />
-                <Resource name="perimeterPoint" list={PerimeterPointList}/>
+                <Resource name="pp" list={PerimeterPointList}/>
             </Admin>
         );
     }

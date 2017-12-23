@@ -27,6 +27,7 @@ import defaultTheme from '../defaultTheme';
 import {LeftLayout} from './leftLayout';
 import RightLayout from './rightLayout';
 import Background from '../../static/img/background.bmp';
+import {Table,TableBody,TableHeader,TableRow,TableRowColumn,TableHeaderColumn,TableFooter} from 'material-ui/Table';
 
 import restClient from '../restClient'
 import {GET_LIST} from '../lib';
@@ -48,16 +49,19 @@ const styles = {
 export class PerimeterList extends Component {
     constructor(props) {
         super(props);
-        this.state = { key: 0,data:{},ppData:{name:"",pp:[]},cameraList:{},hostData:[],value:1,open:false,mapPosition:0,mapErrText:"",realPosition:0,realErrText:"",id:0,name:"",num:0,x:0,y:0};
+        this.state = { key: 0,data:{},ppData:{name:"",pp:[]},ppList:[],cameraList:{},hostData:[],value:1,open:false,mapPosition:0,mapErrText:"",realPosition:0,realErrText:"",id:0,name:"",num:0,x:0,y:0};
     }
 
     canvasElement = null;
     ctx = null;
     maxNum = 0;
+    maxDis = 0;
     name = '';
+    perimeterPointData={}
     //prePoint = null
 
     componentWillMount(){
+
         restClient(GET_LIST,'cameras_noPage',{sort: { field: 'id', order: 'asc' },pagination: { page: 1, perPage: 1000 }})
             .then(response =>response.data)
             .then(cameras=> this.setState({
@@ -81,7 +85,7 @@ export class PerimeterList extends Component {
     }
 
     componentDidMount() {
-        this.updateData();
+        //this.updateData();
         if (Object.keys(this.props.query).length > 0) {
             this.props.changeListParams(this.props.resource, this.props.query);
         }
@@ -96,40 +100,119 @@ export class PerimeterList extends Component {
         }
         this.ctx.scale(0.88, 0.66);
 
-        // function mousePos(e) {//获取鼠标所在位置的坐标，相对于整个页面
-        //     var e = e || window.event;
-        //     return {
-        //         x: e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft,
-        //         y: e.clientY + document.body.scrollTop + document.documentElement.scrollTop
-        //     };
-        // }
+        restClient(GET_LIST,'pp_noPage',{sort: { field: 'id', order: 'asc' },pagination: { page: 1, perPage: 1000 }})
+            .then(response =>response.data)
+            .then(ppList=> {
+                this.setState({ppList:ppList});
+                this.perimeterPointData = ppList;
+                for(let perimeter in ppList){
+                    let perimeterPoints = ppList[perimeter].pp;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(perimeterPoints[0].x, perimeterPoints[0].y);
+                    for(let ppt in perimeterPoints){
+                        if(ppt !== "0"){
+                            this.ctx.lineWidth = 1.0;
+                            this.ctx.lineCap = "butt";
+                            this.ctx.lineJoin = "miter";
+                            this.ctx.lineTo(perimeterPoints[ppt].x, perimeterPoints[ppt].y);
+                            this.ctx.strokeStyle = '#ff0000';
+                            this.ctx.stroke();
+                        }
+                    }
+                }
+            });
+
+        $(document).on('contextmenu',function(e){
+            return false;
+        });
+
         $('canvas').mousedown((e) =>{
 
-            var rect = canvas.getBoundingClientRect();
+            if(3 === e.which){
+                //alert(e.which);
+                // this.state.ppData.pp.pop();
+                // if(this.state.imageHistory.length <=0){
+                //     this.state.imageHistory.push(Background);
+                // }
+                var rect = canvas.getBoundingClientRect();
+                this.ctx.clearRect(0, 0, rect.width, rect.height);
+                //将图片绘制到canvas
+                img.src = Background;
+                let _this = this;
+                img.onload = async function () {
+                    await canCtx.drawImage(img, 0, 0);
 
-            let x = e.clientX - rect.left;
-            let y = e.clientY - rect.top;
-            x = Math.floor(x * (canvas.width / rect.width) / 0.88);
-            y = Math.floor(y * (canvas.height / rect.height) / 0.66);
+                    for(let perimeter in _this.perimeterPointData){
+                        let perimeterPoints = _this.perimeterPointData[perimeter].pp;
+                        _this.ctx.beginPath();
+                        _this.ctx.moveTo(perimeterPoints[0].x, perimeterPoints[0].y);
+                        for(let ppot in perimeterPoints){
+                            if(ppot !== "0"){
+                                _this.ctx.lineWidth = 1.0;
+                                _this.ctx.lineCap = "butt";
+                                _this.ctx.lineJoin = "miter";
+                                _this.ctx.lineTo(perimeterPoints[ppot].x, perimeterPoints[ppot].y);
+                                _this.ctx.strokeStyle = '#ff0000';
+                                _this.ctx.stroke();
+                            }
+                        }
+                    }
 
-            // if(this.prePoint == null){
-            //     this.prePoint = {x:x,y:y};
-            // }else{
-            //     canCtx.beginPath();
-            //     canCtx.moveTo(this.prePoint.x, this.prePoint.y);
-            //     canCtx.lineWidth = 1.0;
-            //     canCtx.lineCap = "butt";
-            //     canCtx.lineJoin = "miter";
-            //     canCtx.lineTo(x, y);
-            //     canCtx.strokeStyle = '#ff0000';
-            //     canCtx.stroke();
-            //     // canCtx.arc(x, y, 5, 0, Math.PI * 2, true);
-            //     // canCtx.fillStyle = "#ff0000";
-            //     // canCtx.fill();
-            //     this.prePoint = {x:x,y:y}
-            // }
+                    let ppData = _this.state.ppData;
+                    if(ppData.pp.length > 0){
+                        ppData.pp.pop();
 
-            this.setState({open: true,x:x,y:y});
+                    }
+                    if(ppData.pp.length > 1){
+                        let len = ppData.pp.length;
+                        _this.maxDis = ppData.pp[len-1].realPosition;
+                        //     for(let p in ppData.pp){
+                        //         this.setState({x:ppData.pp[p].x,y:ppData.pp[p].y});
+                        //     }
+                        // }
+                        _this.ctx.beginPath();
+                        _this.ctx.moveTo(ppData.pp[0].x, ppData.pp[0].y);
+                        for(let p in ppData.pp){
+                            this.maxNum = ppData.pp[p].No;
+                            if(p !== "0"){
+                                _this.ctx.lineWidth = 1.0;
+                                _this.ctx.lineCap = "butt";
+                                _this.ctx.lineJoin = "miter";
+                                _this.ctx.lineTo(ppData.pp[p].x, ppData.pp[p].y);
+                                _this.ctx.strokeStyle = '#ff0000';
+                                _this.ctx.stroke();
+
+                                // var rect= this.canvasElement.getBoundingClientRect();
+                                // this.state.imageHistory.push(this.ctx.getImageData(0,0,rect.width,rect.height));
+                            }
+
+                        }
+                        _this.state.num = _this.maxNum;
+                    }else{
+                        if(ppData.pp.length > 0){
+                            ppData.pp.pop();
+
+                        }
+                        _this.maxDis = 0;
+                        _this.setState({ppData:{pp:[]}});
+                    }
+                }
+                //this.ctx.scale(0.88, 0.66);
+                //
+
+                //this.ctx.putImageData(this.state.imageHistory.pop(),0,0,0,0,rect.width,rect.height);
+
+            }else{
+                var rect = canvas.getBoundingClientRect();
+
+                let x = e.clientX - rect.left;
+                let y = e.clientY - rect.top;
+                x = Math.floor(x * (canvas.width / rect.width) / 0.88);
+                y = Math.floor(y * (canvas.height / rect.height) / 0.66);
+
+                this.setState({open: true,x:x,y:y});
+            }
+
         });
 
     }
@@ -171,13 +254,16 @@ export class PerimeterList extends Component {
             this.ctx.moveTo(ppData.pp[0].x, ppData.pp[0].y);
             for(let p in ppData.pp){
                 this.maxNum = ppData.pp[p].No;
-                if(p !== 1){
+                if(p !== "0"){
                     this.ctx.lineWidth = 1.0;
                     this.ctx.lineCap = "butt";
                     this.ctx.lineJoin = "miter";
                     this.ctx.lineTo(ppData.pp[p].x, ppData.pp[p].y);
                     this.ctx.strokeStyle = '#ff0000';
                     this.ctx.stroke();
+
+                    // var rect= this.canvasElement.getBoundingClientRect();
+                    // this.state.imageHistory.push(this.ctx.getImageData(0,0,rect.width,rect.height));
                 }
 
             }
@@ -250,6 +336,14 @@ export class PerimeterList extends Component {
     };
     //保存周界点
     save = ()=>{
+        let maxDisInt = Number.parseInt(this.maxDis);
+        let realP = Number.parseInt(this.state.realPosition);
+        if( maxDisInt > realP){
+            this.setState({
+                realErrText: "输入的实际距离必须大于上一个点[" + maxDisInt + "]",
+            });
+            return;
+        }
         let record = {mapPosition:0,realPosition:0};
         record.mapPosition = 0;
         record.realPosition = this.state.realPosition;
@@ -261,6 +355,7 @@ export class PerimeterList extends Component {
         record.y = this.state.y;
         let pp = this.state.ppData.pp;
         pp.push(record);
+        this.maxDis = this.state.realPosition;
         this.setState({ppData:{name:this.name,pp:pp}})
         //record.hostId = this.state.value;//主机ID
         this.handleClose()
@@ -302,7 +397,7 @@ export class PerimeterList extends Component {
 
     render() {
         const { filters, pagination = <DefaultPagination />,resource, title, data, ids, total, children, isLoading, translate, theme } = this.props;
-        const { key,hostData,ppData } = this.state;
+        const { key,hostData,ppData,ppList } = this.state;
 
         // for(let i = 0; i < hostList.length;i++){
         //     hostData[i] = hostList.data[i];
@@ -348,7 +443,26 @@ export class PerimeterList extends Component {
                     <LeftLayout canvasRef={e1 => this.canvasElement = e1} style={styles.main}/>
                 </div>
                 <Paper style={styles.rightCol}>
-                    <RightLayout data={data}/>
+                    <Table>
+                        <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+                            <TableRow>
+                                {
+                                    ['周界名称'].map((text,i) =>{
+                                        return <TableHeaderColumn>{text}</TableHeaderColumn>
+                                    })
+                                }
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody displayRowCheckbox={false}>
+                            {
+                                ppList.map((item,i)=>{
+                                    return <TableRow>
+                                        <TableRowColumn>{item.name}</TableRowColumn>
+                                    </TableRow>
+                                })
+                            }
+                        </TableBody>
+                    </Table>
                 </Paper>
                 <Dialog
                     title="设置周界点"
