@@ -40,8 +40,15 @@ export default {
                 port:'端口号'
             }
         },
-        pp:{
+        perimeter:{
             name:'周界',
+            fields:{
+                name:'周界名称',
+                hostId:'关联主机'
+            }
+        },
+        pp:{
+            name:'绘制周界',
             notification: {
                 pp_success: '绘制周界成功',
                 pp_error: '绘制周界失败',

@@ -16,6 +16,7 @@ import {MonitorAreaList,MonitorAreaCreate,MonitorAreaEdit,MonitorAreaDelete,Moni
 import {PresetList,PresetCreate,PresetEdit,PresetDelete,PresetIcon} from './preset';
 import {ConfigEdit,ConfigList,SettingsIcon} from './config';
 import {PerimeterPointList} from './perimeter';
+import {PerimetersList,PerimetersEdit,PerimetersDelete,PerimetersCreate,PerimetersIcon} from './perimeters';
 
 
 import restClient from './restClient';
@@ -52,9 +53,10 @@ class App extends Component {
                 <Resource name="cameras" create={CameraCreate} list={CameraList} edit={CameraEdit} remove={CameraDelete} icon={CameraIcon} />
                 <Resource name="hosts" list={HostList} create={HostCreate} edit={HostEdit} remove={HostDelete} icon={HostIcon} />
                 <Resource name="monitoringArea" list={MonitorAreaList} create={MonitorAreaCreate} edit={MonitorAreaEdit} remove={MonitorAreaDelete} icon={MonitorAreaIcon} />
-                <Resource name="preset" list={PresetList} create={PresetCreate} edit={PresetEdit} remove={PresetDelete} icon={PresetIcon} />
+                <Resource name="preset" list={PresetList} create={PresetCreate} edit={PresetEdit} remove={PresetDelete} icon={PerimetersIcon} />
                 <Resource name="config" list={ConfigList} edit={ConfigEdit} icon={SettingsIcon} />
                 <Resource name="pp" list={PerimeterPointList}/>
+                <Resource name="perimeter" list={PerimetersList} edit={PerimetersEdit} remove={PerimetersDelete}  icon={PresetIcon}/>
             </Admin>
         );
     }

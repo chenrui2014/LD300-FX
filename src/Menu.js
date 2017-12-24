@@ -11,10 +11,12 @@ import { SettingsIcon } from './config';
 import { PerimeterIcon } from './perimeter';
 import { MonitorAreaIcon } from './monitoringArea';
 import { PresetIcon } from './preset';
+import {PerimetersIcon} from './perimeters';
 
 const items = [
     { name: 'pp', icon: <PerimeterIcon /> },
     { name: 'hosts', icon: <HostIcon /> },
+    {name:'perimeter',icon:<PerimetersIcon />},
     { name: 'cameras', icon: <CameraIcon /> },
     { name: 'preset', icon: <PresetIcon /> },
     { name: 'monitoringArea', icon: <MonitorAreaIcon /> },

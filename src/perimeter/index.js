@@ -1,10 +1,9 @@
 import React from 'react';
-import PerimeterComponent from './Perimeter';
-import Icon from 'material-ui/svg-icons/editor/border-outer';
+import Icon from 'material-ui/svg-icons/image/edit';
 import PerimeterList from './PerimeterList';
 import {Filter,TextInput,NullableBooleanInput} from '../lib'
+
 export const PerimeterIcon = Icon;
-export const Perimeter = PerimeterComponent;
 
 const PerimeterPointFilter = (props) =>(
     <Filter {...props}>
