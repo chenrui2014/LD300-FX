@@ -23,14 +23,32 @@ export default {
                 ptz:'是否支持云台功能',
                 alarm:'是否支持报警输出',
                 audio:'是否支持音频对讲',
+                screenShot:'是否支持截屏',
                 onvif_port:'onvif协议端口',
                 onvif_user:'onvif协议用户名',
                 onvif_pwd:'onvif协议密码',
                 onvif_path:'服务地址',
+                preset:'预置点',
                 status:'状态'
             },
             add:'添加',
             notification:{}
+        },
+        cameraType:{
+            name:'摄像头类型',
+            fields:{
+                typeName:'类型名称',
+                typeCode:'类型编码'
+            }
+        },
+        vendor:{
+            name:'厂商',
+            fields:{
+                vendorName:'厂商名称',
+                vendorCode:'厂商编码',
+                telephone:'厂商电话',
+                address:'厂商地址'
+            }
         },
         hosts:{
             name:'主机',
@@ -66,7 +84,7 @@ export default {
         preset:{
             name:'预置点',
             fields: {
-                monitorId: '监控区域',
+                cameraId: '摄像头',
                 x: 'x坐标',
                 y: 'y坐标',
                 z: 'z坐标',

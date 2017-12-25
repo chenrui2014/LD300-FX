@@ -17,6 +17,8 @@ import {PresetList,PresetCreate,PresetEdit,PresetDelete,PresetIcon} from './pres
 import {ConfigEdit,ConfigList,SettingsIcon} from './config';
 import {PerimeterPointList} from './perimeter';
 import {PerimetersList,PerimetersEdit,PerimetersDelete,PerimetersCreate,PerimetersIcon} from './perimeters';
+import {CameraTypeList,CameraTypeEdit,CameraTypeDelete,CameraTypeCreate,CameraTypeIcon} from './cameraType';
+import {VendorList,VendorEdit,VendorDelete,VendorCreate,VendorIcon} from './vendor';
 
 
 import restClient from './restClient';
@@ -56,7 +58,9 @@ class App extends Component {
                 <Resource name="preset" list={PresetList} create={PresetCreate} edit={PresetEdit} remove={PresetDelete} icon={PerimetersIcon} />
                 <Resource name="config" list={ConfigList} edit={ConfigEdit} icon={SettingsIcon} />
                 <Resource name="pp" list={PerimeterPointList}/>
-                <Resource name="perimeter" list={PerimetersList} edit={PerimetersEdit} remove={PerimetersDelete}  icon={PresetIcon}/>
+                <Resource name="perimeter" list={PerimetersList} edit={PerimetersEdit} remove={PerimetersDelete}  icon={PerimetersIcon}/>
+                <Resource name="cameraType" list={CameraTypeList} create={CameraTypeCreate}  edit={CameraTypeEdit} remove={CameraTypeDelete}  icon={CameraTypeIcon}/>
+                <Resource name="vendor" list={VendorList} create={VendorCreate}  edit={VendorEdit} remove={VendorDelete}  icon={VendorIcon}/>
             </Admin>
         );
     }

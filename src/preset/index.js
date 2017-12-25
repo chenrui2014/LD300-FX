@@ -21,8 +21,7 @@ const PresetFilter = (props) =>(
 export const PresetList = ({...props}) =>(
     <List {...props} filters={<PresetFilter/>} sort={{field:'id',order:'ASC'}}  perPage={25}>
         <Datagrid bodyOptions={{ stripedRows: true, showRowHover: true }}>
-            <TextField source="id"/>
-            <TextField source="monitorId" label="resources.preset.fields.monitorId"/>
+            <TextField source="cameraId" label="resources.preset.fields.cameraId"/>
             <TextField source="x" label="resources.preset.fields.x"/>
             <TextField source="y" label="resources.preset.fields.y"/>
             <TextField source="z" label="resources.preset.fields.z"/>
@@ -50,8 +49,8 @@ export const PresetCreate = ({ ...props }) => (
             return errors;
         }}
         >
-            <ReferenceInput  source="monitorId" reference="hosts" allowEmpty>
-                <SelectInput source='monitorId' optionText="id" optionValue="id" />
+            <ReferenceInput  source="cameraId" reference="cameras" allowEmpty>
+                <SelectInput source='ip' optionText="ip" optionValue="id" />
             </ReferenceInput>
             <NumberInput source="x"style={{display:'inline-block'}}/>
             <NumberInput source="y"style={{display:'inline-block'}}/>
@@ -70,8 +69,8 @@ export const PresetEdit = ({...props}) =>(
     <Edit title={<presetTitle/>} {...props}>
         <SimpleForm>
             <DisabledInput source="id" />
-            <ReferenceInput  source="monitorId" reference="hosts" allowEmpty>
-                <SelectInput source='monitorId' optionText="id" optionValue="id" />
+            <ReferenceInput  source="cameraId" reference="cameras" allowEmpty>
+                <SelectInput source='ip' optionText="ip" optionValue="id" />
             </ReferenceInput>
             <NumberInput source="x"style={{display:'inline-block'}}/>
             <NumberInput source="y"style={{display:'inline-block'}}/>
