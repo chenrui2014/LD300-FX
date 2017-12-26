@@ -2,6 +2,8 @@ import React from 'react';
 import Icon from 'material-ui/svg-icons/action/visibility';
 import { List,EditButton,DeleteButton,Toolbar,Create,SaveButton,Filter,Datagrid,TextField,TextInput,Edit,SimpleForm,Delete,DisabledInput,ReferenceInput,SelectInput,NumberInput } from '../lib';
 import {translate} from '../lib';
+import CameraReferenceField from './cameraReferenceField';
+import PerimeterReferenceField from './perimeterReferenceField';
 
 const styles = {
     edit_title:{
@@ -19,8 +21,9 @@ const MonitorAreaFilter = (props) =>(
 export const MonitorAreaList = (props) =>(
     <List {...props} filters={<MonitorAreaFilter/>} sort={{field:'id',order:'ASC'}}  perPage={25}>
         <Datagrid bodyOptions={{ stripedRows: true, showRowHover: true }}>
-            <TextField source="hostName" label="resources.monitoringArea.fields.hostId"/>
-            <TextField source="cameraName" label="resources.monitoringArea.fields.cameraId"/>
+            <CameraReferenceField allowEmpty linkType={false} />
+            <PerimeterReferenceField allowEmpty linkType={false} />
+            <TextField source="num" label="resources.monitoringArea.fields.num"/>
             <TextField source="min_dis" label="resources.monitoringArea.fields.min_dis"/>
             <TextField source="max_dis" label="resources.monitoringArea.fields.max_dis"/>
             <EditButton />
@@ -35,25 +38,16 @@ const MonitorAreaCreateToolbar = props => <Toolbar {...props} >
 
 export const MonitorAreaCreate = ({ ...props }) => (
     <Create {...props}>
-        <SimpleForm toolbar={<MonitorAreaCreateToolbar />} defaultValue={{ average_note: 0 }} validate={(values) => {
-            const errors = {};
-            ['hostName',].forEach((field) => {
-                if (!values[field]) {
-                    errors[field] = ['Required field'];
-                }
-            });
+        <SimpleForm toolbar={<MonitorAreaCreateToolbar />} defaultValue={{ average_note: 0 }}>
+            <ReferenceInput  source="perimeterId" reference="perimeter" allowEmpty style={{display:'inline-block'}}>
 
-            return errors;
-        }}
-        >
-            <ReferenceInput  source="hostId" reference="hosts" allowEmpty  style={{display:'inline-block'}}>
-
-                <SelectInput source='hostName' optionText="hostName" optionValue="id" />
+                <SelectInput source='name' optionText="name" optionValue="id" />
             </ReferenceInput>
-            <ReferenceInput  source="cameraId" reference="cameras" allowEmpty  style={{display:'inline-block'}}>
+            <ReferenceInput  source="cameraId" reference="cameras" allowEmpty style={{display:'inline-block'}}>
 
-                <SelectInput source="cameraName" optionText="name" optionValue="id" />
+                <SelectInput source="ip" optionText="ip" optionValue="id" />
             </ReferenceInput><br/>
+            <NumberInput source="num" style={{display:'inline-block'}}/>
             <NumberInput source="min_dis" style={{display:'inline-block'}}/>
             <NumberInput source="max_dis" style={{display:'inline-block'}}/>
         </SimpleForm>
@@ -65,15 +59,15 @@ const MonitorAreaTitle = ({record}) => record?<TextField source='cameraName'  re
 export const MonitorAreaEdit = ({...props}) =>(
     <Edit title={<MonitorAreaTitle/>} {...props}>
         <SimpleForm>
-            <ReferenceInput  source="hostId" reference="hosts" allowEmpty>
-                <SelectInput source='hostName' optionText="hostName" optionValue="id" />
+            <ReferenceInput  source="perimeterId" reference="perimeter" allowEmpty style={{display:'inline-block'}}>
+                <SelectInput source='name' optionText="name" optionValue="id" />
             </ReferenceInput>
-            <ReferenceInput  source="cameraId" reference="cameras" allowEmpty>
-
-                <SelectInput source="cameraName" optionText="name" optionValue="id" />
-            </ReferenceInput>
-            <NumberInput source="min_dis"style={{display:'inline-block'}}/>
-            <NumberInput source="max_dis"style={{display:'inline-block'}}/>
+            <ReferenceInput  source="cameraId" reference="cameras" allowEmpty style={{display:'inline-block'}}>
+                <SelectInput source="ip" optionText="ip" optionValue="id" />
+            </ReferenceInput><br/>
+            <NumberInput source="num" style={{display:'inline-block'}}/>
+            <NumberInput source="min_dis" style={{display:'inline-block'}}/>
+            <NumberInput source="max_dis" style={{display:'inline-block'}}/>
         </SimpleForm>
     </Edit>
 );

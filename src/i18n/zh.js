@@ -75,8 +75,9 @@ export default {
         monitoringArea:{
             name:'监控区域',
             fields: {
-                hostId: '主机',
+                perimeterId: '周界',
                 cameraId: '摄像头',
+                num:'序号',
                 min_dis: '监控起始距离(米)',
                 max_dis: '监控结束距离（米）'
             }

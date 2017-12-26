@@ -52,9 +52,9 @@ export const PresetCreate = ({ ...props }) => (
             <ReferenceInput  source="cameraId" reference="cameras" allowEmpty>
                 <SelectInput source='ip' optionText="ip" optionValue="id" />
             </ReferenceInput>
-            <NumberInput source="x"style={{display:'inline-block'}}/>
-            <NumberInput source="y"style={{display:'inline-block'}}/>
-            <NumberInput source="z"style={{display:'inline-block'}}/>
+            <NumberInput source="x" style={{display:'inline-block'}}/>
+            <NumberInput source="y" style={{display:'inline-block'}}/>
+            <NumberInput source="z" style={{display:'inline-block'}}/>
             
             <TextInput source="preset" />
             <NumberInput source="distance"style={{display:'inline-block'}}/>
@@ -72,9 +72,9 @@ export const PresetEdit = ({...props}) =>(
             <ReferenceInput  source="cameraId" reference="cameras" allowEmpty>
                 <SelectInput source='ip' optionText="ip" optionValue="id" />
             </ReferenceInput>
-            <NumberInput source="x"style={{display:'inline-block'}}/>
-            <NumberInput source="y"style={{display:'inline-block'}}/>
-            <NumberInput source="z"style={{display:'inline-block'}}/>
+            <NumberInput source="x" style={{display:'inline-block'}}/>
+            <NumberInput source="y" style={{display:'inline-block'}}/>
+            <NumberInput source="z" style={{display:'inline-block'}}/>
 
             <TextInput source="preset" />
             <NumberInput source="distance"style={{display:'inline-block'}}/>

@@ -38,7 +38,7 @@ export const PerimetersCreate = ({ ...props }) => (
         >
             <TextInput source="name" style={{display:'inline-block'}}/>
             <ReferenceInput source="hostId" reference="hosts" allowEmpty>
-                <SelectInput source="hostName" />
+                <SelectInput source="port" />
             </ReferenceInput>
         </SimpleForm>
     </Create>
@@ -51,7 +51,7 @@ export const PerimetersEdit = ({...props}) =>(
         <SimpleForm>
             <TextInput source="name" style={{display:'inline-block'}}/>
             <ReferenceInput source="hostId" reference="hosts" allowEmpty>
-                <SelectInput source="hostName" optionText="hostName" optionValue="id" />
+                <SelectInput source="port" optionText="port" optionValue="id" />
             </ReferenceInput>
         </SimpleForm>
     </Edit>
