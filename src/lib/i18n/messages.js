@@ -22,7 +22,7 @@ export default {
             show: '%{name} #%{id}',
             create: '创建 %{name}',
             delete: '删除 %{name} #%{id}',
-            dashboard: '面板',
+            dashboard: '监控界面',
         },
         input: {
             file: {

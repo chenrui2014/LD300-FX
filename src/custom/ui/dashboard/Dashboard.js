@@ -71,7 +71,7 @@ class Dashboard extends Component {
     constructor(...args){
         super(...args);
 
-        this.state = {selected: [1],open:true,value:'7a3e98b0-ea52-11e7-97dc-9dba1b55e819',alarmHostId:[1,2],config:{},videoData:{path:'/live/7a3e98b0-ea52-11e7-97dc-9dba1b55e819'},cameraList:{},hosts:{},perimeterPoint:{},key: 0};
+        this.state = {selected: [1],open:true,value:1,alarmHostId:[1,2],config:{},videoData:{path:'/live/1'},cameraList:{},hosts:{},perimeterPoint:{},key: 0};
 
 
     }
