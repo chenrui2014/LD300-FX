@@ -2,11 +2,8 @@
  * Created by chen on 17-8-26.
  */
 import React, { Component } from 'react';
-// import {connect} from 'react-redux';
 import withWidth from 'material-ui/utils/withWidth';
-// import compose from 'recompose/compose';
 import {Main} from './main';
-import LeftLayout from "../containers/leftLayout";
 import {GET_LIST} from '../../../lib';
 import restClient from '../../../restClient'
 import Dialog from 'material-ui/Dialog';
@@ -27,14 +24,11 @@ import {Table,TableBody,TableHeader,TableRow,TableRowColumn,TableHeaderColumn,Ta
 import {red500, green500, grey500,black} from 'material-ui/styles/colors';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
-// import ListTab from '../containers/ListTab';
-// import {host} from '../../action';
 
 import $ from 'jquery';
 import flvjs from 'flv.js';
 
 import io from 'socket.io-client';
-// import {green500} from "material-ui/styles/colors";
 
 const socket=io('http://localhost:3001',{
     path:'/stateServer'

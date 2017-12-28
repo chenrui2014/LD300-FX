@@ -27,7 +27,7 @@ import defaultTheme from '../defaultTheme';
 import {LeftLayout} from './leftLayout';
 import RightLayout from './rightLayout';
 import Background from '../../static/img/background.bmp';
-import {Table,TableBody,TableHeader,TableRow,TableRowColumn,TableHeaderColumn,TableFooter} from 'material-ui/Table';
+import {Table,TableBody,TableHeader,TableRow,TableRowColumn,TableHeaderColumn} from 'material-ui/Table';
 
 import restClient from '../restClient'
 import {GET_LIST} from '../lib';
