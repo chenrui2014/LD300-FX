@@ -14,7 +14,7 @@ import ViewTitle from '../lib/mui/layout/ViewTitle';
 import Title from '../lib/mui/layout/Title';
 import DefaultPagination from '../lib/mui/list/Pagination';
 import DefaultActions from '../lib/mui/list/Actions';
-import { crudGetList as crudGetListAction } from '../lib/actions/dataActions';
+import {crudGetList as crudGetListAction, crudUpdate as crudUpdateAction} from '../lib/actions/dataActions';
 import { changeListParams as changeListParamsAction } from '../lib/actions/listActions';
 import translate from '../lib/i18n/translate';
 import removeKey from '../lib/util/removeKey';
@@ -55,8 +55,11 @@ const styles = {
 export class PresetList extends Component {
     constructor(props) {
         super(props);
-        this.state = { key: 0,value:1,cameraList:[]} ;
+        this.state = { key: 0,value:1,cameraList:[],x:0,y:0,z:0,realErrText:''} ;
     }
+
+    presetName = '';
+    distance = 0;
 
     componentWillMount(){
         restClient(GET_LIST,'cameras_noPage',{sort: { field: 'id', order: 'asc' },pagination: { page: 1, perPage: 10000 }})
@@ -186,6 +189,66 @@ export class PresetList extends Component {
 
     handleChange = (event, index, value) => this.setState({value});
 
+    handlePtz = (e,code) =>{
+        var handle='';
+        var stop='';
+        $.ajax({
+            url:'http://localhost:3000/ipc/'+this.state.value+'/ptz/move?position='+code+'&stop='+stop+'&handle='+handle+'&t='+new Date().getTime(),
+            dataType:'json',
+            success:function (data) {
+                handle=data.handle;
+                console.log(JSON.stringify(data));
+            }
+        });
+    };
+
+    getPoint = (e)=>{
+        let _this = this;
+        $.ajax({
+            url:'http://localhost:3000/ipc/'+this.state.value+'/ptz/getPoint?t='+new Date().getTime(),
+            dataType:'json',
+            success:function (data) {
+                _this.setState({x:data.x,y:data.y,z:data.z});
+                console.log(JSON.stringify(data));
+            }
+        });
+    };
+    save=()=>{
+        let record = {};
+        for(let r of this.state.cameraList){
+            if(r.id === this.state.value){
+                record = r;
+            }
+        }
+        let presets = [];
+        let preset = {};
+        preset.x = this.state.x;
+        preset.y = this.state.y;
+        preset.z = this.state.z;
+        preset.preset = this.presetName;
+        preset.distance = this.distance;
+        presets.push(preset);
+        record.preset = presets;
+        this.props.crudUpdate('cameras', record.id, record, record, this.getBasePath(), 'list');
+    }
+    handleChange4 = (event) => {
+        this.presetName =  event.target.value;
+    };
+    handleChange5 = (event) => {
+        const regex = /^[0-9]\d*$/;
+        if(!regex.test(event.target.value)){
+            this.setState({
+                realErrText: "请输入数字",
+            });
+            return;
+        }else{
+            this.setState({
+                realErrText: "",
+            });
+        }
+        this.distance =  event.target.value;
+    };
+
     render() {
         const { filters, pagination = <DefaultPagination />, actions = <DefaultActions />, resource, hasCreate, title, data, ids, total, children, isLoading, translate, theme } = this.props;
         const { key,value,cameraList } = this.state;
@@ -207,7 +270,7 @@ export class PresetList extends Component {
                 <div style={styles.leftCol}>
                     <Card>
                         <CardHeader>
-                            <SelectField floatingLabelText="Frequency"
+                            <SelectField floatingLabelText="摄像头"
                                          value={this.state.value}
                                          onChange={this.handleChange}>
                                 {
@@ -218,9 +281,7 @@ export class PresetList extends Component {
 
                             </SelectField>
                         </CardHeader>
-                        <CardMedia id={value}
-                            overlay={<CardTitle title="Overlay title" subtitle="Overlay subtitle" />}
-                        >
+                        <CardMedia id={value}>
                         </CardMedia>
                         <CardTitle title="摄像头操作"/>
                         <CardText>
@@ -234,20 +295,17 @@ export class PresetList extends Component {
                                 <IconButton tooltip="向右"><ArrowForwardIcon onClick={this.handlePtz.bind(this,4)} /></IconButton>
                             </div>
                             <div>
+                                <TextField hintText="x" value={this.state.x} disabled={true}/>
+                                <TextField hintText="y" value={this.state.y} disabled={true}/>
+                                <TextField hintText="z" value={this.state.z} disabled={true}/>
+                                <RaisedButton label="获得ptz坐标" style={styles.button} onClick={this.getPoint.bind(this)} />
                                 <TextField
-                                    hintText="x"
-                                /><TextField
-                                hintText="y"
-                            /><TextField
-                                hintText="z"
-                            /><RaisedButton label="获得ptz坐标" style={styles.button} />
-                                <TextField
-                                    hintText="预置点名称"
+                                    hintText="预置点名称" onChange={this.handleChange4}
                                 />
                                 <TextField
-                                    hintText="距离"
+                                    hintText="距离" errorText={this.state.realErrText} onChange={this.handleChange5}
                                 />
-                                <RaisedButton label="设置预置点" style={styles.button} />
+                                <RaisedButton label="设置预置点" style={styles.button} onClick={this.save.bind(this)}/>
                             </div>
                         </CardActions>
                     </Card>
@@ -258,7 +316,7 @@ export class PresetList extends Component {
                             <TableRow>
                                 {
                                     ['预置点名称','x','y','z','距离'].map((text,i) =>{
-                                        return <TableHeaderColumn>{text}</TableHeaderColumn>
+                                        return <TableHeaderColumn key={i}>{text}</TableHeaderColumn>
                                     })
                                 }
                             </TableRow>
@@ -266,7 +324,7 @@ export class PresetList extends Component {
                         <TableBody displayRowCheckbox={false}>
                             {
                                 cameraList[value] && cameraList[value].preset?cameraList[value].preset.map((item,i)=>{
-                                    return <TableRow>
+                                    return <TableRow key={i}>
                                         <TableRowColumn>{item.name}</TableRowColumn>
                                         <TableRowColumn>{item.x}</TableRowColumn>
                                         <TableRowColumn>{item.y}</TableRowColumn>
@@ -294,7 +352,6 @@ PresetList.propTypes = {
         field: PropTypes.string,
         order: PropTypes.string,
     }),
-    children: PropTypes.element.isRequired,
     changeListParams: PropTypes.func.isRequired,
     crudGetList: PropTypes.func.isRequired,
     data: PropTypes.object,
@@ -355,6 +412,7 @@ const enhance = compose(
         {
             crudGetList: crudGetListAction,
             changeListParams: changeListParamsAction,
+            crudUpdate: crudUpdateAction,
             push: pushAction,
         },
     ),

@@ -13,7 +13,7 @@ import Login from './Login';
 import {CameraList,CameraCreate,CameraEdit,CameraDelete,CameraIcon} from './cameras';
 import {HostList,HostCreate,HostEdit,HostDelete,HostIcon} from './hosts';
 import {MonitorAreaList,MonitorAreaCreate,MonitorAreaEdit,MonitorAreaDelete,MonitorAreaIcon} from './monitoringArea';
-import {PresetList,PresetCreate,PresetEdit,PresetDelete,PresetIcon} from './preset';
+import {PresetIcon} from './preset';
 import {ConfigEdit,ConfigList,SettingsIcon} from './config';
 import {PerimeterPointList} from './perimeter';
 import {PerimetersList,PerimetersEdit,PerimetersDelete,PerimetersCreate,PerimetersIcon} from './perimeters';
@@ -56,13 +56,12 @@ class App extends Component {
                 <Resource name="cameras" create={CameraCreate} list={CameraList} edit={CameraEdit} remove={CameraDelete} icon={CameraIcon} />
                 <Resource name="hosts" list={HostList} create={HostCreate} edit={HostEdit} remove={HostDelete} icon={HostIcon} />
                 <Resource name="monitoringArea" list={MonitorAreaList} create={MonitorAreaCreate} edit={MonitorAreaEdit} remove={MonitorAreaDelete} icon={MonitorAreaIcon} />
-                <Resource name="preset" list={PresetList} create={PresetCreate} edit={PresetEdit} remove={PresetDelete} icon={PerimetersIcon} />
+                <Resource name="preset" list={PresetList} icon={PresetIcon} />
                 <Resource name="config" list={ConfigList} edit={ConfigEdit} icon={SettingsIcon} />
                 <Resource name="pp" list={PerimeterPointList}/>
                 <Resource name="perimeter" list={PerimetersList} edit={PerimetersEdit} remove={PerimetersDelete}  icon={PerimetersIcon}/>
                 <Resource name="cameraType" list={CameraTypeList} create={CameraTypeCreate}  edit={CameraTypeEdit} remove={CameraTypeDelete}  icon={CameraTypeIcon}/>
                 <Resource name="vendor" list={VendorList} create={VendorCreate}  edit={VendorEdit} remove={VendorDelete}  icon={VendorIcon}/>
-                <Resource name="cameras" list={PresetList} />
             </Admin>
         );
     }
