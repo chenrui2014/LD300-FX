@@ -49,13 +49,22 @@ const styles = {
     rightCol: {
         flex: '0 0 auto',
         width: 360
+    },
+    video:{
+        width: 600,
+        height: 400,
+        flex:'2 1 auto'
+    },
+    option:{
+        flex:'1 1 auto',
+        marginTop:10
     }
 };
 
 export class PresetList extends Component {
     constructor(props) {
         super(props);
-        this.state = { key: 0,value:1,cameraList:[],x:0,y:0,z:0,realErrText:''} ;
+        this.state = { key: 0,value:1,currentCam:{},camHandlers:[{id:0,handler:''}],presets:[],cameraList:[],x:0,y:0,z:0,realErrText:''} ;
     }
 
     presetName = '';
@@ -64,49 +73,86 @@ export class PresetList extends Component {
     componentWillMount(){
         restClient(GET_LIST,'cameras_noPage',{sort: { field: 'id', order: 'asc' },pagination: { page: 1, perPage: 10000 }})
             .then(response =>response.data)
-            .then(cameras=> this.setState({
-                cameraList:cameras
-            }));
+            .then(cameras=> {
+                let demoCam = [];
+                if(cameras.length > 0){
+                    for(let cam of cameras){
+                        if(cam.isDemo){
+                            demoCam.push(cam);
+                        }
+                    }
+                }
+                this.setState({currentCam:demoCam[0],presets:demoCam[0].preset,cameraList:demoCam})
+            });
     }
 
     componentDidMount() {
-        this.updateData();
-        if (Object.keys(this.props.query).length > 0) {
-            this.props.changeListParams(this.props.resource, this.props.query);
-        }
-    }
 
-    componentDidUpdate(){
-        function play(v,path,port) {
-            var flvPlayer = flvjs.createPlayer({
-                type: 'flv',
-                isLive: true,
-                enableWorker:true,
-                enableStashBuffer: false,
-                stashInitialSize: 128,
-                autoCleanupSourceBuffer:true,
-                url:'ws://localhost:'+port+path
-            },{
-                enableStashBuffer:false
-            });
-            flvPlayer.attachMediaElement(v);
-            flvPlayer.load();
-            flvPlayer.play();
-        }
+        if(this.state.currentCam){
 
-        var cameraId = this.state.value;
-
-        $.ajax({
-            url:'http://localhost:3000/ipc/' + cameraId + '/live'+'?t='+new Date().getTime(),
-            dataType:'json',
-            success:function (data) {
-                if($("#" + cameraId).children("video").length > 0){
-                    return;
-                }
-                play($('<video></video>').prop('class','v'+cameraId).appendTo('#'+cameraId)[0],data.path,data.port);
+            function play(v,path,port) {
+                var flvPlayer = flvjs.createPlayer({
+                    type: 'flv',
+                    isLive: true,
+                    enableWorker:true,
+                    enableStashBuffer: false,
+                    stashInitialSize: 128,
+                    autoCleanupSourceBuffer:true,
+                    url:'ws://localhost:'+port+path
+                },{
+                    enableStashBuffer:false
+                });
+                flvPlayer.attachMediaElement(v);
+                flvPlayer.load();
+                flvPlayer.play();
             }
-        });
+
+            var cameraId = this.state.currentCam;
+
+            $.ajax({
+                url:'http://localhost:3000/ipc/' + cameraId + '/live'+'?t='+new Date().getTime(),
+                dataType:'json',
+                success:function (data) {
+                    if($("#" + cameraId).children("video").length > 0){
+                        return;
+                    }
+                    play($('<video></video>').prop('class','v'+cameraId).appendTo('#'+cameraId)[0],data.path,data.port);
+                }
+            });
+        }
     }
+
+    // componentDidUpdate(){
+    //     function play(v,path,port) {
+    //         var flvPlayer = flvjs.createPlayer({
+    //             type: 'flv',
+    //             isLive: true,
+    //             enableWorker:true,
+    //             enableStashBuffer: false,
+    //             stashInitialSize: 128,
+    //             autoCleanupSourceBuffer:true,
+    //             url:'ws://localhost:'+port+path
+    //         },{
+    //             enableStashBuffer:false
+    //         });
+    //         flvPlayer.attachMediaElement(v);
+    //         flvPlayer.load();
+    //         flvPlayer.play();
+    //     }
+    //
+    //     var cameraId = this.state.value;
+    //
+    //     $.ajax({
+    //         url:'http://localhost:3000/ipc/' + cameraId + '/live'+'?t='+new Date().getTime(),
+    //         dataType:'json',
+    //         success:function (data) {
+    //             if($("#" + cameraId).children("video").length > 0){
+    //                 return;
+    //             }
+    //             play($('<video></video>').prop('class','v'+cameraId).appendTo('#'+cameraId)[0],data.path,data.port);
+    //         }
+    //     });
+    // }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.resource !== this.props.resource
@@ -187,19 +233,80 @@ export class PresetList extends Component {
         this.props.changeListParams(this.props.resource, newParams);
     }
 
-    handleChange = (event, index, value) => this.setState({value});
+    handleChange = (event, index, value) => {
 
-    handlePtz = (e,code) =>{
-        var handle='';
-        var stop='';
+        this.setState({value:value,currentCam:this.state.cameraList[index],presets:this.state.cameraList[index].preset});
+
+        function play(v,path,port) {
+            var flvPlayer = flvjs.createPlayer({
+                type: 'flv',
+                isLive: true,
+                enableWorker:true,
+                enableStashBuffer: false,
+                stashInitialSize: 128,
+                autoCleanupSourceBuffer:true,
+                url:'ws://localhost:'+port+path
+            },{
+                enableStashBuffer:false
+            });
+            flvPlayer.attachMediaElement(v);
+            flvPlayer.load();
+            flvPlayer.play();
+        }
+
+        var cameraId = value;
+
         $.ajax({
-            url:'http://localhost:3000/ipc/'+this.state.value+'/ptz/move?position='+code+'&stop='+stop+'&handle='+handle+'&t='+new Date().getTime(),
+            url:'http://localhost:3000/ipc/' + cameraId + '/live'+'?t='+new Date().getTime(),
             dataType:'json',
             success:function (data) {
-                handle=data.handle;
-                console.log(JSON.stringify(data));
+                $("#" + cameraId).empty();
+                play($('<video></video>').prop('class','v'+cameraId).appendTo('#'+cameraId)[0],data.path,data.port);
             }
         });
+    }
+
+    flag = true;
+    currentCode = 0;
+    handlePtz = (code,e) =>{
+        var handle='';
+        for(let camHandler of this.state.camHandlers){
+            if(camHandler.id === this.state.value){
+                handle=camHandler.handler;
+            }
+        }
+        let _this = this;
+        //var stop='';
+        if(code === this.currentCode && !this.flag){
+            $.ajax({
+                url:'http://localhost:3000/ipc/'+this.state.value+'/ptz/ptzStop?stop=1'+'&handle='+handle+'&t='+new Date().getTime(),
+                dataType:'json',
+                success:function (data) {
+                    for(let camHandler of _this.state.camHandlers){
+                        if(camHandler.id === _this.state.value){
+                            camHandler.handler = data.handle;
+                        }
+                    }
+                    console.log(JSON.stringify(data));
+                }
+            });
+            this.flag=true;
+        }else{
+            this.currentCode = code;
+            $.ajax({
+                url:'http://localhost:3000/ipc/'+this.state.value+'/ptz/move?position='+code+'&stop=1'+'&handle='+handle+'&t='+new Date().getTime(),
+                dataType:'json',
+                success:function (data) {
+                    for(let camHandler of _this.state.camHandlers){
+                        if(camHandler.id === _this.state.value){
+                            camHandler.handler = data.handle;
+                        }
+                    }
+                    console.log(JSON.stringify(data));
+                }
+            });
+            this.flag=false;
+        }
     };
 
     getPoint = (e)=>{
@@ -208,19 +315,14 @@ export class PresetList extends Component {
             url:'http://localhost:3000/ipc/'+this.state.value+'/ptz/getPoint?t='+new Date().getTime(),
             dataType:'json',
             success:function (data) {
-                _this.setState({x:data.x,y:data.y,z:data.z});
+                _this.setState({x:data.x?data.x:0,y:data.y?data.y:0,z:data.z?data.z:0});
                 console.log(JSON.stringify(data));
             }
         });
     };
     save=()=>{
-        let record = {};
-        for(let r of this.state.cameraList){
-            if(r.id === this.state.value){
-                record = r;
-            }
-        }
-        let presets = [];
+        let record = this.state.currentCam;
+        let presets = record.preset;
         let preset = {};
         preset.x = this.state.x;
         preset.y = this.state.y;
@@ -251,7 +353,7 @@ export class PresetList extends Component {
 
     render() {
         const { filters, pagination = <DefaultPagination />, actions = <DefaultActions />, resource, hasCreate, title, data, ids, total, children, isLoading, translate, theme } = this.props;
-        const { key,value,cameraList } = this.state;
+        const { key,value,cameraList,presets } = this.state;
         const query = this.getQuery();
         const filterValues = query.filter;
         const basePath = this.getBasePath();
@@ -275,13 +377,15 @@ export class PresetList extends Component {
                                          onChange={this.handleChange}>
                                 {
                                     cameraList.map((camera,i) =>{
-                                        return <MenuItem value={camera.id} primaryText={camera.ip} />
+                                        return <MenuItem key={i} value={camera.id} primaryText={camera.ip} />
                                     })
                                 }
 
                             </SelectField>
                         </CardHeader>
-                        <CardMedia id={value}>
+                        <CardMedia>
+                            <div style={styles.video} id={value} >
+                            </div>
                         </CardMedia>
                         <CardTitle title="摄像头操作"/>
                         <CardText>
@@ -323,7 +427,7 @@ export class PresetList extends Component {
                         </TableHeader>
                         <TableBody displayRowCheckbox={false}>
                             {
-                                cameraList[value] && cameraList[value].preset?cameraList[value].preset.map((item,i)=>{
+                                presets.length > 0?presets.map((item,i)=>{
                                     return <TableRow key={i}>
                                         <TableRowColumn>{item.name}</TableRowColumn>
                                         <TableRowColumn>{item.x}</TableRowColumn>

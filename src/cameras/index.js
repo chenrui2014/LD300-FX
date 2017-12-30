@@ -34,6 +34,7 @@ export const CameraList = ({...props}) =>(
             <BooleanField source="alarm" label="resources.cameras.fields.alarm"/>
             <BooleanField source="audio" label="resources.cameras.fields.audio"/>
             <BooleanField source="screenShot" label="resources.cameras.fields.screenShot"/>
+            <TextField source="serial_port" label="resources.cameras.fields.serial_port"/>
             <BooleanField source="status" label="resources.cameras.fields.status"/>
             <LinkToRelatedPreset />
             <EditButton translate={props.translate}/>
@@ -72,9 +73,10 @@ export const CameraCreate = ({ ...props }) => (
                 <SelectInput source="vendorName" optionText="vendorName" optionValue="id" />
             </ReferenceInput>
 
-            <NullableBooleanInput source="alarm" style={{display:'inline-block'}}/>
+            <NullableBooleanInput source="alarm" style={{display:'inline-block'}}/><br/>
             <NullableBooleanInput source="audio" style={{display:'inline-block'}}/>
-            <NullableBooleanInput source="screenShot" style={{display:'inline-block'}}/><br/>
+            <NullableBooleanInput source="screenShot" style={{display:'inline-block'}}/>
+            <TextInput source="serial_port" style={{display:'inline-block'}}/><br/>
             <TextInput source="onvif_port" style={{display:'inline-block'}}/>
             <TextInput source="onvif_user" style={{display:'inline-block'}}/>
             <TextInput type="password" source="onvif_pwd" style={{display:'inline-block'}}/><br/>
@@ -106,10 +108,11 @@ export const CameraEdit = ({...props}) =>(
             <NullableBooleanInput source="alarm" style={{display:'inline-block'}}/><br/>
             <NullableBooleanInput source="audio" style={{display:'inline-block'}}/>
             <NullableBooleanInput source="screenShot" style={{display:'inline-block'}}/>
-            <TextInput source="onvif_port" style={{display:'inline-block'}}/><br/>
+            <TextInput source="serial_port" style={{display:'inline-block'}}/><br/>
+            <TextInput source="onvif_port" style={{display:'inline-block'}}/>
             <TextInput source="onvif_user" style={{display:'inline-block'}}/>
-            <TextInput type="password" source="onvif_pwd" style={{display:'inline-block'}}/>
-            <TextInput source="onvif_path" style={{display:'inline-block'}}/><br/>
+            <TextInput type="password" source="onvif_pwd" style={{display:'inline-block'}}/><br/>
+            <TextInput source="onvif_path" style={{display:'inline-block'}}/>
             <NullableBooleanInput source="status" style={{display:'inline-block'}}/>
         </SimpleForm>
     </Edit>

@@ -24,6 +24,7 @@ export default {
                 alarm:'是否支持报警输出',
                 audio:'是否支持音频对讲',
                 screenShot:'是否支持截屏',
+                serial_port:'云台控制串口',
                 onvif_port:'onvif协议端口',
                 onvif_user:'onvif协议用户名',
                 onvif_pwd:'onvif协议密码',
@@ -100,6 +101,16 @@ export default {
                 company:'公司',
                 telephone:'技术支持电话',
                 useUnit:'使用单位'
+            }
+        },
+        event:{
+            name:'事件',
+            fields:{
+                happenTime:'发生时间',
+                position:'触警位置',
+                eventType:'事件性质',
+                eventHandler:'处理员',
+                video:'调取录像'
             }
         }
     },

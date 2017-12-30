@@ -14,6 +14,7 @@ import { PresetIcon } from './preset';
 import {PerimetersIcon} from './perimeters';
 import {CameraTypeIcon} from './cameraType';
 import {VendorIcon} from './vendor';
+import {EventIcon} from './event';
 
 const items = [
     { name: 'pp', icon: <PerimeterIcon /> },
@@ -24,6 +25,7 @@ const items = [
     { name: 'monitoringArea', icon: <MonitorAreaIcon /> },
     { name: 'cameraType', icon: <CameraTypeIcon /> },
     { name: 'vendor', icon: <VendorIcon /> },
+    { name: 'event', icon: <EventIcon /> },
     { name: 'config', icon: <SettingsIcon /> },
 ];
 
