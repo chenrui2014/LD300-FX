@@ -92,6 +92,7 @@
     "recompose": "~0.23.1",
     "redux": "~3.6.0",
     "redux-form": "~6.6.3",
+    "reflv": "0.0.1",
     "request": "^2.81.0",
     "request-promise": "^4.2.1",
     "request-promise-native": "^1.0.4",

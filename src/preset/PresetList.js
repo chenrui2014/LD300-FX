@@ -312,7 +312,7 @@ export class PresetList extends Component {
     getPoint = (e)=>{
         let _this = this;
         $.ajax({
-            url:'http://localhost:3000/ipc/'+this.state.value+'/ptz/getPoint?t='+new Date().getTime(),
+            url:'http://localhost:3000/ipc/'+this.state.value+'/getPoint?t='+new Date().getTime(),
             dataType:'json',
             success:function (data) {
                 _this.setState({x:data.x?data.x:0,y:data.y?data.y:0,z:data.z?data.z:0});

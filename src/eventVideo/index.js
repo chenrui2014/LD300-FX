@@ -18,14 +18,27 @@ import {
     TextInput,
 } from '../lib';
 import GridList from './GridList';
+import Icon from "material-ui/svg-icons/action/chrome-reader-mode";
+import DateInput from "../lib/mui/input/DateInput";
+
+export const EventIcon = Icon;
+
 export const EventVideoFilter = props => (
     <Filter {...props}>
-        <TextInput label="pos.search" source="q" alwaysOn /> />
+        <TextInput label="pos.search" source="q" alwaysOn />
+        <ReferenceInput source="hid" reference="hosts">
+            <SelectInput source="port" />
+        </ReferenceInput>
+        <ReferenceInput source="pid" reference="cameras">
+            <SelectInput source="ip" />
+        </ReferenceInput>
+        <DateInput source="happenTime_gte" />
+        <DateInput source="happenTime_lte" />
     </Filter>
 );
 
 export const EventVideoList = props => (
-    <List {...props} filters={<ProductFilter />} perPage={20}>
+    <List {...props} filters={<EventVideoFilter />} perPage={20}>
         <GridList />
     </List>
 );

@@ -1,6 +1,7 @@
 import React from 'react';
 import { GridList as MuiGridList, GridTile } from 'material-ui/GridList';
 import { NumberField, EditButton } from '../lib';
+import Reflv from 'reflv';
 
 const styles = {
     root: {
@@ -18,12 +19,11 @@ const GridList = ({ ids, isLoading, data, currentSort, basePath, rowStyle }) => 
             {ids.map((id) => (
                 <GridTile
                     key={id}
-                    title={data[id].reference}
-                    subtitle={<span>{data[id].width}x{data[id].height}, <b><NumberField source="price" record={data[id]} options={{ style: 'currency', currency: 'USD' }} /></b></span>}
-                    actionIcon={<EditButton basePath={basePath} record={data[id]} label="" />}
+                    title={<span>{data[id].hid}-{data[id].pid}, <b>位置{data[id].position}</b></span>}
+                    subtitle={data[id].happenTime}
                     titleBackground="linear-gradient(to top, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.4) 70%,rgba(0,0,0,0) 100%)"
                 >
-                    <img src={data[id].thumbnail} alt="" />
+                    <Reflv url={data[id].path} type="flv"/>
                 </GridTile>
             ))}
         </MuiGridList>

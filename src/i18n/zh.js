@@ -107,6 +107,8 @@ export default {
             name:'事件',
             fields:{
                 happenTime:'发生时间',
+                happenTime_gte:'开始时间',
+                happenTime_lte:'结束时间',
                 position:'触警位置',
                 eventType:'事件性质',
                 eventHandler:'处理员',

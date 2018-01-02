@@ -19,8 +19,8 @@ import {PerimeterPointList} from './perimeter';
 import {PerimetersList,PerimetersEdit,PerimetersDelete,PerimetersCreate,PerimetersIcon} from './perimeters';
 import {CameraTypeList,CameraTypeEdit,CameraTypeDelete,CameraTypeCreate,CameraTypeIcon} from './cameraType';
 import {VendorList,VendorEdit,VendorDelete,VendorCreate,VendorIcon} from './vendor';
-import {EventList,EventIcon} from './event';
-import {EventVideoList} from './eventVideo'
+//import {EventList,EventIcon} from './event';
+import {EventVideoList,EventIcon} from './eventVideo'
 import PresetList from './preset/PresetList';
 
 
@@ -64,8 +64,7 @@ class App extends Component {
                 <Resource name="perimeter" list={PerimetersList} edit={PerimetersEdit} remove={PerimetersDelete}  icon={PerimetersIcon}/>
                 <Resource name="cameraType" list={CameraTypeList} create={CameraTypeCreate}  edit={CameraTypeEdit} remove={CameraTypeDelete}  icon={CameraTypeIcon}/>
                 <Resource name="vendor" list={VendorList} create={VendorCreate}  edit={VendorEdit} remove={VendorDelete}  icon={VendorIcon}/>
-                <Resource name="event" list={EventList} icon={EventIcon}/>
-                <Resource name="eventVideo" list={EventVideoList}/>
+                <Resource name="event" list={EventVideoList} icon={EventIcon}/>
             </Admin>
         );
     }
