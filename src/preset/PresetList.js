@@ -45,10 +45,10 @@ const styles = {
         margin: 12,
     },
     flex: {display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'stretch'},
-    leftCol: { flex: '10 1 auto'},
+    leftCol: { flex: '8 1 auto'},
     rightCol: {
         flex: '0 0 auto',
-        width: 360
+        width: 460
     },
     video:{
         width: 600,
@@ -420,7 +420,7 @@ export class PresetList extends Component {
                             <TableRow>
                                 {
                                     ['预置点名称','x','y','z','距离'].map((text,i) =>{
-                                        return <TableHeaderColumn key={i}>{text}</TableHeaderColumn>
+                                        return i===0?<TableHeaderColumn key={i} style={{width:80}}>{text}</TableHeaderColumn>:<TableHeaderColumn key={i} style={{width:30}}>{text}</TableHeaderColumn>
                                     })
                                 }
                             </TableRow>
@@ -429,11 +429,11 @@ export class PresetList extends Component {
                             {
                                 presets.length > 0?presets.map((item,i)=>{
                                     return <TableRow key={i}>
-                                        <TableRowColumn>{item.name}</TableRowColumn>
-                                        <TableRowColumn>{item.x}</TableRowColumn>
-                                        <TableRowColumn>{item.y}</TableRowColumn>
-                                        <TableRowColumn>{item.z}</TableRowColumn>
-                                        <TableRowColumn>{item.distance}</TableRowColumn>
+                                        <TableRowColumn style={{width:80}}>{item.preset}</TableRowColumn>
+                                        <TableRowColumn style={{width:30}}>{item.x}</TableRowColumn>
+                                        <TableRowColumn style={{width:30}}>{item.y}</TableRowColumn>
+                                        <TableRowColumn style={{width:30}}>{item.z}</TableRowColumn>
+                                        <TableRowColumn style={{width:30}}>{item.distance}</TableRowColumn>
                                     </TableRow>
                                 }):<div>该摄像头还没有设置预置点</div>
                             }

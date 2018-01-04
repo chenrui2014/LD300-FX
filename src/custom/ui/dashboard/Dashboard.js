@@ -27,6 +27,7 @@ import FontIcon from 'material-ui/FontIcon';
 
 import $ from 'jquery';
 import flvjs from 'flv.js';
+import _ from 'lodash';
 
 import io from 'socket.io-client';
 
@@ -65,7 +66,7 @@ class Dashboard extends Component {
     constructor(...args){
         super(...args);
 
-        this.state = {selected: [0],open:true,camOpen:false,value:1,camValue:1,alarmCamera:[1,2],camHandlers:[{id:1,handler:''},{id:2,handler:''}],
+        this.state = {selected: [0],open:true,camOpen:false,hid:'',value:1,camValue:1,alarmCamera:[1,2],camHandlers:[{id:1,handler:''},{id:2,handler:''}],
             config:[],cameraTypeList:[],cameraList:[],hosts:[],ppList:[],perimeterPoint:{},key: 0};
 
 
@@ -225,6 +226,7 @@ class Dashboard extends Component {
             }
 
             _this.setState({
+                hid:evt.hid,
                 hosts:hostList
             });
 
@@ -232,7 +234,13 @@ class Dashboard extends Component {
             let extCamera = evt.monintors;//触警区域关联摄像头
             if(extCamera && extCamera.length > 0){
                 for (let h of extCamera) {
-                    alarmCameras.push(h.id);
+                    if(evt.stateNew ==='alarm'){
+                        alarmCameras.push(h.id);
+                    }else{
+                        _.remove(alarmCameras,function(n){
+                            return n===h.id;
+                        })
+                    }
                 }
             }
 
@@ -308,10 +316,8 @@ class Dashboard extends Component {
 
     //手动解除报警
     handleAlarm = () => {
+        socket.emit('clear',{hid:this.state.hid});
         this.setState({open: false});
-    };
-    handleAlarm1 = () => {
-        this.setState({camOpen: false});
     };
 
     flag = true;
@@ -603,12 +609,7 @@ class Dashboard extends Component {
                 label="关闭"
                 primary={true}
                 onClick={this.handleClose1}
-            />,
-            <FlatButton
-                label="手动解除"
-                primary={true}
-                onClick={this.handleAlarm1}
-            />,
+            />
         ];
 
         // const {hosts,cameras} = this.props;
