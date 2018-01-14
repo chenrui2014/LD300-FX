@@ -711,7 +711,7 @@ class Dashboard extends Component {
                             <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                                 <TableRow>
                                     {
-                                        ['摄像头名称', 'IP', '摄像头状态'].map((text, i) => {
+                                        ['摄像头名称', 'IP'].map((text, i) => {
                                             return <TableHeaderColumn>{text}</TableHeaderColumn>
                                         })
                                     }
@@ -723,7 +723,6 @@ class Dashboard extends Component {
                                         return <TableRow selected={this.isSelected(i)}>
                                             <TableRowColumn>{item.name}</TableRowColumn>
                                             <TableRowColumn style={{width: 100}}>{item.ip}</TableRowColumn>
-                                            <TableRowColumn>{item.status ? "在线" : "离线"}</TableRowColumn>
                                         </TableRow>
                                     })
                                 }

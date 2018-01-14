@@ -20,6 +20,9 @@ import translate from '../lib/i18n/translate';
 import removeKey from '../lib/util/removeKey';
 import defaultTheme from '../defaultTheme';
 import Paper from 'material-ui/Paper';
+import FlatButton from 'material-ui/FlatButton';
+import DeleteIcon from 'material-ui/svg-icons/action/highlight-off';
+import {red500} from 'material-ui/styles/colors';
 import {Table,TableBody,TableHeader,TableRow,TableRowColumn,TableHeaderColumn} from 'material-ui/Table';
 import SelectField from "material-ui/SelectField";
 import MenuItem from "material-ui/MenuItem"
@@ -64,6 +67,9 @@ const styles = {
 export class PresetList extends Component {
     constructor(props) {
         super(props);
+        $(document).on('contextmenu',function(e){
+            return false;
+        });
         this.state = { key: 0,value:1,currentCam:{},camHandlers:[{id:0,handler:''}],presets:[],cameraList:[],x:0,y:0,z:0,realErrText:''} ;
     }
 
@@ -351,6 +357,15 @@ export class PresetList extends Component {
         this.distance =  event.target.value;
     };
 
+    handleClick = (i,e) => {
+
+        let record = this.state.currentCam;
+        record.preset.splice(i,1);
+        this.props.crudUpdate('cameras', record.id, record, record, this.getBasePath(), 'list');
+        this.setState({presets:record.preset});
+
+    };
+
     render() {
         const { filters, pagination = <DefaultPagination />, actions = <DefaultActions />, resource, hasCreate, title, data, ids, total, children, isLoading, translate, theme } = this.props;
         const { key,value,cameraList,presets } = this.state;
@@ -419,8 +434,8 @@ export class PresetList extends Component {
                         <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                             <TableRow>
                                 {
-                                    ['预置点名称','x','y','z','距离'].map((text,i) =>{
-                                        return i===0?<TableHeaderColumn key={i} style={{width:80}}>{text}</TableHeaderColumn>:<TableHeaderColumn key={i} style={{width:30}}>{text}</TableHeaderColumn>
+                                    ['预置点名称','x','y','z','距离','操作'].map((text,i) =>{
+                                        return i===0?<TableHeaderColumn key={i} style={{width:80,paddingLeft:5,paddingRight:5}}>{text}</TableHeaderColumn>:<TableHeaderColumn key={i} style={{width:30,paddingLeft:5,paddingRight:5}}>{text}</TableHeaderColumn>
                                     })
                                 }
                             </TableRow>
@@ -429,11 +444,12 @@ export class PresetList extends Component {
                             {
                                 presets.length > 0?presets.map((item,i)=>{
                                     return <TableRow key={i}>
-                                        <TableRowColumn style={{width:80}}>{item.preset}</TableRowColumn>
-                                        <TableRowColumn style={{width:30}}>{item.x}</TableRowColumn>
-                                        <TableRowColumn style={{width:30}}>{item.y}</TableRowColumn>
-                                        <TableRowColumn style={{width:30}}>{item.z}</TableRowColumn>
-                                        <TableRowColumn style={{width:30}}>{item.distance}</TableRowColumn>
+                                        <TableRowColumn style={{width:80,paddingLeft:5,paddingRight:5}}>{item.preset}</TableRowColumn>
+                                        <TableRowColumn style={{width:30,paddingLeft:5,paddingRight:5}}>{item.x}</TableRowColumn>
+                                        <TableRowColumn style={{width:30,paddingLeft:5,paddingRight:5}}>{item.y}</TableRowColumn>
+                                        <TableRowColumn style={{width:30,paddingLeft:5,paddingRight:5}}>{item.z}</TableRowColumn>
+                                        <TableRowColumn style={{width:30,paddingLeft:5,paddingRight:5}}>{item.distance}</TableRowColumn>
+                                        <TableRowColumn style={{width:30,paddingLeft:5,paddingRight:5}}><FlatButton icon={<DeleteIcon color={red500} style={{marginLeft:-30}} />} onClick={this.handleClick.bind(this, i)} /></TableRowColumn>
                                     </TableRow>
                                 }):<div>该摄像头还没有设置预置点</div>
                             }
