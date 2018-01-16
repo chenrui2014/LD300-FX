@@ -19,7 +19,6 @@ import {EventIcon} from './event';
 const items = [
     { name: 'pp', icon: <PerimeterIcon /> },
     { name: 'hosts', icon: <HostIcon /> },
-    {name:'perimeter',icon:<PerimetersIcon />},
     { name: 'cameras', icon: <CameraIcon /> },
     { name: 'preset', icon: <PresetIcon /> },
     { name: 'monitoringArea', icon: <MonitorAreaIcon /> },

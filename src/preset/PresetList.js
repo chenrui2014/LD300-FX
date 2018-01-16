@@ -30,6 +30,9 @@ import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
 import ArrowDownwardIcon from 'material-ui/svg-icons/navigation/arrow-downward';
 import ArrowUpwardIcon from 'material-ui/svg-icons/navigation/arrow-upward';
 import ArrowForwardIcon from 'material-ui/svg-icons/navigation/arrow-forward';
+import Add from 'material-ui/svg-icons/content/add';
+import Remove from 'material-ui/svg-icons/content/remove'
+
 import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -314,6 +317,52 @@ export class PresetList extends Component {
             this.flag=false;
         }
     };
+    optionFlag = true;
+    currentOptionCode = '';
+    handleOption = (code,e) =>{
+        var handle='';
+        //var stop=1;
+
+        for(let camHandler of this.state.camHandlers){
+            if(camHandler.id === this.state.value){
+                handle=camHandler.handler;
+            }
+        }
+        var _this = this;
+        if(code === this.currentOptionCode && !this.optionFlag){
+            $.ajax({
+                url:'http://localhost:3000/ipc/'+this.state.value+'/ptz/ptzStop?stop=0'+'&handle='+handle+'&t='+new Date().getTime(),
+                dataType:'json',
+                success:function (data) {
+                    for(let camHandler of _this.state.camHandlers){
+                        if(camHandler.id === _this.state.value){
+                            camHandler.handler = data.handle;
+                        }
+                    }
+                    this.flag=true;
+                    console.log(JSON.stringify(data));
+                }
+            });
+
+        }else{
+            this.currentOptionCode = code;
+            $.ajax({
+                url:'http://localhost:3000/ipc/'+this.state.value+'/ptz/'+code+'?handle='+handle+'&stop=1'+'&t='+new Date().getTime(),
+                dataType:'json',
+                success:function(data) {
+                    for(let camHandler of _this.state.camHandlers){
+                        if(camHandler.id === _this.state.value){
+                            camHandler.handler = data.handle;
+                        }
+                    }
+                    _this.optionFlag = false;
+                    console.log(JSON.stringify(data));
+                }
+            });
+        }
+
+    };
+
 
     getPoint = (e)=>{
         let _this = this;
@@ -412,6 +461,15 @@ export class PresetList extends Component {
                                 <IconButton tooltip="向下"><ArrowDownwardIcon onClick={this.handlePtz.bind(this,2)} /></IconButton>
                                 <IconButton tooltip="向上"><ArrowUpwardIcon onClick={this.handlePtz.bind(this,3)} /></IconButton>
                                 <IconButton tooltip="向右"><ArrowForwardIcon onClick={this.handlePtz.bind(this,4)} /></IconButton>
+
+                                放大：<IconButton><Add onClick={this.handleOption.bind(this, 'zoomAdd')}/>
+                            </IconButton><IconButton><Remove
+                                onClick={this.handleOption.bind(this, 'zoomDes')}/></IconButton>
+                                聚焦：<IconButton><Add onClick={this.handleOption.bind(this, 'focusAdd')}/>
+                            </IconButton><IconButton><Remove
+                                onClick={this.handleOption.bind(this, 'focusDec')}/></IconButton>
+                                光圈：<IconButton><Add onClick={this.handleOption.bind(this, 'apertureAdd')}/>
+                            </IconButton><IconButton><Remove onClick={this.handleOption.bind(this, 'apertureDec')}/></IconButton>
                             </div>
                             <div>
                                 <TextField hintText="x" value={this.state.x} disabled={true}/>

@@ -1,8 +1,9 @@
 import React from 'react';
 import Icon from 'material-ui/svg-icons/hardware/computer';
-import { List,EditButton,DeleteButton,Toolbar,Create,SaveButton,Filter,Datagrid,TextField,TextInput,Edit,SimpleForm,Delete,DisabledInput } from '../lib';
+import { List,EditButton,DeleteButton,Toolbar,Create,SaveButton,Filter,Datagrid,TextField,TextInput,Edit,SimpleForm,Delete,DisabledInput,ReferenceInput,SelectInput } from '../lib';
 import {translate} from '../lib';
-// import EditButton from '../buttons/EditButton';
+import PerimeterReferenceField from './PerimeterReferenceField';
+import PortReferenceField from './PortReferenceField';
 
 const styles = {
     edit_title:{
@@ -22,7 +23,8 @@ export const HostList = (props) =>(
         <Datagrid bodyOptions={{ stripedRows: true, showRowHover: true }}>
             <TextField source="hostName" label="resources.hosts.fields.hostName"/>
             <TextField source="alias" label="resources.hosts.fields.alias"/>
-            <TextField source="port" label="resources.hosts.fields.port"/>
+            <PortReferenceField allowEmpty linkType={false} />
+            <PerimeterReferenceField allowEmpty linkType={false} />
             <EditButton />
             <DeleteButton basePath={props.basePath} record={props.data} translate={props.translate}/>
         </Datagrid>
@@ -48,7 +50,14 @@ export const HostCreate = ({ ...props }) => (
         >
             <TextInput source="hostName" style={{display:'inline-block'}}/>
             <TextInput source="alias" style={{display:'inline-block'}}/>
-            <TextInput source="port" style={{display:'inline-block'}}/>
+            <ReferenceInput  source="port" reference="ports" allowEmpty style={{display:'inline-block'}}>
+
+                <SelectInput source='name' optionText="name" optionValue="id" />
+            </ReferenceInput>
+            <ReferenceInput  source="ppId" reference="pp" allowEmpty style={{display:'inline-block'}}>
+
+                <SelectInput source='name' optionText="name" optionValue="id" />
+            </ReferenceInput>
         </SimpleForm>
     </Create>
 );
@@ -60,7 +69,14 @@ export const HostEdit = ({...props}) =>(
         <SimpleForm>
             <TextInput source="hostName" style={{display:'inline-block'}}/>
             <TextInput source="alias" style={{display:'inline-block'}}/>
-            <TextInput source="port" style={{display:'inline-block'}}/>
+            <ReferenceInput  source="port" reference="ports" allowEmpty style={{display:'inline-block'}}>
+
+                <SelectInput source='name' optionText="name" optionValue="id" />
+            </ReferenceInput>
+            <ReferenceInput  source="ppId" reference="pp" allowEmpty style={{display:'inline-block'}}>
+
+                <SelectInput source='name' optionText="name" optionValue="id" />
+            </ReferenceInput>
         </SimpleForm>
     </Edit>
 );

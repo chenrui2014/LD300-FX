@@ -22,6 +22,7 @@ import {VendorList,VendorEdit,VendorDelete,VendorCreate,VendorIcon} from './vend
 //import {EventList,EventIcon} from './event';
 import {EventVideoList,EventIcon} from './eventVideo'
 import PresetList from './preset/PresetList';
+import {PortList} from './ports';
 
 
 import restClient from './restClient';
@@ -61,6 +62,7 @@ class App extends Component {
                 <Resource name="preset" list={PresetList} icon={PresetIcon} />
                 <Resource name="config" list={ConfigList} edit={ConfigEdit} icon={SettingsIcon} />
                 <Resource name="pp" list={PerimeterPointList}/>
+                <Resource name='ports' list={PortList}/>
                 <Resource name="perimeter" list={PerimetersList} edit={PerimetersEdit} remove={PerimetersDelete}  icon={PerimetersIcon}/>
                 <Resource name="cameraType" list={CameraTypeList} create={CameraTypeCreate}  edit={CameraTypeEdit} remove={CameraTypeDelete}  icon={CameraTypeIcon}/>
                 <Resource name="vendor" list={VendorList} create={VendorCreate}  edit={VendorEdit} remove={VendorDelete}  icon={VendorIcon}/>

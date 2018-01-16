@@ -56,7 +56,15 @@ export default {
             fields:{
                 hostName:'显示名',
                 alias:'别名',
-                port:'端口号'
+                port:'端口号',
+                ppId:'关联周界'
+            }
+        },
+        ports:{
+            name:'端口',
+            fields:{
+                name:'端口名称',
+                value:'端口号'
             }
         },
         perimeter:{
@@ -76,7 +84,7 @@ export default {
         monitoringArea:{
             name:'监控区域',
             fields: {
-                perimeterId: '周界',
+                hostId: '主机',
                 cameraId: '摄像头',
                 num:'序号',
                 min_dis: '监控起始距离(米)',
