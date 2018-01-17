@@ -35,7 +35,6 @@ export const CameraList = ({...props}) =>(
             <BooleanField source="audio" label="resources.cameras.fields.audio"/>
             <BooleanField source="screenShot" label="resources.cameras.fields.screenShot"/>
             <TextField source="serial_port" label="resources.cameras.fields.serial_port"/>
-            <BooleanField source="status" label="resources.cameras.fields.status"/>
             <LinkToRelatedPreset />
             <EditButton translate={props.translate}/>
             <DeleteButton basePath={props.basePath} record={props.data} translate={props.translate}/>
@@ -81,7 +80,6 @@ export const CameraCreate = ({ ...props }) => (
             <TextInput source="onvif_user" style={{display:'inline-block'}}/>
             <TextInput type="password" source="onvif_pwd" style={{display:'inline-block'}}/><br/>
             <TextInput source="onvif_path" style={{display:'inline-block'}}/>
-            <NullableBooleanInput source="status" style={{display:'inline-block'}}/>
         </SimpleForm>
     </Create>
 );
@@ -113,7 +111,6 @@ export const CameraEdit = ({...props}) =>(
             <TextInput source="onvif_user" style={{display:'inline-block'}}/>
             <TextInput type="password" source="onvif_pwd" style={{display:'inline-block'}}/><br/>
             <TextInput source="onvif_path" style={{display:'inline-block'}}/>
-            <NullableBooleanInput source="status" style={{display:'inline-block'}}/>
         </SimpleForm>
     </Edit>
 );

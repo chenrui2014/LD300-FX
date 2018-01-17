@@ -31,14 +31,6 @@ import _ from 'lodash';
 
 import io from 'socket.io-client';
 
-const socket=io('http://localhost:3001',{
-    path:'/stateServer'
-});
-
-socket.on('connect',()=> {
-    console.log("已连接服务器");
-});
-
 const styles = {
     flex: { display: 'flex',flexDirection:'row',justifyContent:'flex-start',alignItems:'stretch' },
     leftCol: { flex:'3 1 auto' },
@@ -84,9 +76,137 @@ class Dashboard extends Component {
             }));
         restClient(GET_LIST,'hosts_noPage',{sort: { field: 'port', order: 'DESC' },pagination: { page: 1, perPage: 1000 }})
             .then(response =>response.data)
-            .then(hosts=> this.setState({
-                hosts:hosts
-            }));
+            .then(hosts=> {
+
+                this.setState({
+
+                    hosts:hosts
+                });
+                const socket=io('http://localhost:3001',{
+                    path:'/stateServer'
+                });
+
+                socket.on('connect',()=> {
+                    console.log("已连接服务器");
+                });
+                var _this = this;
+
+                socket.on('init',(evt)=> {
+
+                    //初始化主机状态
+                    //var hostList = this.state.hosts;
+                    for (let h of hosts) {
+                        for (let eid in evt) {
+                            if(h.id === evt[eid].hid){
+                                //h.status = evt[hostid].stateNew;
+                                if(evt[eid].stateNew === 'normal'){
+                                    h.status = 0;
+                                }
+                                if(evt[eid].stateNew === 'alarm'){
+                                    h.status = 1;
+                                }
+                                if(evt[eid].stateNew === 'unknown'){
+                                    h.status = 2;
+                                }
+                                if(evt[eid].stateNew === 'error'){
+                                    h.status = 3;
+                                }
+
+                                _this.setState({
+                                    hosts:hosts
+                                });
+                            }
+                        }
+                    }
+
+                    //_this.setState({
+                    //    hosts:hostList
+                    //});
+
+                    console.log("init" + evt);
+                });
+
+                socket.on('update',(evt)=> {//更新主机状态
+                    //var hostList = this.state.hosts;
+                    for (let h of hosts) {
+                        for(let eid in evt){
+                            if(h.id === evt[eid].hid){
+                                //h.status = evt[hostid].stateNew;
+                                if(evt[eid].stateNew === 'normal'){
+                                    h.status = 0;
+                                }
+                                if(evt[eid].stateNew === 'alarm'){
+                                    h.status = 1;
+                                }
+                                if(evt[eid].stateNew === 'unknown'){
+                                    h.status = 2;
+                                }
+                                if(evt[eid].stateNew === 'error'){
+                                    h.status = 3;
+                                }
+                                _this.setState({
+                                    hid:evt[eid].hid,
+                                    hosts:hosts
+                                });
+
+                                let alarmCameras = this.state.alarmCamera;
+                                let extCamera = evt[eid].monintors;//触警区域关联摄像头
+                                if(extCamera && extCamera.length > 0){
+                                    for (let h of extCamera) {
+                                        if(evt[eid].stateNew ==='alarm'){
+                                            alarmCameras.push(h.id);
+                                        }else{
+                                            _.remove(alarmCameras,function(n){
+                                                return n===h.id;
+                                            })
+                                        }
+                                    }
+                                }
+
+                                let temp = Array.from(new Set(alarmCameras));//去重
+
+
+                                _this.setState({
+                                    open:true,
+                                    isAlarm:true,
+                                    alarmCamera:temp
+                                });
+                            }
+                        }
+
+                    }
+
+                    // _this.setState({
+                    //     hid:hoid,
+                    //     hosts:hostList
+                    // });
+                    //
+                    // let alarmCameras = this.state.alarmCamera;
+                    // let extCamera = event.monintors;//触警区域关联摄像头
+                    // if(extCamera && extCamera.length > 0){
+                    //     for (let h of extCamera) {
+                    //         if(evt.stateNew ==='alarm'){
+                    //             alarmCameras.push(h.id);
+                    //         }else{
+                    //             _.remove(alarmCameras,function(n){
+                    //                 return n===h.id;
+                    //             })
+                    //         }
+                    //     }
+                    // }
+                    //
+                    // let temp = Array.from(new Set(alarmCameras));//去重
+                    //
+                    //
+                    // _this.setState({
+                    //     open:true,
+                    //     isAlarm:true,
+                    //     alarmCamera:temp
+                    // });
+
+
+                });
+            });
 
         restClient(GET_LIST,'config_noPage',{sort: { field: 'configDate', order: 'DESC' },pagination: { page: 1, perPage: 1000 }})
             .then(response =>response.data)
@@ -195,66 +315,6 @@ class Dashboard extends Component {
         //             perimeterPoint: perimeterPoint
         //         })
         //     });
-
-        var _this = this;
-
-        socket.on('init',(evt)=> {
-
-            //初始化主机状态
-            var hostList = this.state.hosts;
-            for (let h of hostList) {
-                for (let e of evt) {
-                    if(h.id === e.hid){
-                        h.status = e.stateNew;
-                    }
-                }
-            }
-
-            _this.setState({
-                hosts:hostList
-            });
-
-            console.log("init" + evt);
-        });
-
-        socket.on('update',(evt)=> {//更新主机状态
-            var hostList = this.state.hosts;
-            for (let h of hostList) {
-                if(h.id === evt.hid){
-                    h.status = evt.stateNew;
-                }
-            }
-
-            _this.setState({
-                hid:evt.hid,
-                hosts:hostList
-            });
-
-            let alarmCameras = this.state.alarmCamera;
-            let extCamera = evt.monintors;//触警区域关联摄像头
-            if(extCamera && extCamera.length > 0){
-                for (let h of extCamera) {
-                    if(evt.stateNew ==='alarm'){
-                        alarmCameras.push(h.id);
-                    }else{
-                        _.remove(alarmCameras,function(n){
-                            return n===h.id;
-                        })
-                    }
-                }
-            }
-
-            let temp = Array.from(new Set(alarmCameras));//去重
-
-
-            _this.setState({
-                open:true,
-                isAlarm:true,
-                alarmCamera:temp
-            });
-
-
-        });
 
         function play(v,path,port) {
             var flvPlayer = flvjs.createPlayer({
