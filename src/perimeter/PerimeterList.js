@@ -7,8 +7,6 @@ import Dialog from 'material-ui/Dialog';
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
 import compose from 'recompose/compose';
 import { createSelector } from 'reselect';
 import inflection from 'inflection';
@@ -19,18 +17,19 @@ import Title from '../lib/mui/layout/Title';
 import DefaultPagination from '../lib/mui/list/Pagination';
 import { crudGetList as crudGetListAction } from '../lib/actions/dataActions';
 import { changeListParams as changeListParamsAction } from '../lib/actions/listActions';
-import { crudCreate as crudCreateAction } from '../lib/actions/dataActions';
+import { crudCreate as crudCreateAction,crudDelete as crudDeleteAction } from '../lib/actions/dataActions';
 import translate from '../lib/i18n/translate';
 import removeKey from '../lib/util/removeKey';
 import defaultTheme from '../defaultTheme';
 
 import {LeftLayout} from './leftLayout';
-import RightLayout from './rightLayout';
 import Background from '../../static/img/background.bmp';
 import {Table,TableBody,TableHeader,TableRow,TableRowColumn,TableHeaderColumn} from 'material-ui/Table';
+import DeleteIcon from 'material-ui/svg-icons/action/highlight-off';
 
 import restClient from '../restClient'
 import {GET_LIST} from '../lib';
+import {red500} from "material-ui/styles/colors";
 
 const styles = {
     noResults: { padding: 20 },
@@ -215,6 +214,17 @@ export class PerimeterList extends Component {
 
         });
 
+        // $('canvas').hover((e) =>{
+        //     var rect = canvas.getBoundingClientRect();
+        //
+        //     let x = e.clientX - rect.left;
+        //     let y = e.clientY - rect.top;
+        //     x = Math.floor(x * (canvas.width / rect.width) / 0.88);
+        //     y = Math.floor(y * (canvas.height / rect.height) / 0.66);
+        //
+        //
+        // });
+
     }
 
     componentWillReceiveProps(nextProps) {
@@ -361,7 +371,37 @@ export class PerimeterList extends Component {
         this.handleClose()
     };
     complete = ()=>{
+        //先保存当前周界点
+        let maxDisInt = Number.parseInt(this.maxDis);
+        let realP = Number.parseInt(this.state.realPosition);
+        if( maxDisInt > realP){
+            this.setState({
+                realErrText: "输入的实际距离必须大于上一个点[" + maxDisInt + "]",
+            });
+            return;
+        }
+        let record = {mapPosition:0,realPosition:0};
+        record.mapPosition = 0;
+        record.realPosition = this.state.realPosition;
+        //record.name = this.state.name;
+        let No = this.maxNum + 1;
+        record.No = No;
+
+        record.x = this.state.x;
+        record.y = this.state.y;
+        let pp = this.state.ppData.pp;
+        pp.push(record);
+        this.maxDis = this.state.realPosition;
+        this.setState({ppData:{name:this.name,pp:pp}});
+
+        //向后台发送请求完成周界创建
         this.props.crudCreate(this.props.resource, this.state.ppData, this.getBasePath(),'list');
+        //更新右侧周界列表
+        let list = this.state.ppList;
+        list.push(this.state.ppData);
+        this.setState({ppList:list});
+        //清空保存的周界点数据
+        this.setState({ppData:{name:"",pp:[]}});
         this.handleClose()
     };
     handleChange2 = (event) => {
@@ -384,6 +424,43 @@ export class PerimeterList extends Component {
         this.setState({
             name: event.target.value,
         });
+    };
+
+    handleClick = (i,e) => {
+
+        let record = this.state.ppList;
+
+        this.props.crudDelete('perimeter', record[i].id, this.getBasePath());
+        record.splice(i,1);
+        this.setState({ppList:record});
+
+        let canvas = this.canvasElement, canCtx = this.ctx,img = new Image();
+
+        var rect = canvas.getBoundingClientRect();
+        this.ctx.clearRect(0, 0, rect.width, rect.height);
+        //将图片绘制到canvas
+        img.src = Background;
+        let _this = this;
+        img.onload = async function () {
+            await canCtx.drawImage(img, 0, 0);
+
+            for (let perimeter in record) {
+                let perimeterPoints = record[perimeter].pp;
+                _this.ctx.beginPath();
+                _this.ctx.moveTo(perimeterPoints[0].x, perimeterPoints[0].y);
+                for (let ppot in perimeterPoints) {
+                    if (ppot !== "0") {
+                        _this.ctx.lineWidth = 1.0;
+                        _this.ctx.lineCap = "butt";
+                        _this.ctx.lineJoin = "miter";
+                        _this.ctx.lineTo(perimeterPoints[ppot].x, perimeterPoints[ppot].y);
+                        _this.ctx.strokeStyle = '#ff0000';
+                        _this.ctx.stroke();
+                    }
+                }
+            }
+        }
+
     };
 
     //主机下拉列表选择事件
@@ -447,8 +524,8 @@ export class PerimeterList extends Component {
                         <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                             <TableRow>
                                 {
-                                    ['周界名称'].map((text,i) =>{
-                                        return <TableHeaderColumn>{text}</TableHeaderColumn>
+                                    ['周界名称','操作'].map((text,i) =>{
+                                        return <TableHeaderColumn style={{textAlign: 'center'}}>{text}</TableHeaderColumn>
                                     })
                                 }
                             </TableRow>
@@ -457,7 +534,8 @@ export class PerimeterList extends Component {
                             {
                                 ppList.map((item,i)=>{
                                     return <TableRow>
-                                        <TableRowColumn>{item.name}</TableRowColumn>
+                                        <TableRowColumn style={{textAlign: 'center'}}>{item.name}</TableRowColumn>
+                                        <TableRowColumn style={{textAlign: 'center'}}><FlatButton icon={<DeleteIcon color={red500} />} onClick={this.handleClick.bind(this, i)} /></TableRowColumn>
                                     </TableRow>
                                 })
                             }
@@ -564,7 +642,8 @@ const enhance = compose(
             crudGetList: crudGetListAction,
             changeListParams: changeListParamsAction,
             push: pushAction,
-            crudCreate: crudCreateAction
+            crudCreate: crudCreateAction,
+            crudDelete:crudDeleteAction
         },
     ),
     translate,

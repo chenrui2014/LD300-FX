@@ -23,7 +23,7 @@ export const HostList = (props) =>(
         <Datagrid bodyOptions={{ stripedRows: true, showRowHover: true }}>
             <TextField source="hostName" label="resources.hosts.fields.hostName"/>
             <TextField source="alias" label="resources.hosts.fields.alias"/>
-            <PortReferenceField allowEmpty linkType={false} />
+            <TextField source="port" label="resources.hosts.fields.port"/>
             <PerimeterReferenceField allowEmpty linkType={false} />
             <EditButton />
             <DeleteButton basePath={props.basePath} record={props.data} translate={props.translate}/>

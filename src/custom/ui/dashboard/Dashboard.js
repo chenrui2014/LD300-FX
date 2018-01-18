@@ -380,8 +380,6 @@ class Dashboard extends Component {
         this.setState({open: false});
     };
 
-    flag = true;
-    currentCode = 0;
     handlePtz = (code,e) =>{
         let handle='';
         for(let camHandler of this.state.camHandlers){
@@ -390,39 +388,64 @@ class Dashboard extends Component {
             }
         }
         let _this = this;
-        if(code === this.currentCode && !this.flag){
 
-            $.ajax({
-                url:'http://localhost:3000/ipc/'+this.state.value+'/ptz/ptzStop?stop=1'+'&handle='+handle+'&t='+new Date().getTime(),
-                dataType:'json',
-                success:function (data) {
-                    for(let camHandler of _this.state.camHandlers){
-                        if(camHandler.id === _this.state.value){
-                            camHandler.handler = data.handle;
-                        }
+        $.ajax({
+            url:'http://localhost:3000/ipc/'+this.state.value+'/ptz/move?position='+code+'&stop=1'+'&handle='+handle+'&t='+new Date().getTime(),
+            dataType:'json',
+            success:function (data) {
+                for(let camHandler of _this.state.camHandlers){
+                    if(camHandler.id === _this.state.value){
+                        camHandler.handler = data.handle;
                     }
-                    console.log(JSON.stringify(data));
                 }
-            });
-            this.flag=true;
+                console.log(JSON.stringify(data));
+            }
+        });
 
-        }else{
-            this.currentCode = code;
-            $.ajax({
-                url:'http://localhost:3000/ipc/'+this.state.value+'/ptz/move?position='+code+'&stop=1'+'&handle='+handle+'&t='+new Date().getTime(),
-                dataType:'json',
-                success:function (data) {
-                    for(let camHandler of _this.state.camHandlers){
-                        if(camHandler.id === _this.state.value){
-                            camHandler.handler = data.handle;
-                        }
-                    }
-                    console.log(JSON.stringify(data));
-                }
-            });
-            this.flag=false;
+    };
+
+    handleMouseDown = (code,e) =>{
+        let handle='';
+        for(let camHandler of this.state.camHandlers){
+            if(camHandler.id === this.state.value){
+                handle=camHandler.handler;
+            }
         }
+        let _this = this;
+        $.ajax({
+            url:'http://localhost:3000/ipc/'+this.state.value+'/ptz/move?position='+code+'&stop=0'+'&handle='+handle+'&t='+new Date().getTime(),
+            dataType:'json',
+            success:function (data) {
+                for(let camHandler of _this.state.camHandlers){
+                    if(camHandler.id === _this.state.value){
+                        camHandler.handler = data.handle;
+                    }
+                }
+                console.log(JSON.stringify(data));
+            }
+        });
+    };
+    handleMouseUp = (code,e) =>{
 
+        let handle='';
+        for(let camHandler of this.state.camHandlers){
+            if(camHandler.id === this.state.value){
+                handle=camHandler.handler;
+            }
+        }
+        let _this = this;
+        $.ajax({
+            url:'http://localhost:3000/ipc/'+this.state.value+'/ptz/ptzStop?stop=0'+'&handle='+handle+'&t='+new Date().getTime(),
+            dataType:'json',
+            success:function (data) {
+                for(let camHandler of _this.state.camHandlers){
+                    if(camHandler.id === _this.state.value){
+                        camHandler.handler = data.handle;
+                    }
+                }
+                console.log(JSON.stringify(data));
+            }
+        });
     };
     handleOption = (code,e) =>{
         var handle='';
@@ -811,7 +834,7 @@ class Dashboard extends Component {
                                     <IconButton tooltip="向下"><ArrowDownwardIcon onClick={this.handlePtz.bind(this, 2)}/></IconButton>
                                     <IconButton tooltip="向上"><ArrowUpwardIcon
                                         onClick={this.handlePtz.bind(this, 3)}/></IconButton>
-                                    <IconButton tooltip="向右"><ArrowForwardIcon onClick={this.handlePtz.bind(this, 4)}/></IconButton> |
+                                    <IconButton tooltip="向右"><ArrowForwardIcon onClick={this.handlePtz.bind(this, 4)} onMouseDown={this.handleMouseDown.bind(this, 4)} onMouseUp={this.handleMouseUp.bind(this, 4)}/></IconButton> |
 
                                     放大：<IconButton><Add onClick={this.handleOption.bind(this, 'zoomAdd')}/>
                                 </IconButton><IconButton><Remove
