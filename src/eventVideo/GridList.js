@@ -19,7 +19,7 @@ const GridList = ({ ids, isLoading, data, currentSort, basePath, rowStyle }) => 
             {ids.map((id) => (
                 <GridTile
                     key={id}
-                    title={<span>{data[id].hid}-{data[id].pid}, <b>位置{data[id].position}</b></span>}
+                    title={<span>{data[id].port}, <b>位置{data[id].position}</b></span>}
                     subtitle={data[id].happenTime}
                     titleBackground="linear-gradient(to top, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.4) 70%,rgba(0,0,0,0) 100%)"
                 >
