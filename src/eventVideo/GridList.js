@@ -17,15 +17,16 @@ const GridList = ({ ids, isLoading, data, currentSort, basePath, rowStyle }) => 
     <div style={styles.root}>
         <MuiGridList cellHeight={180} cols={4} style={styles.gridList}>
             {ids.map((id) => (
-                <GridTile
-                    key={id}
-                    title={<span>{data[id].port}, <b>位置{data[id].position}</b></span>}
-                    subtitle={data[id].happenTime}
-                    titleBackground="linear-gradient(to top, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.4) 70%,rgba(0,0,0,0) 100%)"
-                >
-                    <Reflv url={data[id].path} type="flv"/>
-                </GridTile>
-            ))}
+                data[id].video.map((v)=>(
+                    <GridTile
+                        key={id}
+                        title={<span>{data[id].port}, <b>位置{data[id].position}</b></span>}
+                        subtitle={data[id].happenTime}
+                        titleBackground="linear-gradient(to top, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.4) 70%,rgba(0,0,0,0) 100%)"
+                    >
+                        <Reflv url={v.path} type="flv"/>
+                    </GridTile>
+                ))))}
         </MuiGridList>
     </div>
 );
