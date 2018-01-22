@@ -22,8 +22,6 @@ const items = [
     { name: 'cameras', icon: <CameraIcon /> },
     { name: 'preset', icon: <PresetIcon /> },
     { name: 'monitoringArea', icon: <MonitorAreaIcon /> },
-    { name: 'cameraType', icon: <CameraTypeIcon /> },
-    { name: 'vendor', icon: <VendorIcon /> },
     { name: 'event', icon: <EventIcon /> },
     { name: 'config', icon: <SettingsIcon /> },
 ];
