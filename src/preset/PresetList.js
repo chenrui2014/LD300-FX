@@ -33,6 +33,11 @@ import ArrowForwardIcon from 'material-ui/svg-icons/navigation/arrow-forward';
 import Add from 'material-ui/svg-icons/content/add';
 import Remove from 'material-ui/svg-icons/content/remove'
 
+import ArrowBottomLeft from 'mdi-material-ui/ArrowBottomLeft';
+import ArrowBottomRight from 'mdi-material-ui/ArrowBottomRight';
+import ArrowTopLeft from 'mdi-material-ui/ArrowTopLeft';
+import ArrowTopRight from 'mdi-material-ui/ArrowTopRight';
+
 import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -509,10 +514,18 @@ export class PresetList extends Component {
                         </CardText>
                         <CardActions>
                             <div style={styles.option}>
-                                <IconButton tooltip="向左"><ArrowBackIcon onClick={this.handlePtz.bind(this,1)} onMouseDown={this.handleMouseDown.bind(this, 1)} onMouseUp={this.handleMouseUp.bind(this, 1)} /></IconButton>
-                                <IconButton tooltip="向下"><ArrowDownwardIcon onClick={this.handlePtz.bind(this,2)} onMouseDown={this.handleMouseDown.bind(this, 2)} onMouseUp={this.handleMouseUp.bind(this, 2)} /></IconButton>
-                                <IconButton tooltip="向上"><ArrowUpwardIcon onClick={this.handlePtz.bind(this,3)} onMouseDown={this.handleMouseDown.bind(this, 3)} onMouseUp={this.handleMouseUp.bind(this, 3)} /></IconButton>
-                                <IconButton tooltip="向右"><ArrowForwardIcon onClick={this.handlePtz.bind(this,4)} onMouseDown={this.handleMouseDown.bind(this, 4)} onMouseUp={this.handleMouseUp.bind(this, 4)} /></IconButton>
+                                <IconButton tooltip="向左"><ArrowBackIcon
+                                    onClick={this.handlePtz.bind(this, 4)} onMouseDown={this.handleMouseDown.bind(this, 4)} onMouseUp={this.handleMouseUp.bind(this, 4)}/></IconButton>
+                                <IconButton tooltip="向左下"><ArrowBottomLeft
+                                    onClick={this.handlePtz.bind(this, 6)} onMouseDown={this.handleMouseDown.bind(this, 6)} onMouseUp={this.handleMouseUp.bind(this, 6)}/></IconButton>
+                                <IconButton tooltip="向下"><ArrowDownwardIcon onClick={this.handlePtz.bind(this, 2)} onMouseDown={this.handleMouseDown.bind(this, 2)} onMouseUp={this.handleMouseUp.bind(this, 2)}/></IconButton>
+
+                                <IconButton tooltip="向左上"><ArrowTopLeft onClick={this.handlePtz.bind(this, 5)} onMouseDown={this.handleMouseDown.bind(this, 5)} onMouseUp={this.handleMouseUp.bind(this, 5)}/></IconButton>
+                                <IconButton tooltip="向上"><ArrowUpwardIcon
+                                    onClick={this.handlePtz.bind(this, 1)} onMouseDown={this.handleMouseDown.bind(this, 1)} onMouseUp={this.handleMouseUp.bind(this, 1)}/></IconButton>
+                                <IconButton tooltip="向右下"><ArrowBottomRight onClick={this.handlePtz.bind(this, 10)} onMouseDown={this.handleMouseDown.bind(this, 10)} onMouseUp={this.handleMouseUp.bind(this, 10)}/></IconButton>
+                                <IconButton tooltip="向右"><ArrowForwardIcon onClick={this.handlePtz.bind(this, 8)} onMouseDown={this.handleMouseDown.bind(this, 8)} onMouseUp={this.handleMouseUp.bind(this, 8)}/></IconButton>
+                                <IconButton tooltip="向右上"><ArrowTopRight onClick={this.handlePtz.bind(this, 9)} onMouseDown={this.handleMouseDown.bind(this, 9)} onMouseUp={this.handleMouseUp.bind(this, 9)}/></IconButton>
 
                                 放大：<IconButton><Add onClick={this.handleOption.bind(this, 'zoomAdd')} onMouseDown={this.handleOptionMouseDown.bind(this, 'zoomAdd')} onMouseUp={this.handleOptionMouseUp.bind(this, 'zoomAdd')}/>
                             </IconButton><IconButton><Remove
