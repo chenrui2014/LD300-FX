@@ -12,7 +12,7 @@ const LinkToEventVideo = ({ record, translate }) => (
         icon={<Icon />}
         containerElement={<Link to={{
             pathname: '/eventVideo',
-            search: stringify({ filter: JSON.stringify({ cameraId: record.id }) }),
+            search: stringify({ filter: JSON.stringify({ eventId: record.id }) }),
         }} />}
     />
 );

@@ -20,7 +20,7 @@ import {PerimetersList,PerimetersEdit,PerimetersDelete,PerimetersCreate,Perimete
 import {CameraTypeList,CameraTypeEdit,CameraTypeDelete,CameraTypeCreate,CameraTypeIcon} from './cameraType';
 import {VendorList,VendorEdit,VendorDelete,VendorCreate,VendorIcon} from './vendor';
 //import {EventList,EventIcon} from './event';
-import {EventVideoList,EventIcon} from './eventVideo'
+import {EventList,EventIcon} from './event'
 import PresetList from './preset/PresetList';
 import {PortList} from './ports';
 
@@ -28,6 +28,7 @@ import {PortList} from './ports';
 import restClient from './restClient';
 import customSagas from './custom/sagas';
 import customReducers from './custom/reducer';
+import {EventVideoList} from './eventVideo'
 
 class App extends Component {
 
@@ -66,7 +67,8 @@ class App extends Component {
                 <Resource name="perimeter" list={PerimetersList} edit={PerimetersEdit} remove={PerimetersDelete}  icon={PerimetersIcon}/>
                 <Resource name="cameraType" list={CameraTypeList} create={CameraTypeCreate}  edit={CameraTypeEdit} remove={CameraTypeDelete}  icon={CameraTypeIcon}/>
                 <Resource name="vendor" list={VendorList} create={VendorCreate}  edit={VendorEdit} remove={VendorDelete}  icon={VendorIcon}/>
-                <Resource name="event" list={EventVideoList} icon={EventIcon}/>
+                <Resource name="event" list={EventList} icon={EventIcon}/>
+                <Resource name='eventVideo' list={EventVideoList}/>
             </Admin>
         );
     }

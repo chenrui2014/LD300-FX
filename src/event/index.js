@@ -5,6 +5,8 @@ import {translate} from '../lib';
 
 import LinkToEventVideo from './LinkToEventVideo';
 
+import Reflv from 'reflv';
+
 const styles = {
     edit_title:{
         fontSize:32
@@ -22,9 +24,8 @@ export const EventList = (props) =>(
     <List {...props} filters={<EventFilter/>} sort={{field:'id',order:'ASC'}}  perPage={25}>
         <Datagrid bodyOptions={{ stripedRows: true, showRowHover: true }}>
             <TextField source="happenTime" label="resources.event.fields.happenTime"/>
+            <TextField source="port" label="resources.event.fields.host"/>
             <TextField source="position" label="resources.event.fields.position"/>
-            <TextField source="eventType" label="resources.event.fields.eventType"/>
-            <TextField source="eventHandler" label="resources.event.fields.eventHandler"/>
             <LinkToEventVideo />
         </Datagrid>
     </List>
@@ -49,12 +50,7 @@ const eventTitle = ({record}) => record?<TextField record={record} style={styles
 
 export const EventEdit = ({...props}) =>(
     <Edit title={<eventTitle/>} {...props}>
-        <SimpleForm>
-            <TextInput source="happenTime" style={{display:'inline-block'}}/>
-            <TextInput source="position" style={{display:'inline-block'}}/>
-            <TextInput source="eventType" style={{display:'inline-block'}}/>
-            <TextInput source="eventHandler" style={{display:'inline-block'}}/>
-        </SimpleForm>
+        <Reflv url={'http://127.0.0.1:8080' + video.path} type="flv" />
     </Edit>
 );
 

@@ -20,6 +20,7 @@ import {
 import GridList from './GridList';
 import Icon from "material-ui/svg-icons/action/chrome-reader-mode";
 import DateInput from "../lib/mui/input/DateInput";
+import CameraReferenceField from "./CameraReferenceField";
 
 export const EventIcon = Icon;
 
@@ -29,8 +30,8 @@ export const EventVideoFilter = props => (
         <ReferenceInput source="hid" reference="hosts">
             <SelectInput source="port" />
         </ReferenceInput>
-        <ReferenceInput source="pid" reference="cameras">
-            <SelectInput source="ip" />
+        <ReferenceInput source="eventId" reference="event">
+            <SelectInput source="happenTime" optionText="happenTime" optionValue="id" />
         </ReferenceInput>
         <DateInput source="happenTime_gte" />
         <DateInput source="happenTime_lte" />
@@ -38,7 +39,10 @@ export const EventVideoFilter = props => (
 );
 
 export const EventVideoList = props => (
-    <List {...props} filters={<EventVideoFilter />} perPage={20}>
-        <GridList />
+    <List {...props} filters={<EventVideoFilter/>} sort={{field:'pid',order:'ASC'}}  perPage={100}>
+        <Datagrid bodyOptions={{ stripedRows: true, showRowHover: true }}>
+            <CameraReferenceField allowEmpty linkType={false} />
+            <TextField source="path" label="resources.eventVideo.fields.path"/>
+        </Datagrid>
     </List>
 );

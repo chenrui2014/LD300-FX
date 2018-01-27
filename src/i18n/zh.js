@@ -117,10 +117,19 @@ export default {
                 happenTime:'发生时间',
                 happenTime_gte:'开始时间',
                 happenTime_lte:'结束时间',
+                host:'报警主机',
                 position:'触警位置',
                 eventType:'事件性质',
                 eventHandler:'处理员',
                 video:'调取录像'
+            }
+        },
+        eventVideo:{
+            name:'事件录像',
+            fields:{
+                pid:'摄像头',
+                path:'录像路径',
+                eventId:'事件'
             }
         }
     },

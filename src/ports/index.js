@@ -9,7 +9,7 @@ export const PortList = ({...props}) =>(
     <List {...props} filters={<PortFilter/>} sort={{field:'name',order:'ASC'}}  perPage={1000}>
         <Datagrid bodyOptions={{ stripedRows: true, showRowHover: true }}>
             <TextField source="name" label="resources.ports.fields.name"/>
-            <TextField source="value" label="resources.ports.fields.value"/>
+            <TextField source="id" label="resources.ports.fields.value"/>
         </Datagrid>
     </List>
 );
