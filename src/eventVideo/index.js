@@ -40,9 +40,10 @@ export const EventVideoFilter = props => (
 
 export const EventVideoList = props => (
     <List {...props} filters={<EventVideoFilter/>} sort={{field:'pid',order:'ASC'}}  perPage={100}>
-        <Datagrid bodyOptions={{ stripedRows: true, showRowHover: true }}>
+        <EditButton bodyOptions={{ stripedRows: true, showRowHover: true }}>
             <CameraReferenceField allowEmpty linkType={false} />
             <TextField source="path" label="resources.eventVideo.fields.path"/>
+            <EditButton label='调取录像' ></EditButton>
         </Datagrid>
     </List>
 );
