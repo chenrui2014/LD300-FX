@@ -135,50 +135,82 @@ class Dashboard extends Component {
                 this.socket.on('update',(evt)=> {//更新主机状态
                     //var hostList = this.state.hosts;
                     for (let h of hosts) {
-                        for(let eid in evt){
-                            if(h.id === evt[eid].hid){
-                                //h.status = evt[hostid].stateNew;
-                                if(evt[eid].stateNew === 'normal'){
-                                    h.status = 0;
-                                }
-                                if(evt[eid].stateNew === 'alarm'){
-                                    h.status = 1;
-                                }
-                                if(evt[eid].stateNew === 'unknown'){
-                                    h.status = 2;
-                                }
-                                if(evt[eid].stateNew === 'error'){
-                                    h.status = 3;
-                                }
-                                _this.setState({
-                                    hid:evt[eid].hid,
-                                    hosts:hosts
-                                });
-
-                                let alarmCameras = this.state.alarmCamera;
-                                let extCamera = evt[eid].monintors;//触警区域关联摄像头
+                        if(h.id === evt.hid){
+                            if(evt.stateNew === 'normal'){
+                                h.status = 0;
+                            }
+                            if(evt.stateNew === 'alarm'){
+                                h.status = 1;
+                                let alarmCameras = [];
+                                let extCamera = evt.monintors;//触警区域关联摄像头
                                 if(extCamera && extCamera.length > 0){
                                     for (let h of extCamera) {
-                                        if(evt[eid].stateNew ==='alarm'){
-                                            alarmCameras.push(h.id);
-                                        }else{
-                                            _.remove(alarmCameras,function(n){
-                                                return n===h.id;
-                                            })
-                                        }
+                                        alarmCameras.push(h.id);
                                     }
                                 }
-
-                                let temp = Array.from(new Set(alarmCameras));//去重
-
-
                                 _this.setState({
                                     open:true,
                                     isAlarm:true,
-                                    alarmCamera:temp
+                                    alarmCamera:alarmCameras
                                 });
                             }
+                            if(evt.stateNew === 'unknown'){
+                                h.status = 2;
+                            }
+                            if(evt.stateNew === 'error'){
+                                h.status = 3;
+                            }
+
+                            _this.setState({
+                                hid:evt.hid,
+                                hosts:hosts
+                            });
                         }
+                        // for(let eid in evt){
+                        //     if(h.id === evt[eid].hid){
+                        //         //h.status = evt[hostid].stateNew;
+                        //         if(evt[eid].stateNew === 'normal'){
+                        //             h.status = 0;
+                        //         }
+                        //         if(evt[eid].stateNew === 'alarm'){
+                        //             h.status = 1;
+                        //         }
+                        //         if(evt[eid].stateNew === 'unknown'){
+                        //             h.status = 2;
+                        //         }
+                        //         if(evt[eid].stateNew === 'error'){
+                        //             h.status = 3;
+                        //         }
+                        //         _this.setState({
+                        //             hid:evt[eid].hid,
+                        //             hosts:hosts
+                        //         });
+                        //
+                        //         let alarmCameras = [];
+                        //         let extCamera = evt.monintors;//触警区域关联摄像头
+                        //         if(extCamera && extCamera.length > 0){
+                        //             for (let h of extCamera) {
+                        //                 alarmCameras.push(h.id);
+                        //                 // if(evt[eid].stateNew ==='alarm'){
+                        //                 //     alarmCameras.push(h.id);
+                        //                 // }else{
+                        //                 //     _.remove(alarmCameras,function(n){
+                        //                 //         return n===h.id;
+                        //                 //     })
+                        //                 // }
+                        //             }
+                        //         }
+                        //
+                        //         //let temp = Array.from(new Set(alarmCameras));//去重
+                        //
+                        //
+                        //         _this.setState({
+                        //             open:true,
+                        //             isAlarm:true,
+                        //             alarmCamera:alarmCameras
+                        //         });
+                        //     }
+                        // }
 
                     }
 
@@ -698,7 +730,8 @@ class Dashboard extends Component {
             dataType:'json',
             success:function (data) {
                 if($("#" + cameraId).children("video").length > 0){
-                    return;
+                    $("#" + cameraId).children("video").remove();
+                    //return;
                 }
                 play($('<video></video>').prop('class','v' + cameraId).appendTo('#' + cameraId)[0],data.path,data.port);
             }
