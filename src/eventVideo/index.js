@@ -22,6 +22,9 @@ import Icon from "material-ui/svg-icons/action/chrome-reader-mode";
 import DateInput from "../lib/mui/input/DateInput";
 import CameraReferenceField from "./CameraReferenceField";
 
+import EventVideo from './EventVideo';
+import EvEditButton from './EvEditButton';
+
 export const EventIcon = Icon;
 
 export const EventVideoFilter = props => (
@@ -39,11 +42,15 @@ export const EventVideoFilter = props => (
 );
 
 export const EventVideoList = props => (
-    <List {...props} filters={<EventVideoFilter/>} sort={{field:'pid',order:'ASC'}}  perPage={100}>
-        <EditButton bodyOptions={{ stripedRows: true, showRowHover: true }}>
+    <List {...props} filters={null} sort={{field:'pid',order:'ASC'}}  perPage={100}>
+        <Datagrid bodyOptions={{ stripedRows: true, showRowHover: true }}>
             <CameraReferenceField allowEmpty linkType={false} />
             <TextField source="path" label="resources.eventVideo.fields.path"/>
-            <EditButton label='调取录像' ></EditButton>
+            <EvEditButton label='调取录像' />
         </Datagrid>
     </List>
+);
+
+export const EventVideoEdit = ({...props}) =>(
+    <EventVideo  title='事件录像' {...props}/>
 );

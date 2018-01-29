@@ -121,7 +121,8 @@ export default {
                 position:'触警位置',
                 eventType:'事件性质',
                 eventHandler:'处理员',
-                video:'调取录像'
+                video:'关联摄像头',
+                hid:'报警主机'
             }
         },
         eventVideo:{

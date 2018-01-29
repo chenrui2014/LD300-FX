@@ -28,7 +28,7 @@ import {PortList} from './ports';
 import restClient from './restClient';
 import customSagas from './custom/sagas';
 import customReducers from './custom/reducer';
-import {EventVideoList} from './eventVideo'
+import {EventVideoList,EventVideoEdit} from './eventVideo'
 
 class App extends Component {
 
@@ -68,7 +68,7 @@ class App extends Component {
                 <Resource name="cameraType" list={CameraTypeList} create={CameraTypeCreate}  edit={CameraTypeEdit} remove={CameraTypeDelete}  icon={CameraTypeIcon}/>
                 <Resource name="vendor" list={VendorList} create={VendorCreate}  edit={VendorEdit} remove={VendorDelete}  icon={VendorIcon}/>
                 <Resource name="event" list={EventList} icon={EventIcon}/>
-                <Resource name='eventVideo' list={EventVideoList}/>
+                <Resource name='eventVideo' list={EventVideoList} edit={EventVideoEdit}/>
             </Admin>
         );
     }

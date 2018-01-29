@@ -4,13 +4,15 @@ import { connect } from 'react-redux';
 import { Card, CardText } from 'material-ui/Card';
 import compose from 'recompose/compose';
 import inflection from 'inflection';
-import ViewTitle from '../layout/ViewTitle';
-import Title from '../layout/Title';
-import { crudGetOne as crudGetOneAction, crudUpdate as crudUpdateAction } from '../../actions/dataActions';
-import DefaultActions from './EditActions';
-import translate from '../../i18n/translate';
+import ViewTitle from '../lib/mui/layout/ViewTitle';
+import Title from '../lib/mui/layout/Title';
+import { crudGetOne as crudGetOneAction, crudUpdate as crudUpdateAction } from '../lib/actions/dataActions';
+import DefaultActions from '../lib/mui/detail/EditActions';
+import translate from '../lib/i18n/translate';
 
-export class Edit extends Component {
+import Reflv from 'reflv';
+
+export class EventVideo extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -90,23 +92,14 @@ export class Edit extends Component {
                         resource,
                     })}
                     <ViewTitle title={titleElement} />
-                    {data && !isRefreshing && React.cloneElement(children, {
-                        save: this.save,
-                        resource,
-                        basePath,
-                        record: data,
-                        translate,
-                        redirect:'list',
-                        //redirect:this.defaultRedirectRoute() : children.props.redirect,
-                    })}
-                    {!data && <CardText>&nbsp;</CardText>}
+                    <Reflv url={'http://127.0.0.1:8088/' + data.path} type='flv'/>
                 </Card>
             </div>
         );
     }
 }
 
-Edit.propTypes = {
+EventVideo.propTypes = {
     actions: PropTypes.element,
     children: PropTypes.element.isRequired,
     crudGetOne: PropTypes.func.isRequired,
@@ -139,4 +132,4 @@ const enhance = compose(
     translate,
 );
 
-export default enhance(Edit);
+export default enhance(EventVideo);

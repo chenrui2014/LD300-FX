@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from 'material-ui/svg-icons/action/chrome-reader-mode';
-import { List,EditButton,DeleteButton,Toolbar,Create,SaveButton,Filter,Datagrid,TextField,TextInput,Edit,SimpleForm,Delete,DisabledInput } from '../lib';
+import { List,EditButton,DeleteButton,Toolbar,Create,SaveButton,Filter,Datagrid,TextField,TextInput,Edit,SimpleForm,Delete,DisabledInput,ReferenceInput,SelectInput,DateInput } from '../lib';
 import {translate} from '../lib';
 
 import LinkToEventVideo from './LinkToEventVideo';
@@ -18,6 +18,11 @@ export const EventIcon = Icon;
 const EventFilter = (props) =>(
     <Filter {...props}>
         <TextInput label="pos.search"  source="q" alwaysOn/>
+        <ReferenceInput source="hid" reference="hosts">
+            <SelectInput source="port"  optionText="port" optionValue="id" />
+        </ReferenceInput>
+        <DateInput source="happenTime_gte" />
+        <DateInput source="happenTime_lte" />
     </Filter>
 )
 export const EventList = (props) =>(

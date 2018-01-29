@@ -421,7 +421,6 @@ export class PresetList extends Component {
                     handle=camHandler.handler;
                 }
             }
-            let _this = this;
             $.ajax({
                 url:'http://localhost:3000/ipc/'+_this.state.value+'/ptz/'+code+'?handle='+handle+'&stop=0'+'&t='+new Date().getTime(),
                 dataType:'json',
@@ -586,7 +585,7 @@ export class PresetList extends Component {
                                 <IconButton tooltip="向右上"><ArrowTopRight onMouseDown={this.handleMouseDown.bind(this, 9)} onMouseUp={this.handleMouseUp.bind(this, 9)}/></IconButton>
 
                                 放大：<IconButton><Add onMouseDown={this.handleOptionMouseDown.bind(this, 'zoomAdd')} onMouseUp={this.handleOptionMouseUp.bind(this, 'zoomAdd')}/>
-                            </IconButton><IconButton><Remove onMouseDown={this.handleOptionMouseDown.bind(this, 'zoomDes')} onMouseUp={this.handleOptionMouseUp.bind(this, 'zoomDes')}/></IconButton>
+                            </IconButton><IconButton><Remove onMouseDown={this.handleOptionMouseDown.bind(this, 'zoomDec')} onMouseUp={this.handleOptionMouseUp.bind(this, 'zoomDec')}/></IconButton>
                                 聚焦：<IconButton><Add onMouseDown={this.handleOptionMouseDown.bind(this, 'focusAdd')} onMouseUp={this.handleOptionMouseUp.bind(this, 'focusAdd')}/>
                             </IconButton><IconButton><Remove onMouseDown={this.handleOptionMouseDown.bind(this, 'focusDec')} onMouseUp={this.handleOptionMouseUp.bind(this, 'focusDec')}/></IconButton>
                                 光圈：<IconButton><Add onMouseDown={this.handleOptionMouseDown.bind(this, 'apertureAdd')} onMouseUp={this.handleOptionMouseUp.bind(this, 'apertureAdd')}/>

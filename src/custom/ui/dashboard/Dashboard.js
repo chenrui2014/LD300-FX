@@ -70,7 +70,9 @@ class Dashboard extends Component {
 
     canvasElement = null;
     ctx = null;
-
+    socket=io('http://localhost:3001',{
+        path:'/stateServer'
+    });
     componentWillMount(){
         // this.props.loadHost();
         restClient(GET_LIST,'cameras_noPage',{sort: { field: 'name', order: 'DESC' },pagination: { page: 1, perPage: 1000 }})
@@ -86,16 +88,16 @@ class Dashboard extends Component {
 
                     hosts:hosts
                 });
-                const socket=io('http://localhost:3001',{
-                    path:'/stateServer'
-                });
+                // const socket=io('http://localhost:3001',{
+                //     path:'/stateServer'
+                // });
 
-                socket.on('connect',()=> {
+                this.socket.on('connect',()=> {
                     console.log("已连接服务器");
                 });
                 var _this = this;
 
-                socket.on('init',(evt)=> {
+                this.socket.on('init',(evt)=> {
 
                     //初始化主机状态
                     //var hostList = this.state.hosts;
@@ -130,7 +132,7 @@ class Dashboard extends Component {
                     console.log("init" + evt);
                 });
 
-                socket.on('update',(evt)=> {//更新主机状态
+                this.socket.on('update',(evt)=> {//更新主机状态
                     //var hostList = this.state.hosts;
                     for (let h of hosts) {
                         for(let eid in evt){
@@ -380,8 +382,8 @@ class Dashboard extends Component {
 
     //手动解除报警
     handleAlarm = () => {
-        socket.emit('clear',{hid:this.state.hid});
-        this.setState({open: false});
+        this.socket.emit('clear',{hid:this.state.hid});
+        this.setState({open: false,alarmCamera:[]});
     };
 
     handlePtz = (code,e) =>{
@@ -953,7 +955,7 @@ class Dashboard extends Component {
                                     <IconButton tooltip="向右上"><ArrowTopRight onMouseDown={this.handleMouseDown.bind(this, 9)} onMouseUp={this.handleMouseUp.bind(this, 9)}/></IconButton>|
 
                                     放大：<IconButton><Add onMouseDown={this.handleOptionMouseDown.bind(this, 'zoomAdd')} onMouseUp={this.handleOptionMouseUp.bind(this, 'zoomAdd')}/>
-                                </IconButton><IconButton><Remove onMouseDown={this.handleOptionMouseDown.bind(this, 'zoomDes')} onMouseUp={this.handleOptionMouseUp.bind(this, 'zoomDes')}/></IconButton> |
+                                </IconButton><IconButton><Remove onMouseDown={this.handleOptionMouseDown.bind(this, 'zoomDec')} onMouseUp={this.handleOptionMouseUp.bind(this, 'zoomDec')}/></IconButton> |
                                     聚焦：<IconButton><Add onMouseDown={this.handleOptionMouseDown.bind(this, 'focusAdd')} onMouseUp={this.handleOptionMouseUp.bind(this, 'focusAdd')}/>
                                 </IconButton><IconButton><Remove onMouseDown={this.handleOptionMouseDown.bind(this, 'focusDec')} onMouseUp={this.handleOptionMouseUp.bind(this, 'focusDec')}/></IconButton> |
                                     光圈：<IconButton><Add onMouseDown={this.handleOptionMouseDown.bind(this, 'apertureAdd')} onMouseUp={this.handleOptionMouseUp.bind(this, 'apertureAdd')}/>
