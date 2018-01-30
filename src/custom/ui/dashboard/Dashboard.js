@@ -62,7 +62,7 @@ class Dashboard extends Component {
     constructor(...args){
         super(...args);
 
-        this.state = {selected: [0],open:true,camOpen:false,hid:'',value:1,camValue:1,alarmCamera:[1,2],camHandlers:[{id:1,handler:''},{id:2,handler:''}],
+        this.state = {selected: [0],open:true,camOpen:false,hid:'',value:-1,camValue:1,alarmCamera:[1,2],camHandlers:[{id:1,handler:''},{id:2,handler:''}],
             config:[],cameraTypeList:[],cameraList:[],hosts:[],ppList:[],perimeterPoint:{},key: 0};
 
 
@@ -73,6 +73,30 @@ class Dashboard extends Component {
     socket=io('http://localhost:3001',{
         path:'/stateServer'
     });
+    flvPlayer = null;
+    play = (v,url) =>{
+        this.flvPlayer = flvjs.createPlayer({
+            type: 'flv',
+            isLive: true,
+            enableWorker:true,
+            enableStashBuffer: false,
+            stashInitialSize: 128,
+            autoCleanupSourceBuffer:true,
+            url:url //'ws://localhost:'+port+path
+        },{
+            enableStashBuffer:false
+        });
+        this.flvPlayer.attachMediaElement(v);
+        this.flvPlayer.load();
+        this.flvPlayer.play();
+    };
+    destroy = () =>{
+
+        if(this.flvPlayer !== null){
+            this.flvPlayer.destroy();
+            this.flvPlayer = null;
+        }
+    };
     componentWillMount(){
         // this.props.loadHost();
         restClient(GET_LIST,'cameras_noPage',{sort: { field: 'name', order: 'DESC' },pagination: { page: 1, perPage: 1000 }})
@@ -354,34 +378,50 @@ class Dashboard extends Component {
         //         })
         //     });
 
-        function play(v,path,port) {
-            var flvPlayer = flvjs.createPlayer({
-                type: 'flv',
-                isLive: true,
-                enableWorker:true,
-                enableStashBuffer: false,
-                stashInitialSize: 128,
-                autoCleanupSourceBuffer:true,
-                url:'ws://localhost:'+port+path
-            },{
-                enableStashBuffer:false
-            });
-            flvPlayer.attachMediaElement(v);
-            flvPlayer.load();
-            flvPlayer.play();
-        }
-        var alarmCamId= this.state.value;
+        // function play(v,path,port) {
+        //     var flvPlayer = flvjs.createPlayer({
+        //         type: 'flv',
+        //         isLive: true,
+        //         enableWorker:true,
+        //         enableStashBuffer: false,
+        //         stashInitialSize: 128,
+        //         autoCleanupSourceBuffer:true,
+        //         url:'ws://localhost:'+port+path
+        //     },{
+        //         enableStashBuffer:false
+        //     });
+        //     flvPlayer.attachMediaElement(v);
+        //     flvPlayer.load();
+        //     flvPlayer.play();
+        // }
+        // var alarmCamId= this.state.value;
 
-        $.ajax({
-            url:'http://localhost:3000/ipc/' + alarmCamId + '/live'+'?t='+new Date().getTime(),
-            dataType:'json',
-            success:function (data) {
-                if($("#" + alarmCamId).children("video").length > 0){
-                    return;
+        if(this.state.alarmCamera.length > 0){
+            this.state.value = this.state.alarmCamera[0]
+        }
+
+        if(this.state.value > -1){
+            var myAudioWin = new Audio();
+            myAudioWin.setAttribute("src", "http://127.0.0.1:8088/alerm.mp3");
+            myAudioWin.loop = true;
+            myAudioWin.play();//播放
+
+            var alarmCamId= this.state.value;
+            var _this = this;
+            $.ajax({
+                url:'http://localhost:3000/ipc/' + alarmCamId + '/live'+'?t='+new Date().getTime(),
+                dataType:'json',
+                success:function (data) {
+                    if($("#" + alarmCamId).children("video").length > 0){
+                        return;
+                    }
+                    var url = 'ws://localhost:'+data.port+data.path;
+                    _this.play($('<video></video>').prop('class','v'+alarmCamId).appendTo('#'+alarmCamId)[0],url);
                 }
-                play($('<video></video>').prop('class','v'+alarmCamId).appendTo('#'+alarmCamId)[0],data.path,data.port);
-            }
-        });
+            });
+        }
+
+
         // function play(v,path,port) {
         //     var flvPlayer = flvjs.createPlayer({
         //         type: 'flv',
@@ -621,47 +661,66 @@ class Dashboard extends Component {
 
     handleClose = () => {
         var handle='';
-        for(let camHandler of this.state.camHandlers){
-            if(camHandler.id === this.state.value){
-                handle=camHandler.handler;
-            }
-        }
+
         var _this = this;
-        $.ajax({
-            url:'http://localhost:3000/ipc/'+this.state.value+'/freeptz?handle='+ handle +'&t='+new Date().getTime(),
-            dataType:'json',
-            success:function(data) {
-                for(let camHandler of _this.state.camHandlers){
-                    if(camHandler.id === _this.state.value){
-                        camHandler.handler = data.handle;
-                    }
+        var selectCam = this.state.cameraList.filter(function (item) {
+            return item.id === _this.state.value;
+        })
+        if(selectCam.length > 0 && selectCam[0].ptz){
+            for(let camHandler of this.state.camHandlers){
+                if(camHandler.id === this.state.value){
+                    handle=camHandler.handler;
                 }
-                console.log(JSON.stringify(data));
             }
-        });
+
+            $.ajax({
+                url:'http://localhost:3000/ipc/'+this.state.value+'/freeptz?handle='+ handle +'&t='+new Date().getTime(),
+                dataType:'json',
+                success:function(data) {
+                    for(let camHandler of _this.state.camHandlers){
+                        if(camHandler.id === _this.state.value){
+                            camHandler.handler = data.handle?data.handle:'';
+                        }
+                    }
+                    console.log(JSON.stringify(data));
+                }
+            });
+
+        }
+
+        this.destroy();
         this.setState({open: false});
     };
 
     handleClose1 = () => {
         var handle='';
-        for(let camHandler of this.state.camHandlers){
-            if(camHandler.id === this.state.value){
-                handle=camHandler.handler;
-            }
-        }
+
         var _this = this;
-        $.ajax({
-            url:'http://localhost:3000/ipc/'+this.state.value+'/freeptz?handle='+ handle +'&t='+new Date().getTime(),
-            dataType:'json',
-            success:function(data) {
-                for(let camHandler of _this.state.camHandlers){
-                    if(camHandler.id === _this.state.value){
-                        camHandler.handler = data.handle;
-                    }
+        var selectCam = this.state.cameraList.filter(function (item) {
+            return item.id === _this.state.value;
+        })
+        if(selectCam.length > 0 && selectCam[0].ptz){
+            for(let camHandler of this.state.camHandlers){
+                if(camHandler.id === this.state.value){
+                    handle=camHandler.handler;
                 }
-                console.log(JSON.stringify(data));
             }
-        });
+
+            $.ajax({
+                url:'http://localhost:3000/ipc/'+this.state.value+'/freeptz?handle='+ handle +'&t='+new Date().getTime(),
+                dataType:'json',
+                success:function(data) {
+                    for(let camHandler of _this.state.camHandlers){
+                        if(camHandler.id === _this.state.value){
+                            camHandler.handler = data.handle?data.handle:'';
+                        }
+                    }
+                    console.log(JSON.stringify(data));
+                }
+            });
+        }
+
+        this.destroy();
         this.setState({camOpen: false});
     };
     handleHostSelect = (host)=>{
@@ -670,24 +729,27 @@ class Dashboard extends Component {
     handleCameraSelect = (camera)=>{
         let camList = this.state.cameraList;
         this.setState({selected:camera,camValue:camList[camera[0]].id,camOpen:true});
-        function play(v,path,port) {
-            var flvPlayer = flvjs.createPlayer({
-                type: 'flv',
-                isLive: true,
-                enableWorker:true,
-                enableStashBuffer: false,
-                stashInitialSize: 128,
-                autoCleanupSourceBuffer:true,
-                url:'ws://localhost:'+port+path
-            },{
-                enableStashBuffer:false
-            });
-            flvPlayer.attachMediaElement(v);
-            flvPlayer.load();
-            flvPlayer.play();
-        }
+        // function play(v,path,port) {
+        //     var flvPlayer = flvjs.createPlayer({
+        //         type: 'flv',
+        //         isLive: true,
+        //         enableWorker:true,
+        //         enableStashBuffer: false,
+        //         stashInitialSize: 128,
+        //         autoCleanupSourceBuffer:true,
+        //         url:'ws://localhost:'+port+path
+        //     },{
+        //         enableStashBuffer:false
+        //     });
+        //     flvPlayer.attachMediaElement(v);
+        //     flvPlayer.load();
+        //     flvPlayer.play();
+        // }
+        this.destroy();
 
         var cameraId = camList[camera[0]].id;
+
+        var _this = this;
 
         $.ajax({
             url:'http://localhost:3000/ipc/' + cameraId + '/live'+'?t='+new Date().getTime(),
@@ -696,7 +758,8 @@ class Dashboard extends Component {
                 if($("#c" + cameraId).children("video").length > 0){
                     return;
                 }
-                play($('<video></video>').prop('class','v' + cameraId).appendTo('#c' + cameraId)[0],data.path,data.port);
+                var url = 'ws://localhost:'+data.port+data.path;
+                _this.play($('<video></video>').prop('class','v' + cameraId).appendTo('#c' + cameraId)[0],url);
             }
         });
     }
@@ -706,25 +769,27 @@ class Dashboard extends Component {
     };
 
     handleActive(id,tab) {
-        function play(v,path,port) {
-            var flvPlayer = flvjs.createPlayer({
-                type: 'flv',
-                isLive: true,
-                enableWorker:true,
-                enableStashBuffer: false,
-                stashInitialSize: 128,
-                autoCleanupSourceBuffer:true,
-                url:'ws://localhost:'+port+path
-            },{
-                enableStashBuffer:false
-            });
-            flvPlayer.attachMediaElement(v);
-            flvPlayer.load();
-            flvPlayer.play();
-        }
+        // function play(v,path,port) {
+        //     var flvPlayer = flvjs.createPlayer({
+        //         type: 'flv',
+        //         isLive: true,
+        //         enableWorker:true,
+        //         enableStashBuffer: false,
+        //         stashInitialSize: 128,
+        //         autoCleanupSourceBuffer:true,
+        //         url:'ws://localhost:'+port+path
+        //     },{
+        //         enableStashBuffer:false
+        //     });
+        //     flvPlayer.attachMediaElement(v);
+        //     flvPlayer.load();
+        //     flvPlayer.play();
+        // }
+        this.destroy();
 
         var cameraId = id;
 
+        var _this = this;
         $.ajax({
             url:'http://localhost:3000/ipc/' + cameraId + '/live'+'?t='+new Date().getTime(),
             dataType:'json',
@@ -733,30 +798,34 @@ class Dashboard extends Component {
                     $("#" + cameraId).children("video").remove();
                     //return;
                 }
-                play($('<video></video>').prop('class','v' + cameraId).appendTo('#' + cameraId)[0],data.path,data.port);
+                var url = 'ws://localhost:'+data.port+data.path;
+                _this.play($('<video></video>').prop('class','v' + cameraId).appendTo('#' + cameraId)[0],url);
             }
         });
 
     }
     handleActive1 = (id,tab)=>{
-        function play(v,path,port) {
-            var flvPlayer = flvjs.createPlayer({
-                type: 'flv',
-                isLive: true,
-                enableWorker:true,
-                enableStashBuffer: false,
-                stashInitialSize: 128,
-                autoCleanupSourceBuffer:true,
-                url:'ws://localhost:'+port+path
-            },{
-                enableStashBuffer:false
-            });
-            flvPlayer.attachMediaElement(v);
-            flvPlayer.load();
-            flvPlayer.play();
-        }
+        // function play(v,path,port) {
+        //     var flvPlayer = flvjs.createPlayer({
+        //         type: 'flv',
+        //         isLive: true,
+        //         enableWorker:true,
+        //         enableStashBuffer: false,
+        //         stashInitialSize: 128,
+        //         autoCleanupSourceBuffer:true,
+        //         url:'ws://localhost:'+port+path
+        //     },{
+        //         enableStashBuffer:false
+        //     });
+        //     flvPlayer.attachMediaElement(v);
+        //     flvPlayer.load();
+        //     flvPlayer.play();
+        // }
+
+        this.destroy();
 
         var cameraId = id;
+        var _this = this;
 
         $.ajax({
             url:'http://localhost:3000/ipc/' + cameraId + '/live'+'?t='+new Date().getTime(),
@@ -765,7 +834,8 @@ class Dashboard extends Component {
                 if($("#c" + cameraId).children("video").length > 0){
                     return;
                 }
-                play($('<video></video>').prop('class','v' + cameraId).appendTo('#c' + cameraId)[0],data.path,data.port);
+                var url = 'ws://localhost:'+data.port+data.path;
+                _this.play($('<video></video>').prop('class','v' + cameraId).appendTo('#c' + cameraId)[0],url);
             }
         });
     };
@@ -778,18 +848,24 @@ class Dashboard extends Component {
             }
         }
         var _this = this;
-        $.ajax({
-            url:'http://localhost:3000/ipc/'+this.state.value+'/freeptz?handle='+ handle +'&t='+new Date().getTime(),
-            dataType:'json',
-            success:function(data) {
-                for(let camHandler of _this.state.camHandlers){
-                    if(camHandler.id === _this.state.value){
-                        camHandler.handler = data.handle;
+        var selectCam = this.state.cameraList.filter(function (item) {
+            return item.id === value;
+        })
+        if(selectCam.length > 0 && selectCam[0].ptz){
+            $.ajax({
+                url:'http://localhost:3000/ipc/'+this.state.value+'/freeptz?handle='+ handle +'&t='+new Date().getTime(),
+                dataType:'json',
+                success:function(data) {
+                    for(let camHandler of _this.state.camHandlers){
+                        if(camHandler.id === _this.state.value){
+                            camHandler.handler = data.handle?data.handle:'';
+                        }
                     }
+                    console.log(JSON.stringify(data));
                 }
-                console.log(JSON.stringify(data));
-            }
-        });
+            });
+        }
+
 
         this.setState({
             value: value,
@@ -804,18 +880,23 @@ class Dashboard extends Component {
             }
         }
         var _this = this;
-        $.ajax({
-            url:'http://localhost:3000/ipc/'+this.state.value+'/freeptz?handle='+ handle +'&t='+new Date().getTime(),
-            dataType:'json',
-            success:function(data) {
-                for(let camHandler of _this.state.camHandlers){
-                    if(camHandler.id === _this.state.value){
-                        camHandler.handler = data.handle;
+        var selectCam = this.state.cameraList.filter(function (item) {
+            return item.id === value;
+        })
+        if(selectCam.length > 0 && selectCam[0].ptz){
+            $.ajax({
+                url:'http://localhost:3000/ipc/'+this.state.value+'/freeptz?handle='+ handle +'&t='+new Date().getTime(),
+                dataType:'json',
+                success:function(data) {
+                    for(let camHandler of _this.state.camHandlers){
+                        if(camHandler.id === _this.state.value){
+                            camHandler.handler = data.handle?data.handle:'';
+                        }
                     }
+                    console.log(JSON.stringify(data));
                 }
-                console.log(JSON.stringify(data));
-            }
-        });
+            });
+        }
 
         this.setState({
             camValue: value,
