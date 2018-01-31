@@ -74,7 +74,15 @@ class Dashboard extends Component {
         path:'/stateServer'
     });
     flvPlayer = null;
+    destroy = () =>{
+
+        if(this.flvPlayer !== null){
+            this.flvPlayer.destroy();
+            this.flvPlayer = null;
+        }
+    };
     play = (v,url) =>{
+        this.destroy();
         this.flvPlayer = flvjs.createPlayer({
             type: 'flv',
             isLive: true,
@@ -90,14 +98,13 @@ class Dashboard extends Component {
         this.flvPlayer.load();
         this.flvPlayer.play();
     };
-    destroy = () =>{
 
-        if(this.flvPlayer !== null){
-            this.flvPlayer.destroy();
-            this.flvPlayer = null;
-        }
-    };
+    audioTimeout = 0;
     componentWillMount(){
+        var _this = this;
+        window.onbeforeunload=function () {
+            _this.destroy();
+        };
         // this.props.loadHost();
         restClient(GET_LIST,'cameras_noPage',{sort: { field: 'name', order: 'DESC' },pagination: { page: 1, perPage: 1000 }})
             .then(response =>response.data)
@@ -170,6 +177,16 @@ class Dashboard extends Component {
                                 if(extCamera && extCamera.length > 0){
                                     for (let h of extCamera) {
                                         alarmCameras.push(h.id);
+                                        //播放警报声
+                                        if(this.audioTimeout === 0){
+                                            this.audioTimeout = setInterval(function () {
+
+                                                var myAudioWin = new Audio();
+                                                myAudioWin.setAttribute("src", "http://127.0.0.1:8088/alerm.mp3");
+                                                //myAudioWin.loop = true;
+                                                myAudioWin.play();//播放
+                                            },1000);
+                                        }
                                     }
                                 }
                                 _this.setState({
@@ -401,10 +418,19 @@ class Dashboard extends Component {
         }
 
         if(this.state.value > -1){
-            var myAudioWin = new Audio();
-            myAudioWin.setAttribute("src", "http://127.0.0.1:8088/alerm.mp3");
-            myAudioWin.loop = true;
-            myAudioWin.play();//播放
+
+            //播放警报声
+            if(this.audioTimeout === 0){
+                this.audioTimeout = setInterval(function () {
+
+                    var myAudioWin = new Audio();
+                    myAudioWin.setAttribute("src", "http://127.0.0.1:8088/alerm.mp3");
+                    //myAudioWin.loop = true;
+                    myAudioWin.play();//播放
+                },2000);
+            }
+
+
 
             var alarmCamId= this.state.value;
             var _this = this;
@@ -454,6 +480,9 @@ class Dashboard extends Component {
 
     //手动解除报警
     handleAlarm = () => {
+        clearInterval(this.audioTimeout);
+        this.audioTimeout=0;
+        this.destroy();
         this.socket.emit('clear',{hid:this.state.hid});
         this.setState({open: false,alarmCamera:[]});
     };
@@ -689,6 +718,10 @@ class Dashboard extends Component {
         }
 
         this.destroy();
+        if(this.audioTimeout !== 0){
+            clearInterval(this.audioTimeout);
+            this.audioTimeout=0;
+        }
         this.setState({open: false});
     };
 
