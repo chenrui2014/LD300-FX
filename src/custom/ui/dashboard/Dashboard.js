@@ -62,7 +62,7 @@ class Dashboard extends Component {
     constructor(...args){
         super(...args);
 
-        this.state = {selected: [0],open:true,camOpen:false,hid:'',value:-1,camValue:1,alarmCamera:[1,2],camHandlers:[{id:1,handler:''},{id:2,handler:''}],
+        this.state = {selected: [0],open:false,camOpen:false,hid:'',value:-1,camValue:1,alarmCamera:[],camHandlers:[{id:1,handler:''},{id:2,handler:''}],
             config:[],cameraTypeList:[],cameraList:[],hosts:[],ppList:[],perimeterPoint:{},key: 0};
 
 
