@@ -70,9 +70,7 @@ class Dashboard extends Component {
 
     canvasElement = null;
     ctx = null;
-    socket=io('http://localhost:3001',{
-        path:'/stateServer'
-    });
+    socket=null;
     flvPlayer = null;
     destroy = () =>{
 
@@ -123,6 +121,9 @@ class Dashboard extends Component {
                 //     path:'/stateServer'
                 // });
 
+                this.socket=this.socket||io('http://localhost:3001',{
+                    path:'/stateServer'
+                });
                 this.socket.on('connect',()=> {
                     console.log("已连接服务器");
                 });
