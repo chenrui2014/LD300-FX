@@ -33,6 +33,8 @@ import $ from 'jquery';
 import flvjs from 'flv.js';
 import _ from 'lodash';
 
+import LD300Config from '../../../LD300Config';
+
 import io from 'socket.io-client';
 
 const styles = {
@@ -121,7 +123,7 @@ class Dashboard extends Component {
                 //     path:'/stateServer'
                 // });
 
-                this.socket=this.socket||io('http://localhost:3001',{
+                this.socket=this.socket||io(LD300Config.hostServer,{
                     path:'/stateServer'
                 });
                 this.socket.on('connect',()=> {
@@ -183,7 +185,7 @@ class Dashboard extends Component {
                                             this.audioTimeout = setInterval(function () {
 
                                                 var myAudioWin = new Audio();
-                                                myAudioWin.setAttribute("src", "http://127.0.0.1:8088/alerm.mp3");
+                                                myAudioWin.setAttribute("src", LD300Config.staticServer+"/alerm.mp3");
                                                 //myAudioWin.loop = true;
                                                 myAudioWin.play();//播放
                                             },1000);
@@ -425,7 +427,7 @@ class Dashboard extends Component {
                 this.audioTimeout = setInterval(function () {
 
                     var myAudioWin = new Audio();
-                    myAudioWin.setAttribute("src", "http://127.0.0.1:8088/alerm.mp3");
+                    myAudioWin.setAttribute("src", LD300Config.staticServer + "/alerm.mp3");
                     //myAudioWin.loop = true;
                     myAudioWin.play();//播放
                 },2000);
@@ -436,13 +438,13 @@ class Dashboard extends Component {
             var alarmCamId= this.state.value;
             var _this = this;
             $.ajax({
-                url:'http://localhost:3000/ipc/' + alarmCamId + '/live'+'?t='+new Date().getTime(),
+                url:LD300Config.mediaServer + '/ipc/' + alarmCamId + '/live'+'?t='+new Date().getTime(),
                 dataType:'json',
                 success:function (data) {
                     if($("#" + alarmCamId).children("video").length > 0){
                         return;
                     }
-                    var url = 'ws://localhost:'+data.port+data.path;
+                    var url = LD300Config.liveServer + ':'+data.port+data.path;
                     _this.play($('<video></video>').prop('class','v'+alarmCamId).appendTo('#'+alarmCamId)[0],url);
                 }
             });
@@ -498,7 +500,7 @@ class Dashboard extends Component {
         let _this = this;
 
         $.ajax({
-            url:'http://localhost:3000/ipc/'+this.state.value+'/ptz/move?position='+code+'&stop=1'+'&handle='+handle+'&t='+new Date().getTime(),
+            url:LD300Config.mediaServer + '/ipc/'+this.state.value+'/ptz/move?position='+code+'&stop=1'+'&handle='+handle+'&t='+new Date().getTime(),
             dataType:'json',
             success:function (data) {
                 for(let camHandler of _this.state.camHandlers){
@@ -530,7 +532,7 @@ class Dashboard extends Component {
             //e.persist();
 
             $.ajax({
-                url:'http://localhost:3000/ipc/'+_this.state.value+'/ptz/move?position='+code+'&stop=0'+'&handle='+handle+'&t='+new Date().getTime(),
+                url:LD300Config.mediaServer + '/ipc/'+_this.state.value+'/ptz/move?position='+code+'&stop=0'+'&handle='+handle+'&t='+new Date().getTime(),
                 dataType:'json',
                 success:function (data) {
                     for(let camHandler of _this.state.camHandlers){
@@ -555,7 +557,7 @@ class Dashboard extends Component {
                 }
             }
             $.ajax({
-                url:'http://localhost:3000/ipc/'+_this.state.value+'/ptz/ptzStop?stop=1'+'&handle='+handle+'&t='+new Date().getTime(),
+                url:LD300Config.mediaServer + '/ipc/'+_this.state.value+'/ptz/ptzStop?stop=1'+'&handle='+handle+'&t='+new Date().getTime(),
                 dataType:'json',
                 success:function (data) {
                     for(let camHandler of _this.state.camHandlers){
@@ -575,7 +577,7 @@ class Dashboard extends Component {
             }
 
             $.ajax({
-                url:'http://localhost:3000/ipc/'+_this.state.value+'/ptz/move?position='+code+'&stop=1'+'&handle='+handle+'&t='+new Date().getTime(),
+                url:LD300Config.mediaServer + '/ipc/'+_this.state.value+'/ptz/move?position='+code+'&stop=1'+'&handle='+handle+'&t='+new Date().getTime(),
                 dataType:'json',
                 success:function (data) {
                     for(let camHandler of _this.state.camHandlers){
@@ -600,7 +602,7 @@ class Dashboard extends Component {
         }
         var _this = this;
         $.ajax({
-            url:'http://localhost:3000/ipc/'+this.state.value+'/ptz/'+code+'?handle='+handle+'&stop=1'+'&t='+new Date().getTime(),
+            url:LD300Config.mediaServer + '/ipc/'+this.state.value+'/ptz/'+code+'?handle='+handle+'&stop=1'+'&t='+new Date().getTime(),
             dataType:'json',
             success:function(data) {
                 for(let camHandler of _this.state.camHandlers){
@@ -629,7 +631,7 @@ class Dashboard extends Component {
             }
             let _this = this;
             $.ajax({
-                url:'http://localhost:3000/ipc/'+_this.state.value+'/ptz/'+code+'?handle='+handle+'&stop=0'+'&t='+new Date().getTime(),
+                url:LD300Config.mediaServer + '/ipc/'+_this.state.value+'/ptz/'+code+'?handle='+handle+'&stop=0'+'&t='+new Date().getTime(),
                 dataType:'json',
                 success:function(data) {
                     for(let camHandler of _this.state.camHandlers){
@@ -654,7 +656,7 @@ class Dashboard extends Component {
                 }
             }
             $.ajax({
-                url:'http://localhost:3000/ipc/'+_this.state.value+'/ptz/ptzStop?stop=1'+'&handle='+handle+'&t='+new Date().getTime(),
+                url:LD300Config.mediaServer + '/ipc/'+_this.state.value+'/ptz/ptzStop?stop=1'+'&handle='+handle+'&t='+new Date().getTime(),
                 dataType:'json',
                 success:function (data) {
                     for(let camHandler of _this.state.camHandlers){
@@ -674,7 +676,7 @@ class Dashboard extends Component {
                 }
             }
             $.ajax({
-                url:'http://localhost:3000/ipc/'+_this.state.value+'/ptz/'+code+'?handle='+handle+'&stop=1'+'&t='+new Date().getTime(),
+                url:LD300Config.mediaServer + '/ipc/'+_this.state.value+'/ptz/'+code+'?handle='+handle+'&stop=1'+'&t='+new Date().getTime(),
                 dataType:'json',
                 success:function(data) {
                     for(let camHandler of _this.state.camHandlers){
@@ -704,7 +706,7 @@ class Dashboard extends Component {
             }
 
             $.ajax({
-                url:'http://localhost:3000/ipc/'+this.state.value+'/freeptz?handle='+ handle +'&t='+new Date().getTime(),
+                url:LD300Config.mediaServer + '/ipc/'+this.state.value+'/freeptz?handle='+ handle +'&t='+new Date().getTime(),
                 dataType:'json',
                 success:function(data) {
                     for(let camHandler of _this.state.camHandlers){
@@ -741,7 +743,7 @@ class Dashboard extends Component {
             }
 
             $.ajax({
-                url:'http://localhost:3000/ipc/'+this.state.value+'/freeptz?handle='+ handle +'&t='+new Date().getTime(),
+                url:LD300Config.mediaServer + '/ipc/'+this.state.value+'/freeptz?handle='+ handle +'&t='+new Date().getTime(),
                 dataType:'json',
                 success:function(data) {
                     for(let camHandler of _this.state.camHandlers){
@@ -762,7 +764,7 @@ class Dashboard extends Component {
     }
     handleCameraSelect = (camera)=>{
         let camList = this.state.cameraList;
-        this.setState({selected:camera,camValue:camList[camera[0]].id,camOpen:true});
+        this.setState({selected:camera,value:camList[camera[0]].id,camValue:camList[camera[0]].id,camOpen:true});
         // function play(v,path,port) {
         //     var flvPlayer = flvjs.createPlayer({
         //         type: 'flv',
@@ -786,13 +788,13 @@ class Dashboard extends Component {
         var _this = this;
 
         $.ajax({
-            url:'http://localhost:3000/ipc/' + cameraId + '/live'+'?t='+new Date().getTime(),
+            url:LD300Config.mediaServer + '/ipc/' + cameraId + '/live'+'?t='+new Date().getTime(),
             dataType:'json',
             success:function (data) {
                 if($("#c" + cameraId).children("video").length > 0){
                     return;
                 }
-                var url = 'ws://localhost:'+data.port+data.path;
+                var url = LD300Config.liveServer + ':'+data.port+data.path;
                 _this.play($('<video></video>').prop('class','v' + cameraId).appendTo('#c' + cameraId)[0],url);
             }
         });
@@ -825,14 +827,14 @@ class Dashboard extends Component {
 
         var _this = this;
         $.ajax({
-            url:'http://localhost:3000/ipc/' + cameraId + '/live'+'?t='+new Date().getTime(),
+            url:LD300Config.mediaServer + '/ipc/' + cameraId + '/live'+'?t='+new Date().getTime(),
             dataType:'json',
             success:function (data) {
                 if($("#" + cameraId).children("video").length > 0){
                     $("#" + cameraId).children("video").remove();
                     //return;
                 }
-                var url = 'ws://localhost:'+data.port+data.path;
+                var url = LD300Config.liveServer + ':'+data.port+data.path;
                 _this.play($('<video></video>').prop('class','v' + cameraId).appendTo('#' + cameraId)[0],url);
             }
         });
@@ -862,13 +864,13 @@ class Dashboard extends Component {
         var _this = this;
 
         $.ajax({
-            url:'http://localhost:3000/ipc/' + cameraId + '/live'+'?t='+new Date().getTime(),
+            url:LD300Config.mediaServer + '/ipc/' + cameraId + '/live'+'?t='+new Date().getTime(),
             dataType:'json',
             success:function (data) {
                 if($("#c" + cameraId).children("video").length > 0){
                     return;
                 }
-                var url = 'ws://localhost:'+data.port+data.path;
+                var url = LD300Config.liveServer + ':'+data.port+data.path;
                 _this.play($('<video></video>').prop('class','v' + cameraId).appendTo('#c' + cameraId)[0],url);
             }
         });
@@ -887,7 +889,7 @@ class Dashboard extends Component {
         })
         if(selectCam.length > 0 && selectCam[0].ptz){
             $.ajax({
-                url:'http://localhost:3000/ipc/'+this.state.value+'/freeptz?handle='+ handle +'&t='+new Date().getTime(),
+                url:LD300Config.mediaServer + '/ipc/'+this.state.value+'/freeptz?handle='+ handle +'&t='+new Date().getTime(),
                 dataType:'json',
                 success:function(data) {
                     for(let camHandler of _this.state.camHandlers){
@@ -919,7 +921,7 @@ class Dashboard extends Component {
         })
         if(selectCam.length > 0 && selectCam[0].ptz){
             $.ajax({
-                url:'http://localhost:3000/ipc/'+this.state.value+'/freeptz?handle='+ handle +'&t='+new Date().getTime(),
+                url:LD300Config.mediaServer + '/ipc/'+this.state.value+'/freeptz?handle='+ handle +'&t='+new Date().getTime(),
                 dataType:'json',
                 success:function(data) {
                     for(let camHandler of _this.state.camHandlers){
