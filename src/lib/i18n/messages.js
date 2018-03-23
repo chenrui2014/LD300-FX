@@ -52,8 +52,8 @@ export default {
         auth: {
             username: '用户名',
             password: '密  码',
-            sign_in: '登  陆',
-            sign_in_error: '登陆失败，请重试',
+            sign_in: '登  录',
+            sign_in_error: '登录失败，请重试',
             logout: '退出',
         },
         notification: {
