@@ -38,7 +38,18 @@ const styles = {
 const Menu = ({ onMenuTap, translate, logout }) => (
     <div style={styles.main}>
         <DashboardMenuItem onTouchTap={onMenuTap} />
-        {items.map(item => (
+        {localStorage.getItem("username") !== "superAdmin"?items.filter((v,i,a) => {
+                return v.name !=='event';
+            }).map(item => (
+                <MenuItem
+                    key={item.name}
+                    containerElement={<Link to={`/${item.name}`} />}
+                    primaryText={translate(`resources.${item.name}.name`, { smart_count: 2 })}
+                    leftIcon={item.icon}
+                    onTouchTap={onMenuTap}
+                />
+            )):
+            items.map(item => (
             <MenuItem
                 key={item.name}
                 containerElement={<Link to={`/${item.name}`} />}
