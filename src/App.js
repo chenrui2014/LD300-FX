@@ -23,12 +23,14 @@ import {VendorList,VendorEdit,VendorDelete,VendorCreate,VendorIcon} from './vend
 import {EventList,EventIcon} from './event'
 import PresetList from './preset/PresetList';
 import {PortList} from './ports';
+import {RoleList} from './role';
 
 
 import restClient from './restClient';
 import customSagas from './custom/sagas';
 import customReducers from './custom/reducer';
 import {EventVideoList,EventVideoEdit} from './eventVideo'
+import {UserCreate,UserDelete,UserEdit,UserIcon,UserList} from './users'
 
 class App extends Component {
 
@@ -64,11 +66,13 @@ class App extends Component {
                 <Resource name="config" list={ConfigList} edit={ConfigEdit} icon={SettingsIcon} />
                 <Resource name="pp" list={PerimeterPointList}/>
                 <Resource name='ports' list={PortList}/>
+                <Resource name='role' list={RoleList}/>
                 <Resource name="perimeter" list={PerimetersList} edit={PerimetersEdit} remove={PerimetersDelete}  icon={PerimetersIcon}/>
                 <Resource name="cameraType" list={CameraTypeList} create={CameraTypeCreate}  edit={CameraTypeEdit} remove={CameraTypeDelete}  icon={CameraTypeIcon}/>
                 <Resource name="vendor" list={VendorList} create={VendorCreate}  edit={VendorEdit} remove={VendorDelete}  icon={VendorIcon}/>
                 <Resource name="event" list={EventList} icon={EventIcon}/>
                 <Resource name='eventVideo' list={EventVideoList} edit={EventVideoEdit}/>
+                <Resource name='user' list={UserList} create={UserCreate} edit={UserEdit} remove={UserDelete} icon={UserIcon}/>
             </Admin>
         );
     }

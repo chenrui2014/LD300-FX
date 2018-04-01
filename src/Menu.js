@@ -15,6 +15,7 @@ import {PerimetersIcon} from './perimeters';
 import {CameraTypeIcon} from './cameraType';
 import {VendorIcon} from './vendor';
 import {EventIcon} from './event';
+import {UserIcon} from './users';
 
 const items = [
     { name: 'pp', icon: <PerimeterIcon /> },
@@ -23,6 +24,7 @@ const items = [
     { name: 'preset', icon: <PresetIcon /> },
     { name: 'monitoringArea', icon: <MonitorAreaIcon /> },
     { name: 'event', icon: <EventIcon /> },
+    { name: 'user', icon: <UserIcon /> },
     { name: 'config', icon: <SettingsIcon /> },
 ];
 
@@ -38,18 +40,17 @@ const styles = {
 const Menu = ({ onMenuTap, translate, logout }) => (
     <div style={styles.main}>
         <DashboardMenuItem onTouchTap={onMenuTap} />
-        {localStorage.getItem("username") !== "superAdmin"?items.filter((v,i,a) => {
-                return v.name !=='event';
-            }).map(item => (
-                <MenuItem
-                    key={item.name}
-                    containerElement={<Link to={`/${item.name}`} />}
-                    primaryText={translate(`resources.${item.name}.name`, { smart_count: 2 })}
-                    leftIcon={item.icon}
-                    onTouchTap={onMenuTap}
-                />
-            )):
-            items.map(item => (
+        {(localStorage.getItem("role") === "superAdmin" || localStorage.getItem("role") === "admin")?items.map(item => (
+            <MenuItem
+                key={item.name}
+                containerElement={<Link to={`/${item.name}`} />}
+                primaryText={translate(`resources.${item.name}.name`, { smart_count: 2 })}
+                leftIcon={item.icon}
+                onTouchTap={onMenuTap}
+            />
+        )):items.filter((v,i,a) => {
+            return v.name !=='event' && v.name !== 'user';
+        }).map(item => (
             <MenuItem
                 key={item.name}
                 containerElement={<Link to={`/${item.name}`} />}

@@ -18,11 +18,13 @@ export default (type, params) => {
                 return response.json();
             })
             .then(({ data }) => {
-                localStorage.setItem('username', data);
+                localStorage.setItem('username', data.username);
+                localStorage.setItem('role', data.role);
             });
     }
     if (type === AUTH_LOGOUT) {
         localStorage.removeItem('username');
+        localStorage.removeItem('role');
         return Promise.resolve();
     }
     if (type === AUTH_ERROR) {

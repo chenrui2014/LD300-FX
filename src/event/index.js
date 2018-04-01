@@ -32,6 +32,7 @@ export const EventList = (props) =>(
             <TextField source="port" label="resources.event.fields.host"/>
             <TextField source="position" label="resources.event.fields.position"/>
             <LinkToEventVideo />
+            {(localStorage.getItem("role") === "superAdmin")?<DeleteButton basePath={props.basePath} record={props.data} translate={props.translate}/>:null}
         </Datagrid>
     </List>
 );

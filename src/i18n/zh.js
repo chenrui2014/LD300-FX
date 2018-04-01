@@ -51,6 +51,21 @@ export default {
                 address:'厂商地址'
             }
         },
+        user:{
+            name:'用户',
+            fields:{
+                username:'用户名',
+                password:'密  码',
+                role:'角色'
+            }
+        },
+        roles:{
+            name:'角色',
+            fields:{
+                name:'角色名称',
+                value:'角色'
+            }
+        },
         hosts:{
             name:'主机',
             fields:{
