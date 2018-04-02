@@ -36,8 +36,8 @@ export const UserCreate = ({ ...props }) => (
     <Create {...props}>
         <SimpleForm toolbar={<UserCreateToolbar />} defaultValue={{ average_note: 0 }} >
             <TextInput source="username" style={{display:'inline-block'}}/>
+            <TextInput type="password" source="password" style={{display:'inline-block'}}/>
             <ReferenceInput  source="role" reference="role" allowEmpty style={{display:'inline-block'}}>
-
                 <SelectInput source='name' optionText="name" optionValue="id" />
             </ReferenceInput>
         </SimpleForm>
@@ -52,7 +52,6 @@ export const UserEdit = ({...props}) =>(
             <TextInput source="username" style={{display:'inline-block'}}/>
             <TextInput type="password" source="password" style={{display:'inline-block'}}/>
             <ReferenceInput  source="role" reference="role" allowEmpty style={{display:'inline-block'}}>
-
                 <SelectInput source='name' optionText="name" optionValue="id" />
             </ReferenceInput>
         </SimpleForm>
