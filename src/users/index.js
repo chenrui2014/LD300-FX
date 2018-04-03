@@ -2,6 +2,7 @@ import React from 'react';
 import Icon from 'material-ui/svg-icons/maps/local-library';
 import { List,EditButton,DeleteButton,Toolbar,Create,SaveButton,Filter,Datagrid,TextField,TextInput,Edit,SimpleForm,Delete,ReferenceInput,SelectInput } from '../lib';
 import {translate} from '../lib';
+import RoleReferenceField from "./RoleReferenceField";
 // import EditButton from '../buttons/EditButton';
 
 const styles = {
@@ -21,7 +22,7 @@ export const UserList = (props) =>(
     <List {...props} filters={<UserFilter/>} sort={{field:'id',order:'ASC'}}  perPage={25}>
         <Datagrid bodyOptions={{ stripedRows: true, showRowHover: true }}>
             <TextField source="username" label="resources.user.fields.username"/>
-            <TextField source="role" label="resources.user.fields.role"/>
+            <RoleReferenceField allowEmpty linkType={false} />
             <EditButton />
             <DeleteButton basePath={props.basePath} record={props.data} translate={props.translate}/>
         </Datagrid>
