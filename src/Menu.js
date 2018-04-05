@@ -40,7 +40,17 @@ const styles = {
 const Menu = ({ onMenuTap, translate, logout }) => (
     <div style={styles.main}>
         <DashboardMenuItem onTouchTap={onMenuTap} />
-        {(localStorage.getItem("role") === "superAdmin" || localStorage.getItem("role") === "admin")?items.map(item => (
+        {localStorage.getItem("role") === "superAdmin"?items.map(item => (
+            <MenuItem
+                key={item.name}
+                containerElement={<Link to={`/${item.name}`} />}
+                primaryText={translate(`resources.${item.name}.name`, { smart_count: 2 })}
+                leftIcon={item.icon}
+                onTouchTap={onMenuTap}
+            />
+        )):localStorage.getItem("role") === "admin"?items.filter((v,i,a) => {
+            return v.name !=='user';
+        }).map(item => (
             <MenuItem
                 key={item.name}
                 containerElement={<Link to={`/${item.name}`} />}
@@ -49,7 +59,7 @@ const Menu = ({ onMenuTap, translate, logout }) => (
                 onTouchTap={onMenuTap}
             />
         )):items.filter((v,i,a) => {
-            return v.name !=='event' && v.name !== 'user';
+            return v.name ==='event';
         }).map(item => (
             <MenuItem
                 key={item.name}

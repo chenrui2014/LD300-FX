@@ -45,10 +45,10 @@ export const UserCreate = ({ ...props }) => (
     </Create>
 );
 
-const vendorTitle = ({record}) => record?<TextField record={record} style={styles.edit_title}/>:null;
+const UserTitle = ({record}) => record?<TextField record={record} style={styles.edit_title}/>:null;
 
 export const UserEdit = ({...props}) =>(
-    <Edit title={<vendorTitle/>} {...props}>
+    <Edit title={<UserTitle/>} {...props}>
         <SimpleForm>
             <TextInput source="username" style={{display:'inline-block'}}/>
             <TextInput type="password" source="password" style={{display:'inline-block'}}/>
@@ -59,8 +59,8 @@ export const UserEdit = ({...props}) =>(
     </Edit>
 );
 
-const vendorDeleteTitle = translate(({ record, translate }) => <span>
+const UserDeleteTitle = translate(({ record, translate }) => <span>
     {record?record:null}
 </span>)
 
-export const UserDelete = (props) => <Delete {...props} title={<vendorDeleteTitle/>} />;
+export const UserDelete = (props) => <Delete {...props} title={<UserDeleteTitle/>} />;
