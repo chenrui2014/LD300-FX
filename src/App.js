@@ -37,12 +37,22 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {hostState:{}}
+        this.onUnload = this.onUnload.bind(this);
     }
-    componentWillMount() {
+    onUnload(event) {
+        localStorage.removeItem('username');
+        localStorage.removeItem('role');
+    }
 
+    componentWillMount() {
     }
 
     componentWillUnmount() {
+        window.removeEventListener("beforeunload", this.onUnload)
+    }
+
+    componentDidMount(){
+        window.addEventListener("beforeunload", this.onUnload)
     }
 
     render() {
